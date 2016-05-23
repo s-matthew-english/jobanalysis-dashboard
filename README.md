@@ -1,2 +1,3 @@
-# edsa-dashboard
-The EDSA dashboard, using node.js and jade.
+# JobSearch Dashboard
+The JobSearch Dashboard, created for the EDSA Dashboard.
+It uses Node.js.
