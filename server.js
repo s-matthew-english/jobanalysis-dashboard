@@ -12,8 +12,7 @@ app.set('view engine', 'jade');
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(favicon(path.join(__dirname, 'public', 'pics', 'favicon.ico')));
 
-// compile file
-var fileCompiler = jade.compileFile("jade/body.jade", { pretty: true });
+
 /**
  * Set the HTTP GET request
  */ 
@@ -24,11 +23,15 @@ app.get('/', function (req, res) {
 });
 
 app.get('/policymakers', function (req, res) {
+    // compile file
+    var fileCompiler = jade.compileFile("jade/body.jade", { pretty: true });
     var html = fileCompiler({ activeTab: "policyMakers" });
     res.send(html);
 });
 
 app.get('/jobseekers', function (req, res) {
+    // compile file
+    var fileCompiler = jade.compileFile("jade/body.jade", { pretty: true });
     var html = fileCompiler({ activeTab: "jobSeekers" });
     res.send(html);
 });
