@@ -209,7 +209,7 @@ function DiscreteHistogram(_options) {
         chart.enter().append("rect")
                      .attr("class", "bar")
                      .attr("x", function (d) {
-                        var xOffset = options.zoomable ? -barW * 0.3 : barW * 0.2;
+                        var xOffset = barW * 0.2;
                         return x(d[dataKey]) + xOffset;
                       })
                      .attr("y", function (d) { return histogramHeight; })
@@ -231,8 +231,8 @@ function DiscreteHistogram(_options) {
             histogramWidth = histogramTotalWidth - options.margin.left - options.margin.right;
         
         // set the key-value names
-        var dataKey = options.dataKeyName;
-        var dataValue = options.dataValueName;
+        var dataKey   = dataset.dataKeyName ? dataset.dataKeyName : "name";
+        var dataValue = dataset.dataValueName ? dataset.dataValueName : "value";
 
         svg.attr("width", histogramTotalWidth)
            .attr("height", histogramTotalHeight);
@@ -251,7 +251,7 @@ function DiscreteHistogram(_options) {
         
         svg.select("#clip-rect")
            .attr("x", 0)
-           .attr("y", options.margin.top)
+           .attr("y", 0)
            .attr("height", histogramTotalHeight)
            .attr("width", histogramWidth);
 
@@ -283,14 +283,14 @@ function DiscreteHistogram(_options) {
         var barW = barWidth();
 
         var chart = histogramContainer.select("#chart-body")
-                                      .attr("clip-path", "url(#clip)");
+                                      .attr("clip-path", "url(#clip)")
+                                      .selectAll(".bar");
  
-        chart.selectAll(".bar")
-                     .attr("x", function (d) {
-                         var xOffset = options.zoomable ? -barW * 0.3 : barW * 0.2;
-                         return x(d[dataKey]) + xOffset;
-                     })
-                     .attr("width", barW * 0.6);
+        chart.attr("x", function (d) {
+                var xOffset = barW * 0.2;
+                return x(d[dataKey]) + xOffset;
+             })
+             .attr("width", barW * 0.6);
 
     }
 
@@ -532,7 +532,7 @@ function ContinuousHistogram(_options) {
         
     }
     
-    this.redraw = function () {
+    function redraw() {
         var histogramTotalHeight = $(options.histogramContainer).height(),
             histogramTotalWidth = $(options.histogramContainer).width(),
             histogramHeight = histogramTotalHeight - options.margin.top - options.margin.bottom,
@@ -638,6 +638,6 @@ function ContinuousHistogram(_options) {
     // resize on window resize 
     var resizeTimerHist;
     $(window).resize(function () {
-        self.redraw();
+        redraw();
     });
 }
