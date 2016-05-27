@@ -42,6 +42,7 @@ function searchSuccess(json) {
     // remove the .loader
     $("#map-load-container").removeClass("loading");
     
+
     //-------------------------------------------------------
     // Calculates the number-of-jobs per date histogram
     //-------------------------------------------------------
@@ -83,67 +84,10 @@ function searchSuccess(json) {
     // update the statistics for job posts
     $('#infoStatJobPosts').html("<b>" + numberOfJobs + "</b>");
     
-    // TODO: creates the histogram for the date - number of jobs data
     // create the histogram
-    var dataset = { name: "Job Posts By Dates", yAttribute: "Number of jobs", data: jobDateNameFreq };
+    var dataset = { name: "Job Posts By Dates", yAxisName: "Number of jobs", data: jobDateNameFreq };
     dateHistogram.setData(dataset);
-
-    //// TODO: replace this histogram with one from d3
-    ////////////////////////////////////////////////////
-    //$('#analytics-chart-jobs-by-dates').highcharts({
-    //    chart: {
-    //        zoomType: 'x'
-    //    },
-    //    title: {
-    //        text: 'Job Posts By Dates'
-    //    },
-    //    xAxis: {
-    //        type: 'datetime',
-
-    //    },
-    //    yAxis: {
-    //        title: {
-    //            text: 'Numbef of jobs'
-    //        }
-    //    },
-    //    legend: {
-    //        enabled: false
-    //    },
-    //    plotOptions: {
-    //        area: {
-    //            fillColor: {
-    //                linearGradient: {
-    //                    x1: 0,
-    //                    y1: 0,
-    //                    x2: 0,
-    //                    y2: 1
-    //                },
-    //                stops: [
-    //                    [0, Highcharts.getOptions().colors[2]],
-    //                    [1, Highcharts.Color(Highcharts.getOptions().colors[2]).setOpacity(0).get('rgba')]
-    //                ]
-    //            },
-    //            marker: {
-    //                radius: 2
-    //            },
-    //            lineWidth: 1,
-    //            color: Highcharts.getOptions().colors[2],
-    //            states: {
-    //                hover: {
-    //                    lineWidth: 1
-    //                }
-    //            },
-    //            threshold: null
-    //        }
-    //    },
-        
-    //    series: [{
-    //            type: 'column',
-    //            name: 'jobs',
-    //            data: jobsByDates
-    //        }]
-    //});
-    //////////////////////////////////////////////////
+    
 
     //-------------------------------------------------------
     // Calculates the skill frequency histogram
@@ -172,8 +116,6 @@ function searchSuccess(json) {
     // create an array of skill-name, frequency pairs
     var numberOfSkills = jobSkills.length;
 
-    //var jobSkillName = [];
-    //var jobSkillFreq = [];
     var jobSkillNameFreq = [];
     // the upper bound for skill representations
     var upperBoundSkills = 50;
@@ -182,56 +124,15 @@ function searchSuccess(json) {
     for (var SkillN = 0; SkillN < sLimit; SkillN++) {
         var JFPair = jobSkills[SkillN];
         jobSkillNameFreq.push({ name: JFPair[0], value: JFPair[1] });
-        //jobSkillName.push(JFPair[0]);
-        //jobSkillFreq.push(JFPair[1]);
     }
-    
     
     // update the statistics for job posts
     $('#infoStatSkills').html("<b>" + numberOfSkills + "</b>");
     
-    // TODO: creates the histogram for the frequency - skill data
     // create the histogram
-    var dataset = { name: "Job Posts By Skills", yAttribute: "Number of jobs", data: jobSkillNameFreq };
+    var dataset = { name: "Job Posts By Skills", yAxisName: "Number of jobs", data: jobSkillNameFreq };
     skillHistogram.setData(dataset);
 
-    // TODO: replace this histogram with one from d3
-    /////////////////////////////////////////
- //   $('#analytics-chart-skills-by-frequency').highcharts({
- //       chart:
- //{
- //           type: 'column'
- //       },
- //       title: {
- //           text: 'Job Posts By Skills'
- //       },
-        
- //       xAxis: {
- //           categories: jobSkillName,
- //           crosshair: true
- //       },
- //       yAxis: {
- //           min: 0,
- //           title: {
- //               text: 'Number of jobs'
- //           }
- //       },
- //       legend: {
- //           enabled: false
- //       },
- //       plotOptions: {
- //           column: {
- //               pointPadding: 0.2,
- //               borderWidth: 0
- //           }
- //       },
- //       series: [{
- //               name: 'Skills',
- //               data: jobSkillFreq,
- //               color: Highcharts.getOptions().colors[6]
- //           }]
- //   });
-    /////////////////////////////////////////
     
     //-------------------------------------------------------
     // Calculates the location frequency histogram
@@ -256,8 +157,6 @@ function searchSuccess(json) {
     jobLocations.sort(function (a, b) { return a[1] < b[1] ? 1 : a[1] > b[1] ? -1 : 0 });
 
     var numberOfLocations = jobLocations.length;
-    //var jobLocationName = [];
-    //var jobLocationFreq = [];
     var jobLocationNameFreq = [];
 
     // the upper bound for location representation
@@ -267,53 +166,12 @@ function searchSuccess(json) {
     for (var LocN = 0; LocN < lLimit; LocN++) {
         var jobLoc = jobLocations[LocN];
         jobLocationNameFreq.push({ name: jobLoc[0], value: jobLoc[1] });
-        //jobLocationName.push(jobLoc[0]);
-        //jobLocationFreq.push(jobLoc[1]);
     }
 
     // update the location statistics
     $('#infoStatLocations').html("<b>" + numberOfLocations + "</b>");
 
-    // TODO: creates the histogram for the freq - location data
     // create the histogram
-    var dataset = { name: "Job Posts By Locations", yAttribute: "Number of jobs", data: jobLocationNameFreq };
+    var dataset = { name: "Job Posts By Locations", yAxisName: "Number of jobs", data: jobLocationNameFreq };
     locationHistogram.setData(dataset);
-
-    // TODO: replace this histogram with one from d3
-    /////////////////////////////////////////
- //   $('#analytics-chart-location-by-frequency').highcharts({
- //       chart:
- //{
- //           type: 'column'
- //       },
- //       title: {
- //           text: 'Job Posts By Locations'
- //       },
-        
- //       xAxis: {
- //           categories: jobLocationName,
- //           crosshair: true
- //       },
- //       yAxis: {
- //           min: 0,
- //           title: {
- //               text: 'Number of jobs'
- //           }
- //       },
- //       legend: {
- //           enabled: false
- //       },
- //       plotOptions: {
- //           column: {
- //               pointPadding: 0.2,
- //               borderWidth: 0
- //           }
- //       },
- //       series: [{
- //               name: 'Locations',
- //               data: jobLocationFreq,
- //               color: Highcharts.getOptions().colors[3]
- //           }]
- //   });
-    /////////////////////////////////////////					
 }

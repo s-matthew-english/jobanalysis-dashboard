@@ -485,13 +485,15 @@ function ContinuousHistogram(_options) {
         gyAxis.selectAll("g").filter(function (d) { return d; })
                              .classed("minor", true);
         
-        gyAxis.append("text")
-              .attr("transform", "rotate(-90)")
-              .attr("x", -histogramTotalHeight / 3)
-              .attr("y", -35)
-              .style("font-size", "12px")
-              .style("text-anchor", "end")
-              .text(dataset.yAttribute);
+        if (dataset.yAxisName) {
+            gyAxis.append("text")
+                  .attr("transform", "rotate(-90)")
+                  .attr("x", -histogramTotalHeight / 3)
+                  .attr("y", -35)
+                  .style("font-size", "12px")
+                  .style("text-anchor", "end")
+                  .text(dataset.yAxisName);
+        }
         
         // append title of histogram
         histogramContainer.append("text")

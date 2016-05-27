@@ -19,70 +19,8 @@ $.ajax({
         }
         
         // create the histogram
-        var dataset = { name: "Job Posts By Dates", yAttribute: "Number of jobs", data: jobDateNameFreq };
+        var dataset = { name: "Job Posts By Dates", yAxisName: "Number of jobs", data: jobDateNameFreq };
         dateHistogram.setData(dataset);
-
-    //    $('#analytics-chart-jobs-by-dates').highcharts({
-    //        chart: {
-    //            type: 'spline',
-    //            zoomType: 'x'
-    //        },
-    //        title: {
-    //            text: 'Job Posts By Dates'
-    //        },
-    //        xAxis: {
-    //            type: 'datetime'
-    //        },
-    //        yAxis: {
-    //            title: {
-    //                text: 'Number of jobs'
-    //            }
-    //        },
-    //        legend: {
-    //            enabled: false
-    //        },
-    //        plotOptions: {
-    //            spline: {
-    //                marker: {
-    //                    enabled: true
-    //                }
-    //            }
-    //        },
-    //        plotOptions: {
-    //            area: {
-    //                fillColor: {
-    //                    linearGradient: {
-    //                        x1: 0,
-    //                        y1: 0,
-    //                        x2: 0,
-    //                        y2: 1
-    //                    },
-    //                    stops: [
-    //                        [0, Highcharts.getOptions().colors[2]],
-    //                        [1, Highcharts.Color(Highcharts.getOptions().colors[2]).setOpacity(0).get('rgba')]
-    //                    ]
-    //                },
-    //                marker: {
-    //                    radius: 2
-    //                },
-    //                lineWidth: 1,
-    //                color: Highcharts.getOptions().colors[2],
-    //                states: {
-    //                    hover: {
-    //                        lineWidth: 1
-    //                    }
-    //                },
-    //                threshold: null
-    //            }
-    //        },
-            
-    //        series: [{
-    //                type: 'column',
-    //                name: 'jobs',
-    //                data: json.get_number_of_jobs_by_dates
-    //            }]
-    //    });
-
     }
 });
 
@@ -104,7 +42,7 @@ $.ajax({
         }
 
         // create the histogram
-        var dataset = { name: "Job Posts By Locations", yAttribute: "Number of jobs", data: jobLocationNameFreq };
+        var dataset = { name: "Job Posts By Locations", yAxisName: "Number of jobs", data: jobLocationNameFreq };
         locationHistogram.setData(dataset);
     }
 });
@@ -126,7 +64,7 @@ $.ajax({
             jobSkillNameFreq.push({ name: JFPair[0], value: JFPair[1] });
         }
         // create the histogram
-        var dataset = { name: "Job Posts By Skills", yAttribute: "Number of jobs", data: jobSkillNameFreq };
+        var dataset = { name: "Job Posts By Skills", yAxisName: "Number of jobs", data: jobSkillNameFreq };
         skillHistogram.setData(dataset);
 
         // set the info-container
