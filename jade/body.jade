@@ -9,6 +9,7 @@ html(lang="en" xmlns="http://www.w3.org/1999/xhtm")
     
     link(rel="stylesheet", href="components/bootstrap/dist/css/bootstrap.min.css")
     link(rel="stylesheet", href="components/bootstrap-tagsinput/dist/bootstrap-tagsinput.css")
+    link(rel="stylesheet", href="components/datatables/media/css/jquery.dataTables.css")
 
     //- Custom styles
     link(rel="stylesheet", href="css/main.css")
@@ -90,10 +91,50 @@ html(lang="en" xmlns="http://www.w3.org/1999/xhtm")
                                 label.control-label Location:
                             .col-xs-10.col-sm-10.col-lg-11
                                 input#location-search.form-control(type="text", placeholder="Type a city name")
+        
+        //- Page body
+        .row.main-body
+            //- statistics container
+            .col-lg-4
+                #analytics-basic-statistics
+                    .box-body
+                        table
+                            tr
+                                th Statistics
+                                th Value
+                            tr
+                                td Job Posts
+                                td
+                                    #infoStatJobPosts
+                            tr
+                                td Locations
+                                td
+                                   #infoStatLocations
+                            tr
+                                td Skills
+                                td
+                                    #infoStatSkills
+                #query-container
+                #info-container
 
-        if locals.activeTab = "policyMakers"
+            //- Map container
+            .col-lg-8
+                .map
+                    #map-load-container
+                        .map-load-inner
+                            label ●
+                            label ●
+                            label ●
+                            label ●
+                            label ●
+                    #map-container
+                        #zoom-container-map
+                            span.glyphicon.glyphicon-zoom-in(aria-hidden="true")
+                    #timeline-container
+
+        if locals.activeTab == "policyMakers"
             include ./includes/policymakers/policymakers.jade
-        else if locals.activeTab = "jobSeekers"
+        else if locals.activeTab == "jobSeekers"
             include ./includes/jobseekers/jobseekers.jade
 
 
