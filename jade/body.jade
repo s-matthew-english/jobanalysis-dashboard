@@ -1,0 +1,83 @@
+﻿doctype html
+html(lang="en" xmlns="http://www.w3.org/1999/xhtm")
+  
+  head
+    meta(charset="utf-8")
+    title Edsa Dashboard
+    //- Google Analytics
+    script(src="js/googleAnalytics.js")
+    
+    link(rel="stylesheet", href="components/bootstrap/dist/css/bootstrap.min.css")
+    link(rel="stylesheet", href="components/bootstrap-tagsinput/dist/bootstrap-tagsinput.css")
+
+    //- Custom styles
+    link(rel="stylesheet", href="css/main.css")
+    link(rel="stylesheet", href="css/infoContainers.css")
+    link(rel="stylesheet", href="css/searchOptions.css")
+
+    link(rel="stylesheet", href="css/loader.css")
+
+    link(rel="stylesheet", href="css/graphs/europe.css")
+    link(rel="stylesheet", href="css/graphs/histogram.css")
+
+  body
+
+    //- Body container
+    .container-fluid.body-container
+        //- Navbar 
+        .navbar.navbar-default.navbar-fixed-top
+            .container-fluid
+                //- Brand and toggle get grouped for better mobile display
+                .navbar-header
+                    button(type="button", 
+                           class="navbar-toggle collapsed", 
+                           data-toggle="collapse", 
+                           data-target="#dashboard-options", 
+                           aria-expanded="false")
+
+                        span.sr-only Toggle navigation
+                        span.icon-bar
+                        span.icon-bar
+                        span.icon-bar
+                    
+                    a(class="navbar-brand", href="/") EDSA Dashboard
+
+                //- Collect the nav links, forms, and other content for toggling
+                #dashboard-options.collapse.navbar-collapse
+                    ul.nav.navbar-nav
+                        if locals.activeTab = "policyMakers"
+                            li.active
+                                a(href="/policymakers") Policy Makers
+                            li
+                                a(href="/jobseekers") Job Seekers
+                            //-<li><a href="#">Data Science Experts</a></li>
+                        else if locals.activeTab = "jobSeekers"
+                            li
+                                a(href="/policymakers") Policy Makers
+                            li.active
+                                a(href="/jobseekers") Job Seekers
+
+        if locals.activeTab = "policyMakers"
+            include ./includes/policymakers/policymakers.jade
+        else if locals.activeTab = "jobSeekers"
+            include ./includes/jobseekers/jobseekers.jade
+
+
+    //- Page Footer - EDSA information
+    footer.footer(role="contentinfo")
+        .container-fluid
+            .row
+                .col-lg-1
+                .col-lg-10
+                    img.footer-eu-picture(src="pics/eu-commission.png")
+                    p
+                        This project has received funding from the <br />
+                        European Union's Horizon 2020<br />
+                        research and innovation programme<br />
+                        under grant agreement No 643937
+                .col-lg-1
+
+     if locals.activeTab = "policyMakers"
+            include ./includes/policymakers/policymakersScripts.jade
+     else if locals.activeTab = "jobSeekers"
+            include ./includes/jobseekers/jobseekersScripts.jade

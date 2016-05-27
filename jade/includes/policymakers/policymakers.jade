@@ -1,0 +1,90 @@
+﻿
+//- Page Title and description
+.row.main-title
+    .col-lg-12
+        h2.center EDSA DASHBOARD | POLICY MAKERS
+
+.row.search-options
+    .col-lg-12
+        //- Search options
+        .options
+            p
+                h4 SEARCH JOB TRENDS
+            .skill-search-container
+                span#span-skill-search
+                    input#skill-search.form-control(type="text", placeholder="Type a skill")
+                
+                span#span-skill-search-buttons
+                    button.btn.btn-default.pull-right(type="button", onclick="searchOptions('Policy Makers')") Search
+                
+                span#span-skill-search-buttons
+                    button.btn.btn-default.pull-right(type="button", onclick="toggleAdvOptions()")
+                        span.glyphicon.glyphicon-cog(aria-hidden="true")
+                        span#show-options.glyphicon.glyphicon-chevron-right(aria-hidden="true", data-value="right")
+
+            //- advance search container
+            .form-horizontal.additional-options(style="display:none;")
+                //- row containing the location and time interval options
+                .form-group
+                    .col-xs-2.col-sm-2.col-lg-1
+                        label.control-label Location:
+                    .col-xs-10.col-sm-10.col-lg-11
+                        input#location-search.form-control(type="text", placeholder="Type a city name")
+
+//- Page body
+.row.main-body
+    //- statistics container
+    .col-lg-4
+        #analytics-basic-statistics
+            .box-body
+                table
+                    tr
+                        th Statistics
+                        th Value
+                    tr
+                        td Job Posts
+                        td
+                            #infoStatJobPosts
+                    tr
+                        td Locations
+                        td
+                           #infoStatLocations
+                    tr
+                        td Skills
+                        td
+                            #infoStatSkills
+        #query-container
+        #info-container
+
+    //- Map container
+    .col-lg-8
+        .map
+            #map-load-container
+                .map-load-inner
+                    label ●
+                    label ●
+                    label ●
+                    label ●
+                    label ●
+            #map-container
+                #zoom-container-map
+                    span.glyphicon.glyphicon-zoom-in(aria-hidden="true")
+            #timeline-container
+
+//- analytics container
+.analytics-container
+    .row
+        .col-lg-12
+            h2.center TRENDS
+            .row
+                .col-lg-12
+                    #analytics-chart-jobs-by-dates
+            .row.empty
+            .row
+                .col-lg-12
+                    #analytics-chart-skills-by-frequency
+            .row.empty
+            .row
+                .col-lg-12
+                    #analytics-chart-location-by-frequency
+            .row.empty

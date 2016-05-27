@@ -5,20 +5,11 @@
 var express = require('express');
 var favicon = require('express-favicon');
 var path = require('path');
+var jade = require("jade");
 var app = express();
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(favicon(path.join(__dirname, 'public', 'pics', 'favicon.ico')));
-
-
-/**
- * Import QMiner module and initialize the database
- */ 
-
-//var base = new qm.Base({
-//    mode: 'openReadOnly',
-//    dbPath: './data/database/'
-//});
 
 
 
@@ -33,7 +24,12 @@ app.get('/', function (req, res) {
 
 app.get('/policymakers', function (req, res) {
     var htmlPath = path.join(__dirname, 'public', 'html');
-    res.sendFile(htmlPath + '/policymakers.html');
+    
+    // compile file
+    var fileCompiler = jade.compileFile("jade/body.jade");
+    var html = fileCompiler({ activeTab: "policyMakers" });
+
+    res.send(html);
 });
 
 app.get('/jobseekers', function (req, res) {
