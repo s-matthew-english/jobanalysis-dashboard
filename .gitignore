@@ -32,3 +32,6 @@ public/components
 
 # Optional REPL history
 .node_repl_history
+
+# solution folder
+solution
