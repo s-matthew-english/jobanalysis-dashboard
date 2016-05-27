@@ -45,17 +45,51 @@ html(lang="en" xmlns="http://www.w3.org/1999/xhtm")
                 //- Collect the nav links, forms, and other content for toggling
                 #dashboard-options.collapse.navbar-collapse
                     ul.nav.navbar-nav
-                        if locals.activeTab = "policyMakers"
+                        if locals.activeTab == "policyMakers"
                             li.active
                                 a(href="/policymakers") Policy Makers
                             li
                                 a(href="/jobseekers") Job Seekers
                             //-<li><a href="#">Data Science Experts</a></li>
-                        else if locals.activeTab = "jobSeekers"
+                        else if locals.activeTab == "jobSeekers"
                             li
                                 a(href="/policymakers") Policy Makers
                             li.active
                                 a(href="/jobseekers") Job Seekers
+        
+        //- Page Title and description
+        .row.main-title
+            .col-lg-12
+                if locals.activeTab == "policyMakers"
+                    h2.center EDSA DASHBOARD | POLICY MAKERS
+                else if locals.activeTab == "jobSeekers"
+                    h2.center EDSA DASHBOARD | JOB SEEKERS
+        .row.search-options
+            .col-lg-12
+                //- Search options
+                .options
+                    p
+                        h4 SEARCH JOB TRENDS
+                    .skill-search-container
+                        span#span-skill-search
+                            input#skill-search.form-control(type="text", placeholder="Type a skill")
+                
+                        span#span-skill-search-buttons
+                            button.btn.btn-default.pull-right(type="button", onclick="searchOptions('Policy Makers')") Search
+                
+                        span#span-skill-search-buttons
+                            button.btn.btn-default.pull-right(type="button", onclick="toggleAdvOptions()")
+                                span.glyphicon.glyphicon-cog(aria-hidden="true")
+                                span#showOptions.glyphicon.glyphicon-chevron-right(aria-hidden="true", data-value="right")
+
+                    //- advance search container
+                    .form-horizontal.additional-options(style="display:none;")
+                        //- row containing the location and time interval options
+                        .form-group
+                            .col-xs-2.col-sm-2.col-lg-1
+                                label.control-label Location:
+                            .col-xs-10.col-sm-10.col-lg-11
+                                input#location-search.form-control(type="text", placeholder="Type a city name")
 
         if locals.activeTab = "policyMakers"
             include ./includes/policymakers/policymakers.jade
@@ -77,7 +111,7 @@ html(lang="en" xmlns="http://www.w3.org/1999/xhtm")
                         under grant agreement No 643937
                 .col-lg-1
 
-     if locals.activeTab = "policyMakers"
+     if locals.activeTab == "policyMakers"
             include ./includes/policymakers/policymakersScripts.jade
-     else if locals.activeTab = "jobSeekers"
+     else if locals.activeTab == "jobSeekers"
             include ./includes/jobseekers/jobseekersScripts.jade

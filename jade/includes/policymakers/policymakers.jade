@@ -1,37 +1,4 @@
-﻿
-//- Page Title and description
-.row.main-title
-    .col-lg-12
-        h2.center EDSA DASHBOARD | POLICY MAKERS
-
-.row.search-options
-    .col-lg-12
-        //- Search options
-        .options
-            p
-                h4 SEARCH JOB TRENDS
-            .skill-search-container
-                span#span-skill-search
-                    input#skill-search.form-control(type="text", placeholder="Type a skill")
-                
-                span#span-skill-search-buttons
-                    button.btn.btn-default.pull-right(type="button", onclick="searchOptions('Policy Makers')") Search
-                
-                span#span-skill-search-buttons
-                    button.btn.btn-default.pull-right(type="button", onclick="toggleAdvOptions()")
-                        span.glyphicon.glyphicon-cog(aria-hidden="true")
-                        span#show-options.glyphicon.glyphicon-chevron-right(aria-hidden="true", data-value="right")
-
-            //- advance search container
-            .form-horizontal.additional-options(style="display:none;")
-                //- row containing the location and time interval options
-                .form-group
-                    .col-xs-2.col-sm-2.col-lg-1
-                        label.control-label Location:
-                    .col-xs-10.col-sm-10.col-lg-11
-                        input#location-search.form-control(type="text", placeholder="Type a city name")
-
-//- Page body
+﻿//- Page body
 .row.main-body
     //- statistics container
     .col-lg-4

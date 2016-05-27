@@ -8,11 +8,12 @@ var path = require('path');
 var jade = require("jade");
 var app = express();
 
+app.set('view engine', 'jade');
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(favicon(path.join(__dirname, 'public', 'pics', 'favicon.ico')));
 
-
-
+// compile file
+var fileCompiler = jade.compileFile("jade/body.jade", { pretty: true });
 /**
  * Set the HTTP GET request
  */ 
@@ -23,18 +24,13 @@ app.get('/', function (req, res) {
 });
 
 app.get('/policymakers', function (req, res) {
-    var htmlPath = path.join(__dirname, 'public', 'html');
-    
-    // compile file
-    var fileCompiler = jade.compileFile("jade/body.jade");
     var html = fileCompiler({ activeTab: "policyMakers" });
-
     res.send(html);
 });
 
 app.get('/jobseekers', function (req, res) {
-    var htmlPath = path.join(__dirname, 'public', 'html');
-    res.sendFile(htmlPath + '/jobseekers.html');
+    var html = fileCompiler({ activeTab: "jobSeekers" });
+    res.send(html);
 });
 
 app.listen('5055', function (req, res) {
