@@ -195,7 +195,7 @@ function DiscreteHistogram(_options) {
               .style("font-size", "18px")
               .style("font-family",  "sans-serif")
               .style("text-anchor", "end")
-              .text(dataset.title);
+              .text(dataset.name);
         
         // create chart  
         var chart = histogramContainer.append("g")

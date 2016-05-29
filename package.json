@@ -1,19 +1,19 @@
 {
-    "name": "JobSearch-Dashboard",
-    "version": "0.0.0",
-    "description": "server",
-    "main": "server.js",
-    "author": {
-        "name": "Erik",
-        "email": "erik.novak@ijs.si"
-    },
-    "scripts": {
-        "start": "node server.js"
-    },
-    "dependencies": {
-        "express": "^4.13.4",
-        "jade": "^1.11.0",
-        "path": "^0.12.7",
-        "qminer": "^4.10.0"
-    }
+  "name": "JobSearch-Dashboard",
+  "version": "0.0.0",
+  "description": "server",
+  "main": "server.js",
+  "author": {
+    "name": "Erik",
+    "email": "erik.novak@ijs.si"
+  },
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.13.4",
+    "express-favicon": "^1.0.1",
+    "jade": "^1.11.0",
+    "path": "^0.12.7"
+  }
 }
