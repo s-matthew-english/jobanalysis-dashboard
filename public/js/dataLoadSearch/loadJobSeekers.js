@@ -3,23 +3,17 @@
  */ 
 
 function LoadInitialData() {
-    $.ajax({
-        type: "POST",
-        url: "fill-searchbar",
-        success: function (data) {
-            if (data) {
-                var input = $("#skill-search");
-                console.log(data);
-                for (var skillN = 0; skillN < data.length; skillN++) {
-                    input.tagsinput("add", { name: data[skillN] });
-                }
-                searchOptions("JobSeekers");
-            }
-            else {
-                LoadBasicData();
-            }
+    var url = window.location.href.split("?");
+    if (url.length <= 1) {
+        LoadBasicData();
+    } else {
+        var data = skillUrlToArray(url[1]);
+        var input = $("#skill-search");
+        for (var skillN = 0; skillN < data.length; skillN++) {
+            input.tagsinput("add", { name: data[skillN] });
         }
-    });
+        searchOptions("JobSeekers");
+    }
 }
 
 function LoadBasicData() {
@@ -159,4 +153,9 @@ function setInfoContainer(jobSkillName, jobSkillFreq) {
     }
     text += "</ol></div></br>";
     $("#info-container").html(text);
-    }
+}
+
+function skillUrlToArray(string) {
+    var skills = string.replace(/q=/g, "").split("&");
+    return skills;
+}

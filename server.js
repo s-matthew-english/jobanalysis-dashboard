@@ -13,11 +13,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(favicon(path.join(__dirname, 'public', 'pics', 'favicon.ico')));
 
 /**
- * Container for skill search.
- */ 
-var skills = undefined;
-
-/**
  * Set the HTTP GET request
  */ 
 
@@ -27,8 +22,6 @@ app.get('/', function (req, res) {
 });
 
 app.get('/policymakers', function (req, res) {
-    skills = req.query.q;
-    console.log(skills);
     // compile file
     var fileCompiler = jade.compileFile("jade/body.jade", { pretty: true });
     var html = fileCompiler({ activeTab: "PolicyMakers" });
@@ -36,20 +29,11 @@ app.get('/policymakers', function (req, res) {
 });
 
 app.get('/jobseekers', function (req, res) {
-    skills = req.query.q;
-    console.log(skills);
     // compile file
     var fileCompiler = jade.compileFile("jade/body.jade", { pretty: true });
     var html = fileCompiler({ activeTab: "JobSeekers" });
     res.send(html);
 });
-
-// sends the skill names to the input
-app.post('/fill-searchbar', function (req, res) {
-    console.log("Skills:", skills);
-    res.send(skills);
-})
-
 
 
 app.listen('2409', function (req, res) {

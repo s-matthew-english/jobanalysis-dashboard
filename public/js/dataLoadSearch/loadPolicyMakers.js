@@ -8,7 +8,6 @@ function LoadInitialData() {
         LoadBasicData();
     } else {
         var data = skillUrlToArray(url[1]);
-        console.log(data);
         var input = $("#skill-search");
         for (var skillN = 0; skillN < data.length; skillN++) {
             input.tagsinput("add", { name: data[skillN] });
