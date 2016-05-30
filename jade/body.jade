@@ -51,12 +51,15 @@ html(lang="en" xmlns="http://www.w3.org/1999/xhtm")
                                 a(href="/policymakers") Policy Makers
                             li
                                 a(href="/jobseekers") Job Seekers
-                            //-<li><a href="#">Data Science Experts</a></li>
+                            li 
+                                a(href="#") Data Science Experts
                         else if locals.activeTab == "jobSeekers"
                             li
                                 a(href="/policymakers") Policy Makers
                             li.active
                                 a(href="/jobseekers") Job Seekers
+                            li 
+                                a(href="#") Data Science Experts
         
         //- Page Title and description
         .row.main-title
