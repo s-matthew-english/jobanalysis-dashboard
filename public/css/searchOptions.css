@@ -62,6 +62,10 @@
     width: 100%;
 }
 
+#showOptions {
+    margin-left: 5px;
+}
+
 /***********************
  * Autocomplete
  */
