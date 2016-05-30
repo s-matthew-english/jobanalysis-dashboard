@@ -8,20 +8,17 @@
  * Query the selected skill. Used in the info-container.
  */ 
 function queryMe(skillName) {
-    console.log(skillName)
     $("#skill-search").tagsinput("removeAll");
     $("#location-search").tagsinput("removeAll");
     
     $("#skill-search").tagsinput("add", { name: skillName });
-    searchOptions("Policy Makers");
+    searchOptions("PolicyMakers");
 }
 
 /**
  * search success Function for Policy makers
  */ 
 function searchSuccess(json) {
-    var jobpoints = [];
-    var jobpointswithtime = [];
     //{ location: [ number, number ], timestamp: number, title: string, skillset: [string, string, string], id: string  }   
     var jobsAllInfo = [];
     var jobResults = json.jp_result;
@@ -29,8 +26,6 @@ function searchSuccess(json) {
         var job = jobResults[JobN];
         var timestamp = Date.parse(job.datePosted);
         var location = [job.long, job.lat];
-        jobpoints.push({ location: location });
-        jobpointswithtime.push({ location: location, timestamp: timestamp });
         jobsAllInfo.push({ location: location, timestamp: timestamp, skillset: job.skills, id: job.jobPostingUri });
     }
     
@@ -78,7 +73,6 @@ function searchSuccess(json) {
         jobDateNameFreq.push({ name: new Date(Date.parse(dKey)), value: jobsDateFreq[dKey] });
         jobsByDates.push([Date.parse(dKey), jobsDateFreq[dKey]]);
     }
-    console.log(jobDateNameFreq);
 
     var numberOfJobs = jobsAllInfo.length;
     // update the statistics for job posts

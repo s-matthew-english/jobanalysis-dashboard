@@ -15,6 +15,7 @@ $(window).bind('dom-manipulation', function () {
     // set the autocomplete functions
     LoadAutocomplete();
     loadBasicStats();
+    setTimeout(LoadInitialData, 1000);
 });
 
 

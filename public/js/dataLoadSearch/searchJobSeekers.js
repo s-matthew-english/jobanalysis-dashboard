@@ -8,12 +8,11 @@
  * Query the selected skill. Used in the info-container.
  */ 
 function queryMe(skillName) {
-    console.log(skillName)
     $("#skill-search").tagsinput("removeAll");
     $("#location-search").tagsinput("removeAll");
     
     $("#skill-search").tagsinput("add", { name: skillName });
-    searchOptions("Policy Makers");
+    searchOptions("JobSeekers");
 }
 
 /**

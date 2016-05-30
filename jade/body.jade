@@ -46,14 +46,14 @@ html(lang="en" xmlns="http://www.w3.org/1999/xhtm")
                 //- Collect the nav links, forms, and other content for toggling
                 #dashboard-options.collapse.navbar-collapse
                     ul.nav.navbar-nav
-                        if locals.activeTab == "policyMakers"
+                        if locals.activeTab == "PolicyMakers"
                             li.active
                                 a(href="/policymakers") Policy Makers
                             li
                                 a(href="/jobseekers") Job Seekers
                             //- li 
                             //-     a(href="#") Data Science Experts
-                        else if locals.activeTab == "jobSeekers"
+                        else if locals.activeTab == "JobSeekers"
                             li
                                 a(href="/policymakers") Policy Makers
                             li.active
@@ -64,9 +64,9 @@ html(lang="en" xmlns="http://www.w3.org/1999/xhtm")
         //- Page Title and description
         .row.main-title
             .col-lg-12
-                if locals.activeTab == "policyMakers"
+                if locals.activeTab == "PolicyMakers"
                     h2.center EDSA DASHBOARD | POLICY MAKERS
-                else if locals.activeTab == "jobSeekers"
+                else if locals.activeTab == "JobSeekers"
                     h2.center EDSA DASHBOARD | JOB SEEKERS
         .row.search-options
             .col-lg-12
@@ -79,7 +79,7 @@ html(lang="en" xmlns="http://www.w3.org/1999/xhtm")
                             input#skill-search.form-control(type="text", placeholder="Type a skill")
                 
                         span#span-skill-search-buttons
-                            button.btn.btn-default.pull-right(type="button", onclick="searchOptions('Policy Makers')") Search
+                            button.btn.btn-default.pull-right(type="button", onclick="searchOptions('#{locals.activeTab}')") Search
                 
                         span#span-skill-search-buttons
                             button.btn.btn-default.pull-right(type="button", onclick="toggleAdvOptions()")
@@ -135,9 +135,9 @@ html(lang="en" xmlns="http://www.w3.org/1999/xhtm")
                             span.glyphicon.glyphicon-zoom-in(aria-hidden="true")
                     #timeline-container
 
-        if locals.activeTab == "policyMakers"
+        if locals.activeTab == "PolicyMakers"
             include ./includes/policymakers/policymakers.jade
-        else if locals.activeTab == "jobSeekers"
+        else if locals.activeTab == "JobSeekers"
             include ./includes/jobseekers/jobseekers.jade
 
 
@@ -155,7 +155,7 @@ html(lang="en" xmlns="http://www.w3.org/1999/xhtm")
                         under grant agreement No 643937
                 .col-lg-1
 
-     if locals.activeTab == "policyMakers"
+     if locals.activeTab == "PolicyMakers"
             include ./includes/policymakers/policymakersScripts.jade
-     else if locals.activeTab == "jobSeekers"
+     else if locals.activeTab == "JobSeekers"
             include ./includes/jobseekers/jobseekersScripts.jade

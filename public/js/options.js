@@ -76,7 +76,6 @@ function loadBasicStats() {
  * @param {string} dashbaordType - The name of the dashboard.
  */ 
 function searchOptions(dashboardType) {
-    console.log("search function");
     // get skill and location query
     var querySkills = $("#skill-search").val();
     var queryLocation = $("#location-search").val();
@@ -146,18 +145,17 @@ function searchOptions(dashboardType) {
             }
         });
         
-        
         // for Job Seekers, query the lectures 
-        if (dashboardType == "Job Seekers") {
+        if (dashboardType == "JobSeekers") {
             //fill suggested materials table
             var find = '_';
             var re = new RegExp(find, 'g');
-            var dataStringSuggested = encodeURI(dataString.replace(re, ''));
+            var dataStringSuggested = encodeURI(queryString.replace(re, ''));
             
             $.ajax({
                 type: "GET",
                 url: "http://pankretas.ijs.si:8042/search_lectures_by_keyword?" + dataStringSuggested,
-                data: dataString,
+                data: queryString,
                 dataType: 'jsonp',
                 cache: false,
                 success: function (json) {
@@ -185,7 +183,7 @@ function searchOptions(dashboardType) {
                     osuggestedtable.destroy();
                     
                     $('#suggestedMaterials').DataTable({
-                        /*scrollY:        "300px",
+                        /*scrollY:       "300px",
                          scrollCollapse: true,
                          paging:         false,
                          */
