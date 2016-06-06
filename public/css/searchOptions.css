@@ -62,6 +62,11 @@
     width: 100%;
 }
 
+.bootstrap-tagsinput input {
+    width: 100% !important;
+}
+
+
 #showOptions {
     margin-left: 5px;
 }
