@@ -40,8 +40,6 @@ html(lang="en" xmlns="http://www.w3.org/1999/xhtm")
                         span.icon-bar
                         span.icon-bar
                         span.icon-bar
-                    
-                    a(class="navbar-brand", href="/") EDSA Dashboard
 
                 //- Collect the nav links, forms, and other content for toggling
                 #dashboard-options.collapse.navbar-collapse
@@ -65,9 +63,9 @@ html(lang="en" xmlns="http://www.w3.org/1999/xhtm")
         .row.main-title
             .col-lg-12
                 if locals.activeTab == "PolicyMakers"
-                    h2.center EDSA DASHBOARD | POLICY MAKERS
+                    h2.center POLICY MAKERS VIEW
                 else if locals.activeTab == "JobSeekers"
-                    h2.center EDSA DASHBOARD | JOB SEEKERS
+                    h2.center JOB SEEKERS VIEW
         .row.search-options
             .col-lg-12
                 //- Search options
