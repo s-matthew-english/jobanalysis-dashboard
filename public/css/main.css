@@ -25,6 +25,13 @@ body {
     border-bottom-width: 2px;
     border-bottom-color: #730000;
 }
+    .navbar-toggle {
+        background-color: #730100 !important;
+    }
+    .navbar-toggle .icon-bar {
+        background-color: #FFFFFF !important;
+    }
+
     .navbar a {
         color: #111717 !important;
         font-weight: 500;
@@ -34,6 +41,13 @@ body {
         -ms-transition:     all 0.2s ease-out;
         transition:         all 0.2s ease-out;
     }
+
+    @media screen and (max-width:767px) {
+        .navbar a {
+            padding-left: 40px !important;
+        }
+    }
+
     .navbar a:hover {
         background-color: #d2d8e0 !important;
         
@@ -43,6 +57,12 @@ body {
         background-color: #730100 !important;
         color:            #FFFFFF !important;
     }
+
+
+.nav.navbar-nav {
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
 
 .footer {
     position: relative;
