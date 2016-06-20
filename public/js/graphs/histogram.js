@@ -457,7 +457,7 @@ function ContinuousHistogram(_options) {
         if (options.zoomable) {
             zoom = d3.behavior.zoom()
                               .x(x)
-                              .scaleExtent([1, 100])
+                              .scaleExtent([1, 80])
                               .on("zoom", onZoom);
             svg.call(zoom);
         }
@@ -562,6 +562,8 @@ function ContinuousHistogram(_options) {
         
         // if histogram is zoomable            
         if (options.zoomable) {
+            zoom.translate([0, 0]);
+            zoom.scale(1);
             zoom.x(x);
         }
         
@@ -621,6 +623,9 @@ function ContinuousHistogram(_options) {
 
         var firstDate = dataset.data[0][dataKey], 
             lastDate = dataset.data[dataset.data.length - 1][dataKey];
+        console.log("First Date", firstDate)
+        console.log("Last Date", lastDate)
+        console.log("Bar Width", histogramWidth / dayDiff(firstDate, lastDate))
         return histogramWidth / dayDiff(firstDate, lastDate);
     }
     
