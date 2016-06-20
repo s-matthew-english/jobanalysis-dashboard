@@ -408,7 +408,7 @@ function EuropeMap(_options) {
         
         // get the coordinates data of the points
         var pointsRaw = selectedJobs.map(function (d, i) {
-            var point = projection(d.location);
+            var point = projection(d.locationCoordinates);
             point.push(d.id);
             return point;
         });
@@ -632,7 +632,7 @@ function EuropeMap(_options) {
             return JobIds.indexOf(job.id) != -1;
         });
         // get the skillset
-        var skillset = getSkillset(Jobs);
+        var skillset = getDataset(Jobs, "skillset");
         
         // set the description
         text += "<h4>Cluster data</h4><div style='text-align:justify;'>";
@@ -670,13 +670,20 @@ function EuropeMap(_options) {
         var Jobs = selectedJobs.filter(function (job) {
             return JobIds.indexOf(job.id) != -1;
         });
-        console.log(Jobs)
         // get the skillset
-        var skillset = getSkillset(Jobs);
+        var skillset = getDataset(Jobs, "skillset");
         // the upper bound for # of skills
         var NumOfSkillSet = skillset.length > 5 ? 5 : skillset.length;
 
+        var cities = getLocation(Jobs, "location_city");
+        var NumOfCities = cities.length > 5 ? 5 : cities.length;
+        
+        text += "<b>Top 5 Locations:</b><ol>";
         // set the description
+        for (var CityN = 0; CityN < NumOfCities; CityN++) {
+            text += "<li>" + cities[CityN].name + " (" + cities[CityN].count + ")" + "</li>";
+        }
+        text += "</ol>"; 
         text += "<b>Number of Jobs:</b> " + NumOfJobs + "</br>";
         text += "<b>Number of Skills:</b> " + skillset.length + "</br>";
         text += "<b>Top 5 Skills:</b><ol>";
@@ -696,28 +703,46 @@ function EuropeMap(_options) {
      * @returns The array of Object, containing the name of the skill
      * and it's count number.
      */ 
-    function getSkillset(Jobs) {
-        var skills = [];
-        var knownSkills = {}; var idx = 0;
+    function getDataset(Jobs, dataField) {
+        var data = [];
+        var knownData = {}; var idx = 0;
         // go through all jobs
         for (var JobN = 0; JobN < Jobs.length; JobN++) {
-            var jobSkillset = Jobs[JobN].skillset;
+            var jobDataset = Jobs[JobN][dataField];
             // go through all skills needed for the job
-            for (var SkillN = 0; SkillN < jobSkillset.length; SkillN++) {
-                var skillName = jobSkillset[SkillN];
-                if (knownSkills[skillName] == null) {
-                    skills.push({ name: skillName, count: 1 });
-                    knownSkills[skillName] = idx++;
+            for (var DataN = 0; DataN < jobDataset.length; DataN++) {
+                var dataName = jobDataset[DataN];
+                if (knownData[dataName] == null) {
+                    data.push({ name: dataName, count: 1 });
+                    knownData[dataName] = idx++;
                 } else {
-                    skills[knownSkills[skillName]].count += 1;
+                    data[knownData[dataName]].count += 1;
                 }
             }
         }
         // sort in descending order (based on count)
         function compare(a, b) { return b.count - a.count; }
-        skills.sort(compare);
-        return skills;
+        data.sort(compare);
+        return data;
     }
+    
+    function getLocation(Jobs, dataField) {
+        var data = [];
+        var knownData = {}; var idx = 0;
+        for (var JobN = 0; JobN < Jobs.length; JobN++) {
+            var location = Jobs[JobN][dataField];
+            if (knownData[location] == null) {
+                data.push({ name: location, count: 1 });
+                knownData[location] = idx++;
+            } else {
+                data[knownData[location]].count += 1;
+            }
+        }
+        // sort in descending order (based on count)
+        function compare(a, b) { return b.count - a.count; }
+        data.sort(compare);
+        return data;
+    } 
 
     //-------------------------------------------------
     // Get functions

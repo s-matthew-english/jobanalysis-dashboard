@@ -183,11 +183,7 @@ function searchOptions(dashboardType) {
                     osuggestedtable.destroy();
                     
                     $('#suggestedMaterials').DataTable({
-                        /*scrollY:       "300px",
-                         scrollCollapse: true,
-                         paging:         false,
-                         */
-                         data: dataSet,
+                        data: dataSet,
                         columns: [
                             { title: "Lecture Title" },                            
                             { title: "Lecture Description" },

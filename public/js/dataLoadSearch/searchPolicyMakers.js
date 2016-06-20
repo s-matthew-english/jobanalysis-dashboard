@@ -26,7 +26,14 @@ function searchSuccess(json) {
         var job = jobResults[JobN];
         var timestamp = Date.parse(job.datePosted);
         var location = [job.long, job.lat];
-        jobsAllInfo.push({ location: location, timestamp: timestamp, skillset: job.skills, id: job.jobPostingUri });
+        jobsAllInfo.push({
+            locationCoordinates: location,
+            location_city: job.locationName,
+            location_country: job.parentName,
+            timestamp: timestamp,
+            skillset: job.skills,
+            id: job.jobPostingUri
+        });
     }
     
     

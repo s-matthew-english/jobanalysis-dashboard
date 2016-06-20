@@ -328,7 +328,13 @@ function DiscreteHistogram(_options) {
 
 
 
-
+/**
+ * Constructs a discrete histogram.
+ * @param {Object} obj - The construction parameters.
+ * @param {string} obj.histogramContainer - The container identifier.
+ * @param {string} [obj.histogramName] - The histogram identifier. Can specify the style only for this histogram.
+ * @param {boolean} [obj.zoomable = false] - If the histogram is zoomable.
+ */ 
 function ContinuousHistogram(_options) {
     /**
      * The options used at histogram initialization.
