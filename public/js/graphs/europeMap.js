@@ -24,7 +24,7 @@ function EuropeMap(_options) {
         timelineContainer: null,
         infoContainer:     null,
         tooltipType: "Policy Makers",
-        gridSize: { min: 20, max: 40 },
+        gridSize: { min: 10, max: 40 },
         margin: { top: 20, left: 20, bottom: 20, right: 20 }
     }, _options);
     
@@ -453,9 +453,9 @@ function EuropeMap(_options) {
         // set the radius scale 
         radiusScale = d3.scale.log()
                         .domain([
-                            1,
+                            d3.min(clusterPoints, function (d) { return d[2].length; }),
                             d3.max(clusterPoints, function (d) { return d[2].length; })
-                        ]).rangeRound([2, 6]);
+                        ]).rangeRound([2, 4]);
         
         
         // add the clusters on the map
@@ -678,6 +678,7 @@ function EuropeMap(_options) {
         var cities = getLocation(Jobs, "location_city");
         var NumOfCities = cities.length > 5 ? 5 : cities.length;
         
+        text += "<h4>Cluster Data</h4>";
         text += "<b>Top 5 Locations:</b><ol>";
         // set the description
         for (var CityN = 0; CityN < NumOfCities; CityN++) {

@@ -22,8 +22,12 @@ function searchSuccess(json) {
     //{ location: [ number, number ], timestamp: number, title: string, skillset: [string, string, string], id: string  }   
     var jobsAllInfo = [];
     var jobResults = json.jp_result;
+    console.log(jobResults)
     for (var JobN = 0; JobN < jobResults.length; JobN++) {
         var job = jobResults[JobN];
+        if (!job.long || !job.lat || job.locationName == "Northern Europe") {
+            continue;
+        }
         var timestamp = Date.parse(job.datePosted);
         var location = [job.long, job.lat];
         jobsAllInfo.push({
