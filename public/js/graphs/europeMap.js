@@ -633,18 +633,25 @@ function EuropeMap(_options) {
         });
         // get the skillset
         var skillset = getDataset(Jobs, "skillset");
-        
+        var cities = getLocation(Jobs, "location_city");
+
         // set the description
-        text += "<h4>Cluster data</h4><div style='text-align:justify;'>";
-        text += "<b>Number of Jobs:</b> " + NumOfJobs + "</br>";
-        text += "<b>Number of Skills:</b> " + skillset.length + "</br>";
-        text += "<b>Skill set:</b><ol>";
+        text += "<h4>Cluster data</h4><div style='text-align:justify;'><dl>";
+        text += "<dt>Number of Jobs:</dt> <dd>" + NumOfJobs + "</dd>";
+        text += "<dt>Number of Skills:</dt> <dd>" + skillset.length + "</dd>";
+        text += "<dt>Locations:</dt> <dd>";
+        for (var LocN = 0; LocN < cities.length; LocN++) {
+            text += "<a onclick=\"queryLocation(\'" + cities[LocN].name + "\')\">" +cities[LocN].name + "</a>" + " (" + cities[LocN].count + ")"
+            if (LocN != cities.length - 1) { text += ", " }
+            else { text += "</dd>"; }
+        }
+        text += "<dt>Skill set:</dt><dd>";
         for (var SkillN = 0; SkillN < skillset.length; SkillN++) {
-            text += "<a onclick=\"queryMe(\'"+ skillset[SkillN].name +"\')\">"+ skillset[SkillN].name + "</a>"+ " (" + skillset[SkillN].count + ")"
-            if (SkillN != skillset.length - 1) { text += ", " };
+            text += "<a onclick=\"querySkill(\'"+ skillset[SkillN].name +"\')\">"+ skillset[SkillN].name + "</a>"+ " (" + skillset[SkillN].count + ")"
+            if (SkillN != skillset.length - 1) { text += ", " }
         }
         
-        text += "</ol></div></br>";
+        text += "</dd></dl></div></br>";
         return text;  
     }
 

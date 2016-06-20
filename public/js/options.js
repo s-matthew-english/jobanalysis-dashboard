@@ -79,7 +79,6 @@ function searchOptions(dashboardType) {
     // get skill and location query
     var querySkills = $("#skill-search").val();
     var queryLocation = $("#location-search").val();
-    
     var parentCountries = ["United Kingdom", "France"];
     
     var findQuery = 'QUERY';
@@ -198,18 +197,18 @@ function searchOptions(dashboardType) {
         }
     }
     
-    else if ((locationArray.length > 0) && (parentCountries.indexOf(locationArray[0]) > -1)) {
-        $.ajax({
-            type: "GET",
-            url: "http://pankretas.ijs.si:8040/search_jobs_by_parent_country?" + "q=" + locationArray[0],
-            dataType: 'jsonp',
-            cache: false,
-            success: function (json) {
-                searchSuccess(json);
-            }
-        });
+    //else if ((locationArray.length > 0) && (parentCountries.indexOf(locationArray[0]) > -1)) {
+    //    $.ajax({
+    //        type: "GET",
+    //        url: "http://pankretas.ijs.si:8040/search_jobs_by_parent_country?" + "q=" + locationArray[0],
+    //        dataType: 'jsonp',
+    //        cache: false,
+    //        success: function (json) {
+    //            searchSuccess(json);
+    //        }
+    //    });
 
-    }
+    //}
 
     else if (locationArray.length > 0) {
         $.ajax({

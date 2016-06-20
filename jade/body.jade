@@ -138,6 +138,21 @@ html(lang="en" xmlns="http://www.w3.org/1999/xhtm")
         else if locals.activeTab == "JobSeekers"
             include ./includes/jobseekers/jobseekers.jade
 
+    //- Modal Button and content
+    button#error-trigger.btn.btn-primary.hidden(type="button", data-toggle="modal", data-target="#error-modal")
+
+    div#error-modal.modal.fade(role="dialog")
+        div.modal-dialog
+            //- Modal content
+            div.modal-content
+                div.modal-header
+                    button.close(type="button", data-dismiss="modal") &times;
+                    h4.modal-title Query not found
+
+                div.modal-body Using the current skill and/or location searchwords returns an empty query. Try using different searchwords.
+
+                div.modal-footer
+                    button.btn.btn-default(type="button", data-dismiss="modal") Close
 
     //- Page Footer - EDSA information
     footer.footer(role="contentinfo")

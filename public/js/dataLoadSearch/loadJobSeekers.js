@@ -146,12 +146,12 @@ function LoadBasicData() {
 function setInfoContainer(jobSkillName, jobSkillFreq) {
     var text = "";
     // set the description
-    text += "<b>Top 50 skills:</b><div style='text-align:justify;'><ol>";
+    text += "<h4>Top 50 skills:</h4><div style='text-align:justify;'>";
     for (var SkillN = 0; SkillN < jobSkillName.length; SkillN++) {
-        text += "<a onclick=\"queryMe(\'" + jobSkillName[SkillN] + "\')\">" + jobSkillName[SkillN] + "</a>" + " (" + jobSkillFreq[SkillN] + ")"
+        text += "<a onclick=\"querySkill(\'" + jobSkillName[SkillN] + "\')\">" + jobSkillName[SkillN] + "</a>" + " (" + jobSkillFreq[SkillN] + ")"
         if (SkillN != jobSkillName.length - 1) { text += ", " };
     }
-    text += "</ol></div></br>";
+    text += "</div></br>";
     $("#info-container").html(text);
 }
 

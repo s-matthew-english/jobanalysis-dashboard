@@ -7,11 +7,19 @@
 /**
  * Query the selected skill. Used in the info-container.
  */ 
-function queryMe(skillName) {
+function querySkill(skillName) {
     $("#skill-search").tagsinput("removeAll");
     $("#location-search").tagsinput("removeAll");
     
     $("#skill-search").tagsinput("add", { name: skillName });
+    searchOptions("PolicyMakers");
+}
+
+function queryLocation(locationName) {
+    $("#skill-search").tagsinput("removeAll");
+    $("#location-search").tagsinput("removeAll");
+    
+    $("#location-search").tagsinput("add", { name: locationName });
     searchOptions("PolicyMakers");
 }
 
@@ -20,8 +28,17 @@ function queryMe(skillName) {
  */ 
 function searchSuccess(json) {
     //{ location: [ number, number ], timestamp: number, title: string, skillset: [string, string, string], id: string  }   
-    var jobsAllInfo = [];
     var jobResults = json.jp_result;
+    if (jobResults.length == 0) {
+        console.log(jobResults)
+        console.log("No data found!");
+        $("#error-trigger").trigger("click");
+        $("#map-load-container").removeClass("loading");
+
+        return;
+    }
+    
+    var jobsAllInfo = [];
     for (var JobN = 0; JobN < jobResults.length; JobN++) {
         var job = jobResults[JobN];
         if (!job.long || !job.lat || job.locationName == "Northern Europe") {
