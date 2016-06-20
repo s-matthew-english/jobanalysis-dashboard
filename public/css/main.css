@@ -16,6 +16,10 @@ body {
     padding-bottom: 150px;
 }
 
+.navigation {
+    padding: 0px;
+}
+
 .navbar {
     background-color: #FFFFFF;
     border-bottom-width: 2px;
