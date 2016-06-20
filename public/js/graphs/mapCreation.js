@@ -9,13 +9,3 @@ var europe = new EuropeMap({
     infoContainer: "#info-container"
 });
 europe.DrawMap();
-
-// set the resize functionality
-var resizeTimerMap;
-$(window).resize(function () {
-    clearTimeout(resizeTimerMap);
-    resizeTimerMap = setTimeout(function () {
-        europe.redraw();
-    }, 400);
-   
-})

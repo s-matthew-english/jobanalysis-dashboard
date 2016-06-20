@@ -670,6 +670,7 @@ function EuropeMap(_options) {
         var Jobs = selectedJobs.filter(function (job) {
             return JobIds.indexOf(job.id) != -1;
         });
+        console.log(Jobs)
         // get the skillset
         var skillset = getSkillset(Jobs);
         // the upper bound for # of skills
@@ -731,6 +732,11 @@ function EuropeMap(_options) {
         var countryIds = activeCountries.map(function (obj) { return Alpha3ToFull[obj.id]; });
         return countryIds;
     }
+    
+    this.getPointsData = function () {
+        return allJobs;
+    }
+
 
     //-------------------------------------------------
     // Set functions
