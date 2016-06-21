@@ -227,7 +227,7 @@ function EuropeMap(_options) {
         //-------------------------------------------------
 
         // create the svg map container
-        var svg = d3.select(options.mapContainer).append("svg:svg")
+        var svg = d3.select(options.mapContainer).append("svg")
                 .attr("class", "svg-map")
                 .attr("width", mapTotalWidth)
                 .attr("height", mapTotalHeight)
@@ -632,20 +632,22 @@ function EuropeMap(_options) {
             return JobIds.indexOf(job.id) != -1;
         });
         // get the skillset
-        var skillset = getDataset(Jobs, "skillset");
+        var skillset = getSkills(Jobs, "skillset");
         var cities = getLocation(Jobs, "location_city");
+        var country = getLocation(Jobs, "location_country")[0];
 
         // set the description
         text += "<h4>Cluster data</h4><div style='text-align:justify;'><dl>";
-        text += "<dt>Number of Jobs:</dt> <dd>" + NumOfJobs + "</dd>";
-        text += "<dt>Number of Skills:</dt> <dd>" + skillset.length + "</dd>";
-        text += "<dt>Locations:</dt> <dd>";
+        text += "<dt>Number of Jobs</dt> <dd>" + NumOfJobs + "</dd>";
+        text += "<dt>Number of Skills</dt> <dd>" + skillset.length + "</dd>";
+        text += "<dt>Country</dt> <dd>" + country.name + "</dd>";
+        text += "<dt>Locations</dt> <dd>";
         for (var LocN = 0; LocN < cities.length; LocN++) {
             text += "<a onclick=\"queryLocation(\'" + cities[LocN].name + "\')\">" +cities[LocN].name + "</a>" + " (" + cities[LocN].count + ")"
             if (LocN != cities.length - 1) { text += ", " }
             else { text += "</dd>"; }
         }
-        text += "<dt>Skill set:</dt><dd>";
+        text += "<dt>Skill set</dt><dd>";
         for (var SkillN = 0; SkillN < skillset.length; SkillN++) {
             text += "<a onclick=\"querySkill(\'"+ skillset[SkillN].name +"\')\">"+ skillset[SkillN].name + "</a>"+ " (" + skillset[SkillN].count + ")"
             if (SkillN != skillset.length - 1) { text += ", " }
@@ -678,29 +680,32 @@ function EuropeMap(_options) {
             return JobIds.indexOf(job.id) != -1;
         });
         // get the skillset
-        var skillset = getDataset(Jobs, "skillset");
+        var skillset = getSkills(Jobs, "skillset");
         // the upper bound for # of skills
-        var NumOfSkillSet = skillset.length > 5 ? 5 : skillset.length;
+        var NumOfSkills = skillset.length > 10 ? 10 : skillset.length;
 
         var cities = getLocation(Jobs, "location_city");
-        var NumOfCities = cities.length > 5 ? 5 : cities.length;
+        var NumOfCities = cities.length > 10 ? 10 : cities.length;
+        var country = getLocation(Jobs, "location_country")[0];
         
-        text += "<h4>Cluster Data</h4>";
-        text += "<b>Top 5 Locations:</b><ol>";
-        // set the description
-        for (var CityN = 0; CityN < NumOfCities; CityN++) {
-            text += "<li>" + cities[CityN].name + " (" + cities[CityN].count + ")" + "</li>";
-        }
-        text += "</ol>"; 
-        text += "<b>Number of Jobs:</b> " + NumOfJobs + "</br>";
-        text += "<b>Number of Skills:</b> " + skillset.length + "</br>";
-        text += "<b>Top 5 Skills:</b><ol>";
-        for (var SkillN = 0; SkillN < NumOfSkillSet; SkillN++) {
-            text += "<li>"+ skillset[SkillN].name + " (" + skillset[SkillN].count + ")" +"</li>";
-        }
 
-        text += "</ol>";    
-        
+        text += "<h4>Cluster Data</h4> <dl>";
+        text += "<dt>Country</dt> <dd>" + country.name + "</dd>";
+        text += "<dt>Top 10 Locations</dt> <dd>";
+        for (var CityN = 0; CityN < NumOfCities; CityN++) {
+            text += cities[CityN].name + " (" + cities[CityN].count + ")";
+            if (CityN != NumOfCities - 1) { text += ", "; }
+            else { text += "</dd>"; }
+        }
+        text += "<dt>Number of Jobs</dt> <dd>" + NumOfJobs + "</dd>";
+        text += "<dt>Number of Skills</dt> <dd>" + skillset.length + "</dd>";
+        text += "<dt>Top 10 Skills</dt> <dd>";
+        for (var SkillN = 0; SkillN < NumOfSkills; SkillN++) {
+            text += skillset[SkillN].name + " (" + skillset[SkillN].count + ")";
+            if (SkillN != NumOfSkills - 1) { text += ", "; }
+            else { text += "</dd>"; }
+        }
+        text += "</dl>";        
         return text;
     }
 
@@ -711,7 +716,7 @@ function EuropeMap(_options) {
      * @returns The array of Object, containing the name of the skill
      * and it's count number.
      */ 
-    function getDataset(Jobs, dataField) {
+    function getSkills(Jobs, dataField) {
         var data = [];
         var knownData = {}; var idx = 0;
         // go through all jobs

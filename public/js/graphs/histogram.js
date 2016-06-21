@@ -623,9 +623,6 @@ function ContinuousHistogram(_options) {
 
         var firstDate = dataset.data[0][dataKey], 
             lastDate = dataset.data[dataset.data.length - 1][dataKey];
-        console.log("First Date", firstDate)
-        console.log("Last Date", lastDate)
-        console.log("Bar Width", histogramWidth / dayDiff(firstDate, lastDate))
         return histogramWidth / dayDiff(firstDate, lastDate);
     }
     
