@@ -24,7 +24,7 @@ function EuropeMap(_options) {
         timelineContainer: null,
         infoContainer:     null,
         tooltipType: "Policy Makers",
-        gridSize: { min: 10, max: 40 },
+        gridSize: { min: 8, max: 40 },
         margin: { top: 20, left: 20, bottom: 20, right: 20 }
     }, _options);
     
@@ -448,12 +448,13 @@ function EuropeMap(_options) {
                 }
             }
         }
+        console.log(clusterPoints)
         // set the radius scale 
         radiusScale = d3.scale.log()
                         .domain([
                             d3.min(clusterPoints, function (d) { return d[2].length; }),
                             d3.max(clusterPoints, function (d) { return d[2].length; })
-                        ]).rangeRound([2, 4]);
+                        ]).rangeRound([ 5 / zoom.scale(), 15 / zoom.scale() + 1]);
         
         
         // add the clusters on the map
