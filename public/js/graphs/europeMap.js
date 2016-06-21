@@ -414,13 +414,13 @@ function EuropeMap(_options) {
         });
         
         // create the quadtree used for the clustering
-        quadtree = d3.geom.quadtree()(pointsRaw);
-        
+        quadtree = d3.quadtree(pointsRaw);
+
         // Find the nodes within the specified rectangle
         function search(quadtree, x0, y0, x3, y3) {
             var validData = [];
             quadtree.visit(function (node, x1, y1, x2, y2) {
-                var p = node.point;
+                var p = node.data;
                 if (p) {
                     p.selected = (p[0] >= x0) && (p[0] < x3) && (p[1] >= y0) && (p[1] < y3);
                     if (p.selected) {
@@ -435,7 +435,6 @@ function EuropeMap(_options) {
         for (var x = 0; x <= width; x += gridScale(scale)) {
             for (var y = 0; y <= height; y += gridScale(scale)) {
                 var searched = search(quadtree, x, y, x + gridScale(scale), y + gridScale(scale));
-                
                 var centerPoint = searched.reduce(function (prev, current) {
                     return [prev[0] + current[0], prev[1] + current[1]];
                 }, [0, 0]);
@@ -449,7 +448,6 @@ function EuropeMap(_options) {
                 }
             }
         }
-        
         // set the radius scale 
         radiusScale = d3.scale.log()
                         .domain([
