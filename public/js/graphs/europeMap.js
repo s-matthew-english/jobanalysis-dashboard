@@ -448,7 +448,6 @@ function EuropeMap(_options) {
                 }
             }
         }
-        console.log(clusterPoints)
         // set the radius scale 
         radiusScale = d3.scale.log()
                         .domain([
