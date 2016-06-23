@@ -147,9 +147,9 @@ function searchSuccess(json) {
         var datePosted = jobPost.datePosted.substr(0, 10);
         jobPostInfo[1] = datePosted;
         jobPostInfo[2] = jobPost.hiringOrganization;
-        jobPostInfo[3] = jobPost.skillsTxt;
-        jobPostInfo[4] = jobPost.locationName;
-        jobPostInfo[5] = jobPost.parentName;
+        jobPostInfo[3] = jobPost.skillsTxt ? jobPost.skillsTxt : "";
+        jobPostInfo[4] = location.locName ? location.locName : "";
+        jobPostInfo[5] = location.parentCountryName ? location.parentCountryName : "";
         
         dataSet.push(jobPostInfo);
     }
