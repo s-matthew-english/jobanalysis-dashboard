@@ -19,7 +19,7 @@ function LoadInitialData() {
 function LoadBasicData() {
     $.ajax({
         type: "GET",
-        url: "http://pankretas.ijs.si:8040/firstJP",
+        url: "http://pankretas.ijs.si:8044/firstJP",
         dataType: 'jsonp',
         cache: false,
         success: function (json) {
@@ -60,7 +60,7 @@ function LoadBasicData() {
                 else return 0;
             }
             dataSet.sort(sortByDate);
-            console.log(dataSet.length)
+
             for (var JobN = 0; JobN < dataSet.length; JobN++) {
                 var datePosted   = dataSet[JobN][1].substr(0, 10);
                 dataSet[JobN][1] = datePosted;
@@ -122,7 +122,6 @@ function LoadBasicData() {
     
     function fillSuggestedTable(json) {
         var un_json = JSON.parse(unescape(json.lec_result));
-        console.log(un_json.length);
         var sLimit = 100;
         if (un_json.length < sLimit)
             sLimit = un_json.length;
@@ -153,10 +152,7 @@ function LoadBasicData() {
                 { title: "Date" }
             ],
             pageLength: 2,
-            autoWidth: false,           
-            fnDrawCallback: function (oSettings) {
-                console.log('DataTables has redrawn the table');
-            }
+            autoWidth: false
         });
     };
 }
