@@ -40,9 +40,9 @@ function LoadBasicData() {
                 jobTitle = jobTitle.replace(/<\/strong>/g, '');
                 jobTitle = jobTitle.replace(/&lt;\/strong&gt;/g, '');
                 
-                jobPostInfo[0] = "<a href=\"" + jobPost.url + "\">" + jobTitle + "</a>";
+                jobPostInfo[0] = jobTitle;
                 var datePosted = jobPost.datePosted.substr(0, 10);
-                jobPostInfo[1] = jobPost.datePosted;
+                jobPostInfo[1] = datePosted;
                 jobPostInfo[2] = jobPost.hiringOrganization;
                 jobPostInfo[3] = jobPost.skillsTxt == null ? "" : jobPost.skillsTxt;
                 jobPostInfo[4] = location.locName ? location.locName : "";
