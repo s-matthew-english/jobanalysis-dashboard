@@ -41,7 +41,8 @@ function LoadBasicData() {
                 jobTitle = jobTitle.replace(/&lt;\/strong&gt;/g, '');
                 
                 jobPostInfo[0] = jobTitle;
-                jobPostInfo[1] = jobPost.datePosted;
+                var datePosted = jobPost.datePosted.substr(0, 10);
+                jobPostInfo[1] = datePosted;
                 jobPostInfo[2] = jobPost.hiringOrganization;
                 jobPostInfo[3] = jobPost.skillsTxt;
                 jobPostInfo[4] = location.locName ? location.locName : "";
@@ -49,7 +50,22 @@ function LoadBasicData() {
                 
                 dataSet.push(jobPostInfo);
             }
-            
+            function sortByDate(job1, job2) {
+                var date1 = new Date(job1[1]);
+                var date2 = new Date(job2[1]);
+                var miliseconds1 = date1.getTime();
+                var miliseconds2 = date2.getTime();
+                if (miliseconds1 > miliseconds2) return 1;
+                else if (miliseconds1 < miliseconds2) return -1;
+                else return 0;
+            }
+            dataSet.sort(sortByDate);
+            console.log(dataSet.length)
+            for (var JobN = 0; JobN < dataSet.length; JobN++) {
+                var datePosted   = dataSet[JobN][1].substr(0, 10);
+                dataSet[JobN][1] = datePosted;
+            }
+
             var jobDataTable = $('#top-jobs').DataTable();
             jobDataTable.destroy();
             $('#top-jobs').DataTable({
@@ -63,6 +79,7 @@ function LoadBasicData() {
                     { title: "Country" }
                 ],
                 pageLength: 5,
+                order: [[1, "desc"]],
                 autoWidth: false
             });
         }
@@ -118,7 +135,8 @@ function LoadBasicData() {
             lecinfo[0] = lecture.lectureTitle;
             lecinfo[1] = lecture.lectureDesc;
             lecinfo[2] = "<a href=\"http://videolectures.net/" + lecture.url + "\">" + lecture.url + "</a>";
-            lecinfo[3] = lecture.recorded;
+            var datePosted = lecture.recorded.substr(0, 10);
+            lecinfo[3] = datePosted;
             
             dataSet[s] = lecinfo;
         }

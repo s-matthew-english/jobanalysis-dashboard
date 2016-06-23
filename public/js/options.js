@@ -173,15 +173,16 @@ function searchOptions(dashboardType) {
                         lecinfo[0] = lecture.lectureTitle;
                         lecinfo[1] = lecture.lectureDesc;
                         lecinfo[2] = "<a href=\"http://videolectures.net/" + lecture.url + "\">" + lecture.url + "</a>";
-                        lecinfo[3] = lecture.recorded;
+                        var datePosted = lecture.recorded.substr(0, 10);
+                        lecinfo[3] = datePosted;
                         
                         dataSet[s] = lecinfo;
                     }
                     
-                    var osuggestedtable = $('#suggestedMaterials').DataTable();
+                    var osuggestedtable = $('#suggested-materials').DataTable();
                     osuggestedtable.destroy();
                     
-                    $('#suggestedMaterials').DataTable({
+                    $('#suggested-materials').DataTable({
                         data: dataSet,
                         columns: [
                             { title: "Lecture Title" },                            

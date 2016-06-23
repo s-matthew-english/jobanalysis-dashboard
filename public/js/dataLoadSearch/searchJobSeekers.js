@@ -143,8 +143,10 @@ function searchSuccess(json) {
         jobTitle = jobTitle.replace(/&lt;\/strong&gt;/g, '');
 
         var jobPostInfo = [];
+
         jobPostInfo[0] = jobTitle;
-        jobPostInfo[1] = jobPost.datePosted;
+        var datePosted = jobPost.datePosted.substr(0, 10);
+        jobPostInfo[1] = datePosted;
         jobPostInfo[2] = jobPost.hiringOrganization;
         jobPostInfo[3] = jobPost.skillsTxt;
         jobPostInfo[4] = jobPost.locationName;
@@ -164,6 +166,7 @@ function searchSuccess(json) {
             { title: "Country" }
         ],
         pageLength: 5,
+        order: [[1, "desc"]],
         autoWidth: false
     });
 }
