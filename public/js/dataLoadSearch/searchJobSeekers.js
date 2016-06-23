@@ -143,7 +143,7 @@ function searchSuccess(json) {
         jobTitle = jobTitle.replace(/&lt;\/strong&gt;/g, '');
 
         var jobPostInfo = [];
-        jobPostInfo[0] = "<a href=\"" + jobPost.url + "\">" + jobTitle + "</a>";
+        jobPostInfo[0] = jobTitle;
         jobPostInfo[1] = jobPost.datePosted;
         jobPostInfo[2] = jobPost.hiringOrganization;
         jobPostInfo[3] = jobPost.skillsTxt;
