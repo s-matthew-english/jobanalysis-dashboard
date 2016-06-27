@@ -1,9 +1,11 @@
-# JobSearch Dashboard
-The JobSearch Dashboard, created for the EDSA Dashboard. It uses Node.js.
+# JobAnalysis Dashboard
+JobAnalysis is a dashboard that allows the user to analyse the skill trends demanded from an data scientist and to search for active job positions in the European Union. It also recommends the learning material for a specific skill.
+
+It is created for the EDSA Dashboard.
 
 To run the server, the user must first install [Node.js](https://nodejs.org/en/).
 
-###### The sequence for running the server:
+##### The sequence for running the server:
 
 1. run `npm install -g bower`. It will install bower in the global envirnoment.
 2. run `bower install`. It will install all the missing components.
