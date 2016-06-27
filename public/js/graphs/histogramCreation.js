@@ -7,7 +7,6 @@ var dateHistogram = Histogram({
     histogramContainer: "#analytics-chart-jobs-by-dates",
     histogramName:      "date",
     histogramType:      "continuous",
-    zoomable:           true,
     margin: { top: 50, left: 80, bottom: 30, right: 30 }
 });
 

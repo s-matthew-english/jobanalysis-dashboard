@@ -264,7 +264,7 @@ function EuropeMap(_options) {
                      })
                      .attr("id", function (d) { return d.id; })
                      .attr("d", path)
-                     .on('click', function (d) { SelectCountry(d); });
+                     //.on('click', function (d) { SelectCountry(d); });
             
             // set the country label
             mapContainer.selectAll(".country-label")

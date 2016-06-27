@@ -19,9 +19,9 @@
     stroke-width: 0.5px;
 }
 
-    .svg-map .country:hover {
+    /*.svg-map .country:hover {
         fill: #98B071;
-    }
+    }*/
 
     .svg-map .country.notvisible {
         stroke: #777;
@@ -30,10 +30,10 @@
         pointer-events: none;
     }
 
-    .svg-map .country.active,
+    /*.svg-map .country.active,
     .svg-map .country.active:hover {
         fill: #668D3C;
-    }
+    }*/
 
 .svg-map .notvisible {
     fill: none;
