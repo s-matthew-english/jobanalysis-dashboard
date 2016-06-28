@@ -239,7 +239,7 @@ function searchSuccess(json) {
         var jobCount = jobCountries[CountN];
         jobCountriesNameFreq.push({ name: jobCount[0], value: jobCount[1] });
     }
-    
+    $("#analytics-chart-countries-by-frequency").css("height", "400px");
     // create the histogram
     var dataset = { name: "Job Posts By Countries", yAxisName: "Number of jobs", data: jobCountriesNameFreq };
     countriesHistogram.setData(dataset);
