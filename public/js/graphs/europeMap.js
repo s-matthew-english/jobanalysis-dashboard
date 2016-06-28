@@ -233,10 +233,10 @@ function EuropeMap(_options) {
                 .attr("height", mapTotalHeight)
                 .call(zoom)
                 // remove the mousewheel/double click zoom
-                .on("mousewheel.zoom", null)
-                .on("DOMMouseScroll.zoom", null)
-                .on("wheel.zoom", null)
-                .on("dblclick.zoom", null);
+                //.on("mousewheel.zoom", null)
+                //.on("DOMMouseScroll.zoom", null)
+                //.on("wheel.zoom", null)
+                //.on("dblclick.zoom", null);
        var hiddenLayer = svg.append("g")
                 .attr("transform", "translate(" + options.margin.left + ", " + options.margin.top + ")");
 
@@ -327,27 +327,27 @@ function EuropeMap(_options) {
         //-----------------------------------
 
         // position the zoom container
-        $("#zoom-container-map").css({ "left": (mapTotalWidth - 20) + "px" });
+        //$("#zoom-container-map").css({ "left": (mapTotalWidth - 20) + "px" });
         // add the tooltip 
-        $(".glyphicon-zoom-in").tooltip({
-            container: "#map-container",
-            title:     "Enable/disable zooming",
-            placement: "left",
-            trigger:   "hover"
-        });
-        // add the zooming toggle functionality
-        d3.select(".glyphicon-zoom-in").on("click", function () {
-            if (zoomEnableFlag) {
-                svg.on("mousewheel.zoom", null)
-                   .on("wheel.zoom", null);
-            } else {
-                zoom.on("zoom", onZoom).translate(trans).scale(scale);
-                svg.call(zoom);
-            }
-            // change the zoom flag
-            d3.select(this).classed("active", !zoomEnableFlag);
-            zoomEnableFlag = zoomEnableFlag == true ? false : true;
-        });
+        //$(".glyphicon-zoom-in").tooltip({
+        //    container: "#map-container",
+        //    title:     "Enable/disable zooming",
+        //    placement: "left",
+        //    trigger:   "hover"
+        //});
+        //// add the zooming toggle functionality
+        //d3.select(".glyphicon-zoom-in").on("click", function () {
+        //    if (zoomEnableFlag) {
+        //        svg.on("mousewheel.zoom", null)
+        //           .on("wheel.zoom", null);
+        //    } else {
+        //        zoom.on("zoom", onZoom).translate(trans).scale(scale);
+        //        svg.call(zoom);
+        //    }
+        //    // change the zoom flag
+        //    d3.select(this).classed("active", !zoomEnableFlag);
+        //    zoomEnableFlag = zoomEnableFlag == true ? false : true;
+        //});
 
 
         // the zoom behaviour (panning and boundary limits)
@@ -362,7 +362,7 @@ function EuropeMap(_options) {
             zoom.translate(trans);
             
             // show city labels and location
-            if (zoomEnableFlag) {
+            //if (zoomEnableFlag) {
                 if (scale < 2.5) {
                     $(".city").hide();
                     $(".city-label").hide();
@@ -372,10 +372,10 @@ function EuropeMap(_options) {
                     $(".city-label").show();
                     $(".country-label").hide();
                 }
-                if (zoomEnableFlag && sFlag && selectedJobs.length != 0) {
+                if (/*zoomEnableFlag &&*/ sFlag && selectedJobs.length != 0) {
                     createJobClusters();
                 }
-            }
+            //}
         }
     };
 
@@ -453,7 +453,7 @@ function EuropeMap(_options) {
                         .domain([
                             d3.min(clusterPoints, function (d) { return d[2].length; }),
                             d3.max(clusterPoints, function (d) { return d[2].length; })
-                        ]).rangeRound([ 5 / zoom.scale(), 15 / zoom.scale() + 1]);
+                        ]).rangeRound([2, 12 / zoom.scale() + 1]);
         
         
         // add the clusters on the map

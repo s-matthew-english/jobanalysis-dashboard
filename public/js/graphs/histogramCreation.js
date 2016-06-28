@@ -23,3 +23,10 @@ var locationHistogram = Histogram({
     histogramName:      "location",
     margin: { top: 50, left: 70, bottom: 100, right: 30 }
 });
+
+// creates the countries histogram
+var countriesHistogram = Histogram({
+    histogramContainer: "#analytics-chart-countries-by-frequency",
+    histogramName: "countries",
+    margin: { top: 50, left: 70, bottom: 100, right: 30 }
+});

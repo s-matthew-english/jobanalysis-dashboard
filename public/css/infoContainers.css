@@ -73,7 +73,8 @@
 
 #analytics-chart-jobs-by-dates,
 #analytics-chart-skills-by-frequency,
-#analytics-chart-location-by-frequency {
+#analytics-chart-location-by-frequency,
+#analytics-chart-countries-by-frequency {
     height: 400px;
     background-color: #FFFFFF;
 }

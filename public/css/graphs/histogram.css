@@ -60,6 +60,7 @@
   fill: #95A3A4 ;
 }
 
+
 .histogram.histogram-skill .bar {
   fill: #730100;
 }
@@ -76,4 +77,13 @@
 
 .histogram.histogram-location .bar:hover {
   fill: #6B3FA0 ;
+}
+
+
+.histogram.histogram-countries .bar {
+  fill: #E18C1A;
+}
+
+.histogram.histogram-countries .bar:hover {
+  fill: #B16A0C ;
 }

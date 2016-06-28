@@ -158,11 +158,19 @@ function searchSuccess(json) {
     //-------------------------------------------------------
     // Calculates the location frequency histogram
     //-------------------------------------------------------
-
+    
+    function RemoveCountries(array) {
+        var countries = ['Andorra', 'Austria', 'Belgium', 'Bulgaria', 'Cyprus', 'Czech Republic', 'Switzerland', 'Denmark', 'Germany', 'Spain',
+            'Estonia', 'Finland', 'France', 'United Kingdom', 'Greece', 'Hungary', 'Croatia', 'Ireland', 'Italy', 'Lithuania', 'Luxembourg',
+            'Latvia', 'Malta', 'Netherlands', 'Poland', 'Portugal', 'Romania', 'San Marino', 'Ukraine', 'Slovakia', 'Slovenia', 'Czechia'];
+        var countrieless = array.filter(function (job) { return countries.indexOf(job.locationName) == -1; });
+        return countrieless;
+    }
+    var countrilessLocations = RemoveCountries(jobResults);
     // get the location frequency
     var locationFreq = {};
-    for (var j = 0; j < jobResults.length; j++) {
-        var jobLocation = jobResults[j].locationName;
+    for (var j = 0; j < countrilessLocations.length; j++) {
+        var jobLocation = countrilessLocations[j].locationName;
         if (locationFreq.hasOwnProperty(jobLocation)) {
             locationFreq[jobLocation] += 1;
         } else {
@@ -195,4 +203,44 @@ function searchSuccess(json) {
     // create the histogram
     var dataset = { name: "Job Posts By Locations", yAxisName: "Number of jobs", data: jobLocationNameFreq };
     locationHistogram.setData(dataset);
+
+    //-------------------------------------------------------
+    // Calculates the countries frequency histogram
+    //-------------------------------------------------------
+    
+    var nonemptyCountries = jobResults.filter(function (job) { return job.parentName != ""; });
+
+    // get the location frequency
+    var countryFreq = {};
+    for (var j = 0; j < nonemptyCountries.length; j++) {
+        var jobCountry = nonemptyCountries[j].parentName;
+        if (countryFreq.hasOwnProperty(jobCountry)) {
+            countryFreq[jobCountry] += 1;
+        } else {
+            countryFreq[jobCountry] = 1;
+        }
+    }
+    
+    // sort job locations by their frequency
+    var jobCountries = [];
+    for (var key in countryFreq) {
+        jobCountries.push([key, countryFreq[key]]);
+    }
+    jobCountries.sort(function (a, b) { return a[1] < b[1] ? 1 : a[1] > b[1] ? -1 : 0 });
+    
+    var numberOfCountries = jobCountries.length;
+    var jobCountriesNameFreq = [];
+    
+    // the upper bound for location representation
+    var upperBoundCountries = 50;
+    
+    var cLimit = numberOfCountries < upperBoundCountries ? numberOfCountries : upperBoundCountries;
+    for (var CountN = 0; CountN < cLimit; CountN++) {
+        var jobCount = jobCountries[CountN];
+        jobCountriesNameFreq.push({ name: jobCount[0], value: jobCount[1] });
+    }
+    
+    // create the histogram
+    var dataset = { name: "Job Posts By Countries", yAxisName: "Number of jobs", data: jobCountriesNameFreq };
+    countriesHistogram.setData(dataset);
 }

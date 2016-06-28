@@ -45,7 +45,8 @@ function LoadAutocomplete() {
         dataType: 'jsonp',
         cache: false,
         success: function (json) {
-            var locationset = json.locations;
+            var locationset = json.locations.filter(function (loc) { return loc.value != "LocationName"; });
+
             // locations typeahead and tags 
             var locations = new Bloodhound({
                 datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),

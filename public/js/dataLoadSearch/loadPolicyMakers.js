@@ -48,11 +48,20 @@ function LoadBasicData() {
             var LocationArray = json.get_number_of_jobs_by_location_name;
             var jobLocationNameFreq = [];
             
-            var numberOfLocations = LocationArray.length;
+            function RemoveCountries(array) {
+                var countries = ['Andorra', 'Austria', 'Belgium', 'Bulgaria', 'Cyprus', 'Czech Republic', 'Switzerland', 'Denmark', 'Germany', 'Spain',
+                    'Estonia', 'Finland', 'France', 'United Kingdom', 'Greece', 'Hungary', 'Croatia', 'Ireland', 'Italy', 'Lithuania', 'Luxembourg',
+                    'Latvia', 'Malta', 'Netherlands', 'Poland', 'Portugal', 'Romania', 'San Marino', 'Ukraine', 'Slovakia', 'Slovenia', 'Czechia'];
+                var countrieless = array.filter(function (job) { return countries.indexOf(job[0]) == -1; });
+                return countrieless;
+            }
+            var countrilessLocations = RemoveCountries(LocationArray);
+
+            var numberOfLocations = countrilessLocations.length;
             var upperBoundLocation = 50;
             var sLimit = numberOfLocations < upperBoundLocation ? numberOfLocations : upperBoundLocation;
             for (var LocN = 0; LocN < sLimit; LocN++) {
-                var jobLoc = LocationArray[LocN];
+                var jobLoc = countrilessLocations[LocN];
                 jobLocationNameFreq.push({ name: jobLoc[0], value: jobLoc[1] });
             }
             
