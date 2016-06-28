@@ -73,6 +73,38 @@ function LoadBasicData() {
     
     $.ajax({
         type: "GET",
+        url: "http://pankretas.ijs.si:8044/get_jobs_by_countries",
+        dataType: 'jsonp',
+        cache: false,
+        success: function (json) {
+            var jobCountriesNameFreq = [];
+            
+            function SelectCountries(array) {
+                var countries = ['Andorra', 'Austria', 'Belgium', 'Bulgaria', 'Cyprus', 'Czech Republic', 'Switzerland', 'Denmark', 'Germany', 'Spain',
+                    'Estonia', 'Finland', 'France', 'United Kingdom', 'Greece', 'Hungary', 'Croatia', 'Ireland', 'Italy', 'Lithuania', 'Luxembourg',
+                    'Latvia', 'Malta', 'Netherlands', 'Poland', 'Portugal', 'Romania', 'San Marino', 'Ukraine', 'Slovakia', 'Slovenia', 'Czechia'];
+                var selected = array.filter(function (job) { return countries.indexOf(job.country) != -1; });
+                return selected;
+            }
+            var Countries = SelectCountries(json.jp_result);
+            
+            var numberOfCountries = Countries.length;
+            var upperBoundLocation = 50;
+            var sLimit = numberOfCountries < upperBoundLocation ? numberOfCountries : upperBoundLocation;
+            for (var CountN = 0; CountN < sLimit; CountN++) {
+                var jobCount = Countries[CountN];
+                jobCountriesNameFreq.push({ name: jobCount.country, value: jobCount.count });
+            }
+            
+            jobCountriesNameFreq.sort(function (a, b) { return a.value < b.value ? 1 : a.value > b.value ? -1 : 0 });
+            // create the histogram
+            var dataset = { name: "Job Posts By Locations", yAxisName: "Number of jobs", data: jobCountriesNameFreq };
+            countriesHistogram.setData(dataset);
+        }
+    });
+
+    $.ajax({
+        type: "GET",
         url: "http://pankretas.ijs.si:8040/get_number_of_jobs_by_skill",
         dataType: 'jsonp',
         cache: false,
@@ -87,6 +119,7 @@ function LoadBasicData() {
                 var JFPair = jpSkills[SklN];
                 jobSkillNameFreq.push({ name: JFPair[0], value: JFPair[1] });
             }
+
             // create the histogram
             var dataset = { name: "Job Posts By Skills", yAxisName: "Number of jobs", data: jobSkillNameFreq };
             skillHistogram.setData(dataset);
