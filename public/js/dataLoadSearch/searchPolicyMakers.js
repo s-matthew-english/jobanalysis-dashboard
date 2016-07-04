@@ -29,12 +29,11 @@ function queryLocation(locationName) {
 function searchSuccess(json) {
     //{ location: [ number, number ], timestamp: number, title: string, skillset: [string, string, string], id: string  }   
     var jobResults = json.jp_result;
+
     if (jobResults.length == 0) {
         console.log(jobResults)
-        console.log("No data found!");
         $("#error-trigger").trigger("click");
         $("#map-load-container").removeClass("loading");
-
         return;
     }
     
@@ -48,15 +47,28 @@ function searchSuccess(json) {
         var location = [job.long, job.lat];
         jobsAllInfo.push({
             locationCoordinates: location,
-            location_city: job.locationName,
-            location_country: job.parentName,
-            timestamp: timestamp,
-            skillset: job.skills,
-            id: job.jobPostingUri
+            location_city:       job.locationName,
+            location_country:    job.parentName,
+            timestamp:           timestamp,
+            skillset:            job.skills,
+            id:                  job.jobPostingUri
         });
     }
     
+    function arrayObjectDateIndexOf(myArray, searchTerm, property) {
+        for (var i = 0; i < myArray.length; i++) {
+            if (myArray[i][property].getTime() === searchTerm.getTime()) return i;
+        }
+        return -1;
+    }
     
+    function arrayObjectIndexOf(myArray, searchTerm, property) {
+        for (var i = 0; i < myArray.length; i++) {
+            if (myArray[i][property] === searchTerm) return i;
+        }
+        return -1;
+    }
+
     //-------------------------------------------------------
     // Draws the job clusters on the map
     //-------------------------------------------------------
@@ -66,39 +78,59 @@ function searchSuccess(json) {
     
 
     //-------------------------------------------------------
-    // Calculates the number-of-jobs per date histogram
+    // Calculates the number-of-jobs per date chart
     //-------------------------------------------------------
     
-    // get the job dates by frequency
-    var jobsDateFreq = {};
-    for (var JobN = 0; JobN < jobResults.length; JobN++) {
+    var jobDateNameFreq = [];
+    
+    for (var JobN = 0; JobN < jobsAllInfo.length; JobN++) {
+        var jobpost = jobsAllInfo[JobN];
+
         var jobDateFull = new Date(jobResults[JobN].datePosted);
         var jobDateShort = new Date(jobDateFull.getFullYear(), jobDateFull.getMonth(), jobDateFull.getDate());
-        
-        if (jobsDateFreq[jobDateShort] != null) {
-            jobsDateFreq[jobDateShort] += 1;
+
+        var idx = arrayObjectDateIndexOf(jobDateNameFreq, jobDateShort, "date");
+        if (idx > -1) {
+            var jobDatePost = jobDateNameFreq[idx];
+            jobDatePost.value += 1;
+
+            var jobskills = jobpost.skillset;
+            for (var SkillN = 0; SkillN < jobskills.length; SkillN++) {
+                var jobDatePostSkills = jobDatePost.skillset;
+                var skillidx = arrayObjectIndexOf(jobDatePostSkills, jobpost.skillset[SkillN], "name");
+                if (skillidx > -1) {
+                    jobDatePostSkills[skillidx].value += 1;
+                } else {
+                    jobDatePostSkills.push({
+                        name:  jobpost.skillset[SkillN], 
+                        value: 1
+                    });
+                }
+            }
         } else {
-            jobsDateFreq[jobDateShort] = 1;
+            var skills = [];
+            var jobskills = jobpost.skillset;
+            for (var SkillN = 0; SkillN < jobskills.length; SkillN++) {
+                skills.push({
+                    name:  jobskills[SkillN], 
+                    value: 1
+                });
+            }
+            jobDateNameFreq.push({
+                date:     jobDateShort, 
+                value:    1, 
+                skillset: skills
+            });
         }
     }
-    // prepare the time for sorting
-    var dateKeys = [];
-    var dateJPSortedKeys = {};
-    for (var dKey in jobsDateFreq) {
-        var dateKeyJPTime = Date.parse(dKey);
-        dateKeys.push(dateKeyJPTime);
-        dateJPSortedKeys[dateKeyJPTime] = dKey;
-    }
-    dateKeys.sort();
-    
-    // construct the sorted list of lobs and time
-    var jobsByDates = [];
-    var jobDateNameFreq = [];
-    for (var DateN = 0; DateN < dateKeys.length; DateN++) {
-        var dkeyJPT = dateKeys[DateN];
-        var dKey = dateJPSortedKeys[dkeyJPT];
-        jobDateNameFreq.push({ name: new Date(Date.parse(dKey)), value: jobsDateFreq[dKey] });
-        jobsByDates.push([Date.parse(dKey), jobsDateFreq[dKey]]);
+    jobDateNameFreq.sort(function (a, b) { 
+        return a.date.getTime() > b.date.getTime() ? 1 : a.date.getTime() < b.date.getTime() ? -1 : 0;
+    });
+
+    for (var JobN = 0; JobN < jobDateNameFreq.length; JobN++) {
+        jobDateNameFreq[JobN].skillset.sort(function (a, b) {
+            return a.value < b.value ? 1 : a.value > b.value ? -1 : 0;
+        });
     }
 
     var numberOfJobs = jobsAllInfo.length;
@@ -106,9 +138,25 @@ function searchSuccess(json) {
     $('#infoStatJobPosts').html("<b>" + numberOfJobs + "</b>");
     
     // create the histogram
-    var dataset = { name: "Job Posts By Dates", yAxisName: "Number of jobs", data: jobDateNameFreq };
-    dateHistogram.setData(dataset);
+    var dataset = {
+        title: "Job Posts By Dates", 
+        nameX: "date", 
+        nameY: "value", 
+        data:  jobDateNameFreq
+    };
+    dateLineplot.setDataset(dataset);
     
+    dateLineplot.setMouseOverPointCallback(function (d) {
+        var date = d.date.toDateString();
+        var data = d.skillset.slice(0, 10);
+        datePiechart.setDataset({
+            title:     "Top 10 Skills", 
+            subtitle:  date, 
+            nameLabel: "name", 
+            nameValue: "value", 
+            data:      data
+        });
+    })
 
     //-------------------------------------------------------
     // Calculates the skill frequency histogram
@@ -151,10 +199,31 @@ function searchSuccess(json) {
     $('#infoStatSkills').html("<b>" + numberOfSkills + "</b>");
     
     // create the histogram
-    var dataset = { name: "Job Posts By Skills", yAxisName: "Number of jobs", data: jobSkillNameFreq };
+    var dataset = {
+        title:    "Job Posts By Skills", 
+        subtitle: "Top 50", 
+        data:     jobSkillNameFreq
+    };
     skillHistogram.setData(dataset);
-
     
+    // update piechart options
+    datePiechart.setDataset({
+        title:     "Top 10 Skills", 
+        nameLabel: "name", 
+        nameValue: "value", 
+        data:      jobSkillNameFreq.slice(0, 10)
+    });
+
+    dateLineplot.setMouseOutPointCallback(function (d) {
+        var data = jobSkillNameFreq.slice(0, 10);
+        datePiechart.setDataset({
+            title:     "Top 10 Skills", 
+            nameLabel: "name", 
+            nameValue: "value", 
+            data:      data
+        });
+    })
+
     //-------------------------------------------------------
     // Calculates the location frequency histogram
     //-------------------------------------------------------
@@ -189,19 +258,26 @@ function searchSuccess(json) {
     var jobLocationNameFreq = [];
 
     // the upper bound for location representation
-    var upperBoundLocation = 50;
+    var upperBoundLocation = 40;
     
     var lLimit = numberOfLocations < upperBoundLocation ? numberOfLocations : upperBoundLocation;
     for (var LocN = 0; LocN < lLimit; LocN++) {
         var jobLoc = jobLocations[LocN];
-        jobLocationNameFreq.push({ name: jobLoc[0], value: jobLoc[1] });
+        jobLocationNameFreq.push({
+            name:  jobLoc[0], 
+            value: jobLoc[1]
+        });
     }
 
     // update the location statistics
     $('#infoStatLocations').html("<b>" + numberOfLocations + "</b>");
 
     // create the histogram
-    var dataset = { name: "Job Posts By Locations", yAxisName: "Number of jobs", data: jobLocationNameFreq };
+    var dataset = {
+        title:    "Job Posts By Locations", 
+        subtitle: "Top 40", 
+        data:     jobLocationNameFreq
+    };
     locationHistogram.setData(dataset);
 
     //-------------------------------------------------------
@@ -232,15 +308,22 @@ function searchSuccess(json) {
     var jobCountriesNameFreq = [];
     
     // the upper bound for location representation
-    var upperBoundCountries = 50;
+    var upperBoundCountries = 27;
     
     var cLimit = numberOfCountries < upperBoundCountries ? numberOfCountries : upperBoundCountries;
     for (var CountN = 0; CountN < cLimit; CountN++) {
         var jobCount = jobCountries[CountN];
-        jobCountriesNameFreq.push({ name: jobCount[0], value: jobCount[1] });
+        jobCountriesNameFreq.push({
+            name:  jobCount[0], 
+            value: jobCount[1]
+        });
     }
 
     // create the histogram
-    var dataset = { name: "Job Posts By Countries", yAxisName: "Number of jobs", data: jobCountriesNameFreq };
+    var dataset = {
+        title:    "Job Posts By Countries", 
+        subtitle: "EU Countries", 
+        data:     jobCountriesNameFreq
+    };
     countriesHistogram.setData(dataset);
 }

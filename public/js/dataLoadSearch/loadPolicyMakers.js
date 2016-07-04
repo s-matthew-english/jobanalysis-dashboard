@@ -10,7 +10,9 @@ function LoadInitialData() {
         var data = skillUrlToArray(url[1]);
         var input = $("#skill-search");
         for (var skillN = 0; skillN < data.length; skillN++) {
-            input.tagsinput("add", { name: data[skillN] });
+            input.tagsinput("add", {
+                name: data[skillN]
+            });
         }
         searchOptions("PolicyMakers");
     }
@@ -30,12 +32,20 @@ function LoadBasicData() {
             var numberOfDates = DateArray.length;
             for (var DateN = 1; DateN < numberOfDates; DateN++) {
                 var jobDate = DateArray[DateN];
-                jobDateNameFreq.push({ name: new Date(jobDate[0]), value: jobDate[1] });
+                jobDateNameFreq.push({
+                    time:     new Date(jobDate[0]), 
+                    jobCount: jobDate[1]
+                });
             }
             
             // create the histogram
-            var dataset = { name: "Job Posts By Dates", yAxisName: "Number of jobs", data: jobDateNameFreq };
-            dateHistogram.setData(dataset);
+            var dataset = {
+                title: "Job Posts By Dates", 
+                nameX: "time", 
+                nameY: "jobCount", 
+                data:  jobDateNameFreq
+            };
+            dateLineplot.setDataset(dataset);
         }
     });
     
@@ -58,15 +68,22 @@ function LoadBasicData() {
             var countrilessLocations = RemoveCountries(LocationArray);
 
             var numberOfLocations = countrilessLocations.length;
-            var upperBoundLocation = 50;
+            var upperBoundLocation = 40;
             var sLimit = numberOfLocations < upperBoundLocation ? numberOfLocations : upperBoundLocation;
             for (var LocN = 0; LocN < sLimit; LocN++) {
                 var jobLoc = countrilessLocations[LocN];
-                jobLocationNameFreq.push({ name: jobLoc[0], value: jobLoc[1] });
+                jobLocationNameFreq.push({
+                    name:  jobLoc[0], 
+                    value: jobLoc[1]
+                });
             }
             
             // create the histogram
-            var dataset = { name: "Job Posts By Locations", yAxisName: "Number of jobs", data: jobLocationNameFreq };
+            var dataset = {
+                title:    "Job Posts By Locations", 
+                subtitle: "Top 40", 
+                data:     jobLocationNameFreq
+            };
             locationHistogram.setData(dataset);
         }
     });
@@ -89,16 +106,23 @@ function LoadBasicData() {
             var Countries = SelectCountries(json.jp_result);
             
             var numberOfCountries = Countries.length;
-            var upperBoundLocation = 50;
+            var upperBoundLocation = 40;
             var sLimit = numberOfCountries < upperBoundLocation ? numberOfCountries : upperBoundLocation;
             for (var CountN = 0; CountN < sLimit; CountN++) {
                 var jobCount = Countries[CountN];
-                jobCountriesNameFreq.push({ name: jobCount.country, value: jobCount.count });
+                jobCountriesNameFreq.push({
+                    name:  jobCount.country, 
+                    value: jobCount.count
+                });
             }
             
             jobCountriesNameFreq.sort(function (a, b) { return a.value < b.value ? 1 : a.value > b.value ? -1 : 0 });
             // create the histogram
-            var dataset = { name: "Job Posts By Locations", yAxisName: "Number of jobs", data: jobCountriesNameFreq };
+            var dataset = {
+                title:    "Job Posts By Countries", 
+                subtitle: "EU Countries", 
+                data:     jobCountriesNameFreq
+            };
             countriesHistogram.setData(dataset);
         }
     });
@@ -117,13 +141,38 @@ function LoadBasicData() {
             var sLimit = numberOfSkills < sLimit ? numberOfSkills : upperBoundSkills;
             for (var SklN = 0; SklN < sLimit; SklN++) {
                 var JFPair = jpSkills[SklN];
-                jobSkillNameFreq.push({ name: JFPair[0], value: JFPair[1] });
+                jobSkillNameFreq.push({
+                    name:  JFPair[0], 
+                    value: JFPair[1]
+                });
             }
 
             // create the histogram
-            var dataset = { name: "Job Posts By Skills", yAxisName: "Number of jobs", data: jobSkillNameFreq };
+            var dataset = {
+                title:    "Job Posts By Skills", 
+                subtitle: "Top 50", 
+                data:     jobSkillNameFreq
+            };
             skillHistogram.setData(dataset);
             
+            // update piechart options
+            datePiechart.setDataset({
+                title:     "Top 10 Skills", 
+                nameLabel: "name", 
+                nameValue: "value", 
+                data:      jobSkillNameFreq.slice(0, 10)
+            });
+            
+            dateLineplot.setMouseOutPointCallback(function (d) {
+                var data = jobSkillNameFreq.slice(0, 10);
+                datePiechart.setDataset({
+                    title:     "Top 10 Skills", 
+                    nameLabel: "name", 
+                    nameValue: "value", 
+                    data:      data
+                });
+            })
+
             // set the info-container
             setInfoContainer(jobSkillNameFreq);
         }

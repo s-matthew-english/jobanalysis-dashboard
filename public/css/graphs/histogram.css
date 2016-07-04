@@ -87,3 +87,48 @@
 .histogram.histogram-countries .bar:hover {
   fill: #B16A0C ;
 }
+
+/******
+    TEMPORARY Lineplot
+*/
+.lineplot path { 
+    stroke: #506C6F;
+    stroke-width: 2;
+    fill: none;
+}
+
+.lineplot .y.axis .minor line {
+    stroke:  #C3C1C1;
+    stroke-dasharray: 2,2;
+}
+
+.lineplot .point {
+    stroke: #506C6F;
+    fill: #FFFFFF;
+}
+
+.lineplot .area {
+  fill: #506C6F;
+}
+
+.lineplot .axis path,
+.lineplot .axis line {
+    fill: none;
+    stroke: #506C6F;
+    stroke-width: 1;
+    shape-rendering: crispEdges;
+}
+
+
+/***********
+    TEMPORARY Piechart
+*/
+
+.piechart text {
+    font: 11px sans-serif;
+    text-anchor: middle;
+}
+
+.piechart path {
+    stroke: #fff;
+}

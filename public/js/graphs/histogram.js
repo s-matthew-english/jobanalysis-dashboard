@@ -1,4 +1,9 @@
 ﻿/**
+ * Graph visualizations
+ * Written by Erik Novak <erik.novak@ijs.si>, 2016
+ */ 
+
+/**
  * The factory function for construction the specific histogram.
  * 
  */ 
@@ -26,7 +31,7 @@ function DiscreteHistogram(_options) {
         histogramContainer: null,
         histogramName:      null,
         zoomable:           false,
-        margin: { top: 50, left: 70, bottom: 100, right: 30 }
+        margin: { top: 50, left: 30, bottom: 100, right: 20 }
     }, _options);
 
     /**
@@ -178,25 +183,30 @@ function DiscreteHistogram(_options) {
         gyAxis.selectAll("g").filter(function (d) { return d; })
                              .classed("minor", true);
         
-        if (dataset.yAxisName) {
-            gyAxis.append("text")
-                  .attr("transform", "rotate(-90)")
-                  .attr("x", -histogramTotalHeight / 3)
-                  .attr("y", -35)
-                  .style("font-size", "12px")
-                  .style("text-anchor", "end")
-                  .text(dataset.yAxisName);
-        }
         // append title of histogram
-        histogramContainer.append("text")
-              .attr("class", "title")
-              .attr("x", histogramTotalWidth / 2)
-              .attr("y", -10)
-              .style("font-size", "18px")
-              .style("font-family",  "sans-serif")
-              .style("text-anchor", "end")
-              .text(dataset.name);
-        
+        if (dataset.title) {
+            svg.append("text")
+                  .attr("class", "title")
+                  .attr("x", 10)
+                  .attr("y", 40)
+                  .style("font-size", "20px")
+                  .style("font-family",  "sans-serif")
+                  .style("text-anchor", "start")
+                  .text(dataset.title);
+        }
+
+        // append title of histogram
+        if (dataset.subtitle) {
+            svg.append("text")
+                  .attr("class", "subtitle")
+                  .attr("x", 10)
+                  .attr("y", 65)
+                  .style("font-size", "18px")
+                  .style("font-family", "sans-serif")
+                  .style("text-anchor", "start")
+                  .style("fill", "#C7B7B7")
+                  .text(dataset.subtitle);
+        }
         // create chart  
         var chart = histogramContainer.append("g")
                           .attr("id", "chart-body")
@@ -268,18 +278,18 @@ function DiscreteHistogram(_options) {
         var gyAxis = histogramContainer.select(".y.axis")
                                        .call(yAxis);
                 
-        gyAxis.selectAll(".minor")
-              .attr("x", -histogramHeight / 2)
-              .attr("y", -35)
-              .style("font-size", "12px")
-              .style("text-anchor", "end");
         
         // append title of histogram
-        histogramContainer.select(".title")
-              .attr("x", histogramTotalWidth / 2)
-              .attr("y", -10)
-              .style("text-anchor", "center");
+        svg.select(".title")
+              .attr("x", 10)
+              .attr("y", 40)
+              .style("text-anchor", "start");
         
+        svg.select(".subtitle")
+              .attr("x", 10)
+              .attr("y", 65)
+              .style("text-anchor", "start");
+
         var barW = barWidth();
 
         var chart = histogramContainer.select("#chart-body")
@@ -504,9 +514,9 @@ function ContinuousHistogram(_options) {
         // append title of histogram
         histogramContainer.append("text")
               .attr("class", "title")
-              .attr("x", histogramTotalWidth / 2)
+              .attr("x", 70)
               .attr("y", -10)
-              .style("font-size", "18px")
+              .style("font-size", "20px")
               .style("font-family", "sans-serif")
               .style("text-anchor", "end")
               .text(dataset.name);

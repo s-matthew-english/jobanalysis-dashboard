@@ -1,8 +1,5 @@
-﻿/**
- * Creates the Europe map and and draws the map.
- */ 
-
-// create the map and draw's it
+﻿
+// Creates the Europe map and and draws the map
 var europe = new EuropeMap({
     mapContainer: "#map-container",
     timelineContainer: "#timeline-container",
