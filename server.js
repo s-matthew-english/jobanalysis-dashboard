@@ -2,10 +2,10 @@
  * Import server/express modules
  * and setup the app specifications
  */ 
-var express = require('express');
-var favicon = require('express-favicon');
-var path = require('path');
-var jade = require("jade");
+var express = require('express'),
+    favicon = require('express-favicon'),
+    path    = require('path'),
+    pug     = require("pug");
 var app = express();
 
 app.set('view engine', 'jade');
@@ -23,14 +23,14 @@ app.get('/', function (req, res) {
 
 app.get('/policymakers', function (req, res) {
     // compile file
-    var fileCompiler = jade.compileFile("jade/body.jade", { pretty: true });
+    var fileCompiler = pug.compileFile("jade/body.jade", { pretty: true });
     var html = fileCompiler({ activeTab: "PolicyMakers" });
     res.send(html);
 });
 
 app.get('/jobseekers', function (req, res) {
     // compile file
-    var fileCompiler = jade.compileFile("jade/body.jade", { pretty: true });
+    var fileCompiler = pug.compileFile("jade/body.jade", { pretty: true });
     var html = fileCompiler({ activeTab: "JobSeekers" });
     res.send(html);
 });
