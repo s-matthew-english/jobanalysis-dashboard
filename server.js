@@ -1,11 +1,11 @@
 ﻿/**
  * Import server/express modules
  * and setup the app specifications
- */ 
+ */
 var express = require('express');
 var favicon = require('express-favicon');
 var path = require('path');
-var jade = require("jade");
+var jade = require("pug");
 var app = express();
 
 app.set('view engine', 'jade');
@@ -14,7 +14,7 @@ app.use(favicon(path.join(__dirname, 'public', 'pics', 'favicon.ico')));
 
 /**
  * Set the HTTP GET request
- */ 
+ */
 
 app.get('/', function (req, res) {
     var htmlPath = path.join(__dirname, 'public', 'html');
