@@ -134,9 +134,9 @@ html(lang="en" xmlns="http://www.w3.org/1999/xhtm")
                     #timeline-container
 
         if locals.activeTab == "PolicyMakers"
-            include ./includes/policymakers/policymakers.jade
+            include ./includes/policymakers/policyMakers.jade
         else if locals.activeTab == "JobSeekers"
-            include ./includes/jobseekers/jobseekers.jade
+            include ./includes/jobseekers/jobSeekers.jade
 
     //- Modal Button and content
     button#error-trigger.btn.btn-primary.hidden(type="button", data-toggle="modal", data-target="#error-modal")
@@ -161,4 +161,4 @@ html(lang="en" xmlns="http://www.w3.org/1999/xhtm")
      if locals.activeTab == "PolicyMakers"
             include ./includes/policymakers/policyMakersScripts.jade
      else if locals.activeTab == "JobSeekers"
-            include ./includes/jobseekers/jobseekersScripts.jade
+            include ./includes/jobseekers/jobSeekersScripts.jade
