@@ -148,7 +148,21 @@ function searchSuccess(json) {
     
     dateLineplot.setMouseOverPointCallback(function (d) {
         var date = d.date.toDateString();
-        var data = d.skillset.slice(0, 10);
+        var data;
+        if (d.skillset.length > 10) { 
+            var data = d.skillset.slice(0, 9);
+            // get the number of other skills
+            var otherData = d.skillset.slice(10, d.skillset.length);
+            if (otherData.length) {
+                var count = 0;
+                for (var ODataN = 0; ODataN < otherData.length; ODataN++) {
+                    count += otherData[ODataN].value;
+                }
+                data.push({ name: "Other", value: count });
+            }
+        } else {
+            data = d.skillset;
+        }
         datePiechart.setDataset({
             title:     "Top 10 Skills", 
             subtitle:  date, 
@@ -186,11 +200,8 @@ function searchSuccess(json) {
     var numberOfSkills = jobSkills.length;
 
     var jobSkillNameFreq = [];
-    // the upper bound for skill representations
-    var upperBoundSkills = 50;
 
-    var sLimit = numberOfSkills < upperBoundSkills ? numberOfSkills : upperBoundSkills;
-    for (var SkillN = 0; SkillN < sLimit; SkillN++) {
+    for (var SkillN = 0; SkillN < numberOfSkills; SkillN++) {
         var JFPair = jobSkills[SkillN];
         jobSkillNameFreq.push({ name: JFPair[0], value: JFPair[1] });
     }
@@ -202,25 +213,40 @@ function searchSuccess(json) {
     var dataset = {
         title:    "Job Posts By Skills", 
         subtitle: "Top 50", 
-        data:     jobSkillNameFreq
+        data:     jobSkillNameFreq.slice(0, 50)
     };
-    skillHistogram.setData(dataset);
+    skillHistogram.setDataset(dataset);
     
+    // prepare the default pie chart data
+    var piechartData;
+    if (jobSkillNameFreq.length > 10) {
+        var piechartData = jobSkillNameFreq.slice(0, 9);
+        // get the number of other skills
+        var otherData = jobSkillNameFreq.slice(10, jobSkillNameFreq.length);
+        if (otherData.length) {
+            var count = 0;
+            for (var ODataN = 0; ODataN < otherData.length; ODataN++) {
+                count += otherData[ODataN].value;
+            }
+            piechartData.push({ name: "Other", value: count });
+        }
+    } else {
+        piechartData = jobSkillNameFreq;
+    }
     // update piechart options
     datePiechart.setDataset({
         title:     "Top 10 Skills", 
         nameLabel: "name", 
         nameValue: "value", 
-        data:      jobSkillNameFreq.slice(0, 10)
+        data:      piechartData
     });
 
     dateLineplot.setMouseOutPointCallback(function (d) {
-        var data = jobSkillNameFreq.slice(0, 10);
         datePiechart.setDataset({
             title:     "Top 10 Skills", 
             nameLabel: "name", 
             nameValue: "value", 
-            data:      data
+            data:      piechartData
         });
     })
 
@@ -278,7 +304,7 @@ function searchSuccess(json) {
         subtitle: "Top 40", 
         data:     jobLocationNameFreq
     };
-    locationHistogram.setData(dataset);
+    locationHistogram.setDataset(dataset);
 
     //-------------------------------------------------------
     // Calculates the countries frequency histogram
@@ -325,5 +351,5 @@ function searchSuccess(json) {
         subtitle: "EU Countries", 
         data:     jobCountriesNameFreq
     };
-    countriesHistogram.setData(dataset);
+    countriesHistogram.setDataset(dataset);
 }
