@@ -1,12 +1,12 @@
 ﻿doctype html
 html(lang="en" xmlns="http://www.w3.org/1999/xhtm")
-  
+
   head
     meta(charset="utf-8")
     title Edsa Dashboard
     //- Google Analytics
     script(src="js/googleAnalytics.js")
-    
+
     link(rel="stylesheet", href="components/bootstrap/dist/css/bootstrap.min.css")
     link(rel="stylesheet", href="components/bootstrap-tagsinput/dist/bootstrap-tagsinput.css")
     link(rel="stylesheet", href="components/datatables/media/css/jquery.dataTables.css")
@@ -25,15 +25,15 @@ html(lang="en" xmlns="http://www.w3.org/1999/xhtm")
 
     //- Body container
     .container-fluid.body-container
-        //- Navbar 
+        //- Navbar
         .navbar.navbar-default.navbar-fixed-top
             .container-fluid.navigation
                 //- Brand and toggle get grouped for better mobile display
                 .navbar-header
-                    button(type="button", 
-                           class="navbar-toggle collapsed", 
-                           data-toggle="collapse", 
-                           data-target="#dashboard-options", 
+                    button(type="button",
+                           class="navbar-toggle collapsed",
+                           data-toggle="collapse",
+                           data-target="#dashboard-options",
                            aria-expanded="false")
 
                         span.sr-only Toggle navigation
@@ -49,16 +49,16 @@ html(lang="en" xmlns="http://www.w3.org/1999/xhtm")
                                 a(href="/policymakers") Policy Makers
                             li
                                 a(href="/jobseekers") Job Seekers
-                            //- li 
+                            //- li
                             //-     a(href="#") Data Science Experts
                         else if locals.activeTab == "JobSeekers"
                             li
                                 a(href="/policymakers") Policy Makers
                             li.active
                                 a(href="/jobseekers") Job Seekers
-                            //- li 
+                            //- li
                             //-     a(href="#") Data Science Experts
-        
+
         //- Page Title and description
         .row.main-title
             .col-lg-12
@@ -75,10 +75,10 @@ html(lang="en" xmlns="http://www.w3.org/1999/xhtm")
                     .skill-search-container
                         span#span-skill-search
                             input#skill-search.form-control(type="text", placeholder="Type a skill")
-                
+
                         span#span-skill-search-buttons
                             button.btn.btn-default.pull-right(type="button", onclick="searchOptions('#{locals.activeTab}')") Search
-                
+
                         span#span-skill-search-buttons
                             button.btn.btn-default.pull-right(type="button", onclick="toggleAdvOptions()")
                                 span.glyphicon.glyphicon-cog(aria-hidden="true")
@@ -92,7 +92,7 @@ html(lang="en" xmlns="http://www.w3.org/1999/xhtm")
                                 label.control-label Location:
                             .col-xs-10.col-sm-10.col-lg-11
                                 input#location-search.form-control(type="text", placeholder="Type a city name")
-        
+
         //- Page body
         .row.main-body
             //- statistics container
@@ -156,7 +156,7 @@ html(lang="en" xmlns="http://www.w3.org/1999/xhtm")
 
     //- Page Footer - EDSA information
     footer.footer(role="contentinfo")
-        
+
 
      if locals.activeTab == "PolicyMakers"
             include ./includes/policymakers/policyMakersScripts.jade

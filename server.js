@@ -1,7 +1,7 @@
 ﻿/**
  * Import server/express modules
  * and setup the app specifications
- */ 
+ */
 var express = require('express'),
     favicon = require('express-favicon'),
     path    = require('path'),
@@ -14,7 +14,7 @@ app.use(favicon(path.join(__dirname, 'public', 'pics', 'favicon.ico')));
 
 /**
  * Set the HTTP GET request
- */ 
+ */
 
 app.get('/', function (req, res) {
     var htmlPath = path.join(__dirname, 'public', 'html');
