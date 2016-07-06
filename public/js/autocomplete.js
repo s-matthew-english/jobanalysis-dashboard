@@ -4,7 +4,6 @@
  * Uses typeahead.js: https://twitter.github.io/typeahead.js/
  * and Bootstrap Tags Input: http://bootstrap-tagsinput.github.io/bootstrap-tagsinput/examples/
  */
-
 function LoadAutocomplete() {
     /**
      * Get all skills from the database and create a bootstrap

@@ -2,8 +2,6 @@
  * Search functions for the Policy Makers.
  */
 
-
-
 /**
  * Query the selected skill. Used in the info-container.
  */
@@ -161,9 +159,8 @@ function searchSuccess(json) {
         } else {
             data = d.skillset;
         }
+        datePiechart.setOptions({ chartSubtitle: date });
         datePiechart.setDataset({
-            title:     "Top 10 Skills",
-            subtitle:  date,
             nameLabel: "name",
             nameValue: "value",
             data:      data
@@ -231,17 +228,16 @@ function searchSuccess(json) {
     } else {
         piechartData = jobSkillNameFreq;
     }
-    // update piechart options
+
     datePiechart.setDataset({
-        title:     "Top 10 Skills",
         nameLabel: "name",
         nameValue: "value",
         data:      piechartData
     });
 
     dateLineplot.setMouseOutPointCallback(function (d) {
+        datePiechart.setOptions({ chartSubtitle: "" });
         datePiechart.setDataset({
-            title:     "Top 10 Skills",
             nameLabel: "name",
             nameValue: "value",
             data:      piechartData

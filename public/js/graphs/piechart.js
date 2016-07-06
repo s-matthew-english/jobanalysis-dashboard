@@ -1,53 +1,100 @@
-﻿/**
- * Graph visualizations
+/**
+ * Graph Visualization Package
  * Written by Erik Novak <erik.novak@ijs.si>, 2016
  */
 
-
+ /**
+  * Creates the piechart chart object.
+  * @param {Piechart~Options} _options - The options used for the visualization.
+  * @example
+  * // define the options used for the chart construction
+  * var options = {
+  *     container:     "#piechart-container",
+  *     identifier:    "identifier",
+  *     chartTitle:    "Title",
+  *     chartSubtitle: "SubTitle",
+  *     margin: {
+  *         top:    20,
+  *         left:   20,
+  *         bottom: 20,
+  *         right:  20
+  *     },
+  *     color: d3.scale.category10()
+  * };
+  * // create the piechart chart object
+  * var customLineplot = new Piechart(options);
+  */
 function Piechart(_options) {
-    
+
     /**
-     * The options used at the graph initialization.
-     */ 
+     * Options used for the visualization.
+     * @typedef {object} Piechart~Options
+     * @property {string} [container=null]   - The container identifier (normaly an html class or id).
+     * @property {string} [identifier=null]  - The identifier used for css styling.
+     * @property {string} [chartTitle=""]    - The chart title.
+     * @property {string} [chartSubtitle=""] - The chart subtitle.
+     * @property {object} [margin]           - Margin of the chart content.
+     * @property {number} [margin.top=20]    - Top margin.
+     * @property {number} [margin.left=20]   - Left margin.
+     * @property {number} [margin.bottom=20] - Bottom margin.
+     * @property {number} [margin.right=20]  - Right margin.
+     * @property {function} [color = d3.scale.category10()] - The function used for the chart coloring.
+     */
     var options = $.extend({
-        container: null,
-        name:      null,
-        margin: { top: 20, left: 20, bottom: 20, right: 20 },
-        color:  d3.scale.category10()
+        container:     null,
+        identifier:    null,
+        chartTitle:    "",
+        chartSubtitle: "",
+        margin:        { top: 20, left: 20, bottom: 20, right: 20 },
+        color:         d3.scale.category10()
     }, _options);
-    
+
     // class container
     var self = this;
 
     /**
-     * Data storage
-     * @property {Object} dataset - A JSON object containing the dataset info.
-     * @property {string} [dataset.title] - The title of the graph and dataset.
-     * @property {string} [dataset.nameX = "name"] - The identifier used to access the data used for the x axis.
-     * @property {string} [dataset.nameY = "value"] - The identifier used to access the data used for the y axis.
-     * @property {string} dataset.data - Data storage. 
-     * 
+     * A JSON object containing the dataset info.
+     * @typedef {object} Dataset
+     * @property {string} [nameX="name"]  - The identifier used for accessing the data used for the x axis.
+     * @property {string} [nameY="value"] - The identifier used for accessing the data used for the y axis.
+     * @property {object} data - Data storage.
      */
     var dataset = null;
-    
+
+    // initialization flag
     var initialized = false;
 
+    // Reusable parameters.
+    // Used for manipulating with the SVG objects.
+    var svg       = null,
+        graphName = null,
+        label     = null,
+        value     = null,
+        radius    = null,
+        arc       = null,
+        labelArc  = null,
+        pie       = null,
+        content   = null,
+        legend    = null;
+
     /**
-     * Reusable parameters. Used for manipulating with the SVG objects.
-     */ 
-    var svg      = null,
-        label    = null,
-        value    = null,
-        radius   = null,
-        arc      = null,
-        labelArc = null,
-        pie      = null,
-        content  = null,
-        legend   = null;
-        
+     * Sets the options.
+     * @param {Lineplot~Options} _options - The options.
+     */
+    this.setOptions = function (_options) {
+        if (typeof (_options) == 'undefined') throw "No options specified";
+        options = $.extend(options, _options);
+    }
+
+    /**
+     * Sets the dataset used for the visualization.
+     * @param {Dataset} _dataset - The dataset.
+     * @param {boolean} [redrawFlag=true] - If true, it redraws the graph. Otherwise,
+     * only sets the dataset.
+     */
     this.setDataset = function (_dataset, redrawFlag) {
         redrawFlag = typeof (redrawFlag) === 'undefined' ? true : redrawFlag;
-        
+
         if (typeof (_dataset) == 'undefined') throw "No dataset specified";
         dataset = _dataset;
 
@@ -57,62 +104,60 @@ function Piechart(_options) {
         }
     }
 
-    this.draw = function () { 
-        // reset the container
+    /**
+     * Draws the graph.
+     */
+    this.draw = function () {
+        if (dataset == null) throw "Must initialize dataset";
+
         $(options.container + " svg").remove();
-        
-        // get the container height and width
+
         var totalHeight = $(options.container).height(),
             totalWidth  = $(options.container).width(),
             height      = totalHeight - options.margin.top - options.margin.bottom,
             width       = totalWidth - options.margin.left - options.margin.right;
-        
-        // set the key-value names
+
         label = dataset.nameLabel ? dataset.nameLabel : "label";
         value = dataset.nameValue ? dataset.nameValue : "value";
 
-        // set graph name
-        graphName = options.name ? "piechart-" + options.name : "";
-        
+        graphName = options.identifier ? "piechart-" + options.identifier : "";
+
         radius = Math.min(height, width) / 2;
 
         svg = d3.select(options.container).append("svg")
                 .attr("class", "piechart " + graphName)
                 .attr("width", totalWidth)
                 .attr("height", totalHeight);
-        
+
         content = svg.append("g")
                      .attr("class", "content")
                      .attr("transform", "translate(" + options.margin.left + "," + options.margin.top + ")")
                      .attr("width", width)
                      .attr("height", height);
-        
-        // title
-        if (dataset.title) {
-            svg.append("text")
-               .attr("class", "title")
-               .attr("x", 10)
-               .attr("y", 40)
-               .style("font-size", "20px")
-               .style("font-family", "sans-serif")
-               .style("text-anchor", "start")
-               .text(dataset.title);
-        }
-        
-        // subtitle
-        if (dataset.subtitle) {
-            svg.append("text")
-               .attr("class", "subtitle")
-               .attr("x", 10)
-               .attr("y", 65)
-               .style("font-size", "16px")
-               .style("font-family", "sans-serif")
-               .style("text-anchor", "start")
-               .style("fill", "#F1E7E7")
-               .text(dataset.subtitle);
-        }
 
-        // piechart construction
+        svg.append("text")
+           .attr("class", "title")
+           .attr("x", 10)
+           .attr("y", 40)
+           .style("font-size", "20px")
+           .style("font-family", "sans-serif")
+           .style("text-anchor", "start")
+           .text(options.chartTitle);
+
+        svg.append("text")
+           .attr("class", "subtitle")
+           .attr("x", 10)
+           .attr("y", 65)
+           .style("font-size", "16px")
+           .style("font-family", "sans-serif")
+           .style("text-anchor", "start")
+           .style("fill", "#F1E7E7")
+           .text(options.chartSubtitle);
+
+       //-----------------------
+       // Piechart construction
+       //-----------------------
+
         arc = d3.svg.arc()
                 .outerRadius(radius - 10)
                 .innerRadius(0);
@@ -126,20 +171,23 @@ function Piechart(_options) {
                       .attr("transform", "translate(" + (width / 2) + "," + (height / 2) + ")");
 
         piechart.selectAll(".pie-slice")
-                .data(pie(dataset.data))        
+                .data(pie(dataset.data))
                 .enter().append("path")
                 .attr("class", "pie-slice")
                 .attr("d", arc)
                 .each(function (d) { this._current = d; })
                 .style("fill", function (d, id) { return options.color(id); });
-        
+
+        //-----------------------
+        // Legend construction
+        //-----------------------
+
         legend = content.append("svg")
                         .attr("class", "legend")
                         .attr("width", width)
                         .attr("height", height)
                         .attr("transform", "translate(" + options.margin.left + "," + options.margin.top + ")");
-        
-        // create legend
+
         legend.selectAll(".legend-rect")
               .data(dataset.data)
               .enter().append("rect")
@@ -148,7 +196,7 @@ function Piechart(_options) {
               .attr("width", 18)
               .attr("height", 18)
               .style("fill", function (d, i) { return options.color(i); });
-        
+
         legend.selectAll(".legend-label")
               .data(dataset.data)
               .enter().append("text")
@@ -159,31 +207,28 @@ function Piechart(_options) {
               .style("font-family", "sans-serif")
               .style("text-anchor", "start")
               .text(function (d) { return d[label]; });
-        
 
-        // the graph is initialized
         initialized = true;
     }
 
+    /**
+     * Redraws the graph.
+     */
     this.redraw = function () {
-        
-        // set the key-value names
+        if (!initialized) throw "Graph not initialized";
+
         label = dataset.nameLabel ? dataset.nameLabel : "label";
         value = dataset.nameValue ? dataset.nameValue : "value";
-        
-        // title
-        if (dataset.title) {
-            svg.select(".title")
-               .attr("x", 10)
-               .attr("y", 40)
-               .style("font-size", "20px")
-               .style("font-family", "sans-serif")
-               .style("text-anchor", "start")
-               .text(dataset.title);
-        }
-        
-        // subtitle
-        if (dataset.subtitle) {
+
+        svg.select(".title")
+           .attr("x", 10)
+           .attr("y", 40)
+           .style("font-size", "20px")
+           .style("font-family", "sans-serif")
+           .style("text-anchor", "start")
+           .text(options.chartTitle);
+
+        if (options.chartSubtitle != "") {
             svg.select(".subtitle").remove();
             svg.append("text")
                .attr("class", "subtitle")
@@ -193,25 +238,21 @@ function Piechart(_options) {
                .style("font-family", "sans-serif")
                .style("text-anchor", "start")
                .style("fill", "#C7B7B7")
-               .text(dataset.subtitle);
+               .text(options.chartSubtitle);
         } else {
             svg.select(".subtitle").remove();
         }
 
         var piechart = d3.select(".pie-slices")
-        
-        // update pie slices
+
         var pieslices = piechart.selectAll(".pie-slice")
                                 .data(pie(dataset.data));
 
-        // update
         pieslices.transition().duration(500)
                  .attrTween("d", arcTween);
-        
-        // exit
+
         pieslices.exit().remove();
-        
-        // enter
+
         pieslices.enter().append("path")
                 .attr("class", "pie-slice")
                 .attr("d", arc)
@@ -219,33 +260,26 @@ function Piechart(_options) {
                 .style("fill", function (d, id) { return options.color(id); });
 
         piechart.selectAll(".pie-label").remove();
-        
-        // update legend
+
         var legend_rect = legend.selectAll(".legend-rect")
                                 .data(dataset.data);
-        
-        // exit
+
         legend_rect.exit().remove();
-        
-        // enter
+
         legend_rect.enter().append("rect")
                    .attr("class", "legend-rect")
                    .attr("transform", function (d, i) { return "translate(0," + i * 20 + ")"; })
                    .attr("width", 18)
                    .attr("height", 18)
                    .style("fill", function (d, i) { return options.color(i); });
-        
-        // update legend
+
         var legend_label = legend.selectAll(".legend-label")
                                  .data(dataset.data);
 
-        // update
         legend_label.text(function (d) { return d[label]; });
 
-        // exit
         legend_label.exit().remove();
-        
-        // enter
+
         legend_label.enter().append("text")
                    .attr("class", "legend-label")
               .attr("x", 24)
@@ -255,15 +289,19 @@ function Piechart(_options) {
               .style("text-anchor", "start")
               .text(function (d) { return d[label]; });
     }
-    
-    function resizeRedraw() { 
+
+    //---------------------------------------------------------
+    // Helper functions
+    //---------------------------------------------------------
+
+    // Resize the graph on window resize.
+    function resizeRedraw() {
         if (initialized) {
-            // get the container height and width
             var totalHeight = $(options.container).height(),
                 totalWidth = $(options.container).width(),
                 height = totalHeight - options.margin.top - options.margin.bottom,
                 width = totalWidth - options.margin.left - options.margin.right;
-        
+
             radius = Math.min(height, width) / 2;
 
             svg.attr("width", totalWidth)
@@ -272,9 +310,9 @@ function Piechart(_options) {
             content.attr("transform", "translate(" + options.margin.left + "," + options.margin.top + ")")
                    .attr("width", width)
                    .attr("height", height);
-        
+
             arc.outerRadius(radius - 10);
-  
+
             content.select(".pie-slices")
                    .attr("transform", "translate(" + (width / 2) + "," + (height / 2) + ")");
 
@@ -282,13 +320,14 @@ function Piechart(_options) {
         }
     }
 
+    // arc interpolation
     function arcTween(animation) {
         var interpolate = d3.interpolate(this._current, animation);
         this._current = interpolate(0);
         return function (t) { return arc(interpolate(t)); }
     }
 
-    // resize on window resize 
+    // resize on window resize
     var resizeTimer;
     $(window).resize(function () {
         clearTimeout(resizeTimer);
@@ -296,4 +335,4 @@ function Piechart(_options) {
             resizeRedraw();
         }, 200);
     });
-} 
+}

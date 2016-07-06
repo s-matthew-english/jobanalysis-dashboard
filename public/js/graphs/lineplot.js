@@ -5,7 +5,7 @@
 
 /**
  * Creates the lineplot chart object.
- * @param {Lineplot~Options} _options The options used for the visualization.
+ * @param {Lineplot~Options} _options - The options used for the visualization.
  * @example
  * // define the options used for the chart construction
  * var options = {
@@ -51,12 +51,15 @@ function Lineplot(_options) {
 
     /**
      * A JSON object containing the dataset info.
-     * @typedef {Object} Dataset
-     * @property {string} [nameX = "name"]  - The identifier used for accessing the data used for the x axis.
-     * @property {string} [nameY = "value"] - The identifier used for accessing the data used for the y axis.
-     * @property {string} data - Data storage.
+     * @typedef {object} Dataset
+     * @property {string} [nameX="name"]  - The identifier used for accessing the data used for the x axis.
+     * @property {string} [nameY="value"] - The identifier used for accessing the data used for the y axis.
+     * @property {object} data - Data storage.
      */
     var dataset = null;
+
+    // initialization flag
+    var initialized = false;
 
     // On point hover callback functions
     var mouseOverPointCallback = null;
@@ -64,20 +67,21 @@ function Lineplot(_options) {
 
     // Reusable parameters.
     // Used for manipulating with the SVG objects.
-    var svg     = null,
-        x       = null,
-        y       = null,
-        x2      = null,
-        y2      = null,
-        xAxis   = null,
-        yAxis   = null,
-        x2Axis  = null,
-        nameX   = null,
-        nameY   = null,
-        line    = null,
-        area    = null,
-        focus   = null,
-        context = null;
+    var svg       = null,
+        graphName = null,
+        x         = null,
+        y         = null,
+        x2        = null,
+        y2        = null,
+        xAxis     = null,
+        yAxis     = null,
+        x2Axis    = null,
+        nameX     = null,
+        nameY     = null,
+        line      = null,
+        area      = null,
+        focus     = null,
+        context   = null;
 
     /**
      * Sets the options.
@@ -100,7 +104,9 @@ function Lineplot(_options) {
         if (typeof (_dataset) == 'undefined') throw "No dataset specified";
         dataset = _dataset;
         if (redrawFlag) {
-            self.draw();
+            // TODO: write a self.redraw() function
+            if (initialized) self.draw();
+            else self.draw();
         }
     }
 
@@ -132,27 +138,21 @@ function Lineplot(_options) {
      * Draws the graph.
      */
     this.draw = function () {
-        // dataset must be initialized
         if (dataset == null) throw "Must initialize dataset";
 
-        // reset the container and tooltip
         $(options.container + " svg").remove();
         $(options.container + " .lineplot .d3-tip").remove();
 
-        // get the container height and width
         var totalHeight = $(options.container).height(),
             totalWidth  = $(options.container).width(),
             height      = totalHeight - options.margin.top - options.margin.bottom,
             width       = totalWidth - options.margin.left - options.margin.right;
 
-        // set the key-value names
         nameX = dataset.nameX ? dataset.nameX : "name";
         nameY = dataset.nameY ? dataset.nameY : "value";
 
-        // set graph name
-        graphName = options.name ? "lineplot-" + options.name : "";
+        graphName = options.identifier ? "lineplot-" + options.identifier : "";
 
-        // focus axis
         x = d3.time.scale().range([0, width]);
         y = d3.scale.linear().range([height, 10]);
 
@@ -165,13 +165,11 @@ function Lineplot(_options) {
                   .tickFormat(d3.format("s"))
                   .orient("left");
 
-        // context axis
         x2 = d3.time.scale().range([0, width]);
         y2 = d3.scale.linear().range([50, 0]);
 
         x2Axis = d3.svg.axis().scale(x2).orient("bottom");
 
-        // svg container
         svg = d3.select(options.container).append("svg")
                 .attr("class", "lineplot " + graphName)
                 .attr("width", totalWidth)
@@ -198,7 +196,6 @@ function Lineplot(_options) {
         x2.domain(x.domain());
         y2.domain(y.domain());
 
-        // append title of lineplot
         svg.append("text")
            .attr("class", "title")
            .attr("x", 10)
@@ -208,7 +205,6 @@ function Lineplot(_options) {
            .style("text-anchor", "start")
            .text(options.chartTitle);
 
-        // append title of lineplot
         svg.append("text")
            .attr("class", "subtitle")
            .attr("x", 10)
@@ -219,10 +215,9 @@ function Lineplot(_options) {
            .text(options.chartSubtitle);
 
         //-----------------------
-        // Lineplot container
+        // Lineplot construction
         //-----------------------
 
-        // define the line
         line = d3.svg.line()
                  .x(function (d) { return x(d[nameX]); })
                  .y(function (d) { return y(d[nameY]); });
@@ -244,7 +239,6 @@ function Lineplot(_options) {
         gyAxis.selectAll("g").filter(function (d) { return d; })
                              .classed("minor", true);
 
-        // define the tooltip
         var tip = d3.tip()
                     .attr("class", "lineplot " + graphName + " d3-tip")
                     .offset([-10, 0])
@@ -255,7 +249,6 @@ function Lineplot(_options) {
                     });
         svg.call(tip);
 
-        // Add the scatter points
         focus.selectAll(".point")
                  .data(dataset.data)
                  .enter().append("circle")
@@ -282,8 +275,9 @@ function Lineplot(_options) {
                  });
 
         //-----------------------
-        // Brush container
+        // Brush construction
         //-----------------------
+
         var brushMin = dataset.data.length > 100 ? dataset.data.length - 100 : 0;
         var brushMax = dataset.data.length - 1;
 
@@ -323,76 +317,76 @@ function Lineplot(_options) {
                .selectAll("rect")
                .attr("y", 0)
                .attr("height", 50);
-    }
 
-    // Resizes the graph on window resize.
-    function resizeRedraw() {
-        // get the container height and width
-        var totalHeight = $(options.container).height(),
-            totalWidth  = $(options.container).width(),
-            height      = totalHeight - options.margin.top - options.margin.bottom,
-            width       = totalWidth - options.margin.left - options.margin.right;
-
-        // set the key-value names
-        var nameX = dataset.nameX ? dataset.nameX : "name";
-        var nameY = dataset.nameY ? dataset.nameY : "value";
-
-        svg.attr("width", totalWidth)
-           .attr("height", totalHeight);
-
-        // append title of histogram
-        svg.select(".title")
-           .attr("x", 10);
-
-        svg.select(".subtitle")
-           .attr("x", 10);
-
-        x.range([0, width]);
-        xAxis.scale(x);
-
-        x2.range([0, width]);
-        x2Axis.scale(x2);
-
-        yAxis.tickSize(-width)
-             .outerTickSize(0);
-
-        svg.select("#rect-clip")
-           .attr("height", height)
-           .attr("width", width);
-
-        focus.select(".x.axis")
-             .call(xAxis);
-
-        focus.select(".y.axis")
-             .call(yAxis);
-
-        focus.select(".line")
-             .attr("d", line(dataset.data));
-
-        context.select(".area")
-               .attr("d", area);
-
-        focus.selectAll(".point")
-             .attr("cx", function (d) { return x(d[nameX]); })
-             .attr("cy", function (d) { return y(d[nameY]); });
-
-        context.select(".x.axis")
-               .call(x2Axis);
-
-        // update brush
-        brush.x(x2)
-             .extent(brush.extent());
-        brush(d3.select(".x.brush"));
-
-        context.select(".x.brush")
-               .call(brush.event);
+        initialized = true;
     }
 
     //---------------------------------------------------------
     // Helper functions
     //---------------------------------------------------------
 
-    // The onmove brush functionality.
+    // Resizes the graph on window resize.
+    function resizeRedraw() {
+        if (initialized) {
+            var totalHeight = $(options.container).height(),
+                totalWidth  = $(options.container).width(),
+                height      = totalHeight - options.margin.top - options.margin.bottom,
+                width       = totalWidth - options.margin.left - options.margin.right;
+
+            var nameX = dataset.nameX ? dataset.nameX : "name";
+            var nameY = dataset.nameY ? dataset.nameY : "value";
+
+            svg.attr("width", totalWidth)
+               .attr("height", totalHeight);
+
+            svg.select(".title")
+               .attr("x", 10);
+
+            svg.select(".subtitle")
+               .attr("x", 10);
+
+            x.range([0, width]);
+            xAxis.scale(x);
+
+            x2.range([0, width]);
+            x2Axis.scale(x2);
+
+            yAxis.tickSize(-width)
+                 .outerTickSize(0);
+
+            svg.select("#rect-clip")
+               .attr("height", height)
+               .attr("width", width);
+
+            focus.select(".x.axis")
+                 .call(xAxis);
+
+            focus.select(".y.axis")
+                 .call(yAxis);
+
+            focus.select(".line")
+                 .attr("d", line(dataset.data));
+
+            context.select(".area")
+                   .attr("d", area);
+
+            focus.selectAll(".point")
+                 .attr("cx", function (d) { return x(d[nameX]); })
+                 .attr("cy", function (d) { return y(d[nameY]); });
+
+            context.select(".x.axis")
+                   .call(x2Axis);
+
+            brush.x(x2)
+                 .extent(brush.extent());
+            brush(d3.select(".x.brush"));
+
+            context.select(".x.brush")
+                   .call(brush.event);
+        }
+    }
+
+    // onmove brush functionality
     function brushed() {
         x.domain(brush.empty() ? x2.domain() : brush.extent());
 

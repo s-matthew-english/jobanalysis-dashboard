@@ -9,7 +9,7 @@
     }
   ],
   "license": "GNU",
-  "homepage": "https://github.com/ErikNovak/jobsearch-dashboard",
+  "homepage": "https://github.com/ErikNovak/jobanaysis-dashboard",
   "private": true,
   "ignore": [
     "**/.*",
