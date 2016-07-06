@@ -1,5 +1,5 @@
 {
-   "name": "jobanalysis",
+  "name": "jobanalysis",
   "version": "1.0.0",
   "description": "The server and source code for the Job Analysis website.",
   "keywords": ["statistics", "server", "website"],

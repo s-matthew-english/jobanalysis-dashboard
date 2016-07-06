@@ -1,6 +1,6 @@
 ﻿ /**
   * Contains the graph object constructors.
-  */  
+  */
 
 // Creates the Piechart graph
 var datePiechart = new Piechart({
@@ -11,25 +11,26 @@ var datePiechart = new Piechart({
 
 // Creates the Lineplot chart
 var dateLineplot = new Lineplot({
-    container: "#analytics-chart-jobs-by-dates",
-    name:      "date"
+    container:  "#analytics-chart-jobs-by-dates",
+    identifier: "date",
+    margin:     { top: 50, left: 30, bottom: 100, right: 20 }
 });
 
-// Creates the skill histogram
+// Creates the skill Histogram
 var skillHistogram = new Histogram({
     container: "#analytics-chart-skills-by-frequency",
     name:      "skill",
     margin:    { top: 80, left: 30, bottom: 100, right: 20 }
 });
 
-// Creates the location histogram
+// Creates the location Histogram
 var locationHistogram = new Histogram({
     container: "#analytics-chart-location-by-frequency",
     name:      "location",
     margin:    { top: 80, left: 30, bottom: 100, right: 20 }
 });
 
-// Creates the countries histogram
+// Creates the countries Histogram
 var countriesHistogram = new Histogram({
     container: "#analytics-chart-countries-by-frequency",
     name:      "countries",
