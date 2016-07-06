@@ -13,6 +13,7 @@ var datePiechart = new Piechart({
 var dateLineplot = new Lineplot({
     container:  "#analytics-chart-jobs-by-dates",
     identifier: "date",
+    chartTitle: "Job Posts by Dates",
     margin:     { top: 50, left: 30, bottom: 100, right: 20 }
 });
 

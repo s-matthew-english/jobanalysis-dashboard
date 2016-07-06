@@ -1,6 +1,6 @@
 ﻿/**********************************************
  * Loads the graphs for the Policy Makers page
- */ 
+ */
 
 function LoadInitialData() {
     var url = window.location.href.split("?");
@@ -25,30 +25,29 @@ function LoadBasicData() {
         dataType: 'jsonp',
         cache: false,
         success: function (json) {
-            
+
             var DateArray = json.get_number_of_jobs_by_dates;
             var jobDateNameFreq = [];
-            
+
             var numberOfDates = DateArray.length;
             for (var DateN = 1; DateN < numberOfDates; DateN++) {
                 var jobDate = DateArray[DateN];
                 jobDateNameFreq.push({
-                    time:     new Date(jobDate[0]), 
+                    time:     new Date(jobDate[0]),
                     jobCount: jobDate[1]
                 });
             }
-            
+
             // create the histogram
             var dataset = {
-                title: "Job Posts By Dates", 
                 nameX: "time", 
-                nameY: "jobCount", 
+                nameY: "jobCount",
                 data:  jobDateNameFreq
             };
             dateLineplot.setDataset(dataset);
         }
     });
-    
+
     $.ajax({
         type: "GET",
         url: "http://pankretas.ijs.si:8040/get_number_of_jobs_by_location_name",
@@ -57,7 +56,7 @@ function LoadBasicData() {
         success: function (json) {
             var LocationArray = json.get_number_of_jobs_by_location_name;
             var jobLocationNameFreq = [];
-            
+
             function RemoveCountries(array) {
                 var countries = ['Andorra', 'Austria', 'Belgium', 'Bulgaria', 'Cyprus', 'Czech Republic', 'Switzerland', 'Denmark', 'Germany', 'Spain',
                     'Estonia', 'Finland', 'France', 'United Kingdom', 'Greece', 'Hungary', 'Croatia', 'Ireland', 'Italy', 'Lithuania', 'Luxembourg',
@@ -73,21 +72,21 @@ function LoadBasicData() {
             for (var LocN = 0; LocN < sLimit; LocN++) {
                 var jobLoc = countrilessLocations[LocN];
                 jobLocationNameFreq.push({
-                    name:  jobLoc[0], 
+                    name:  jobLoc[0],
                     value: jobLoc[1]
                 });
             }
-            
+
             // create the histogram
             var dataset = {
-                title:    "Job Posts By Locations", 
-                subtitle: "Top 40", 
+                title:    "Job Posts By Locations",
+                subtitle: "Top 40",
                 data:     jobLocationNameFreq
             };
             locationHistogram.setDataset(dataset);
         }
     });
-    
+
     $.ajax({
         type: "GET",
         url: "http://pankretas.ijs.si:8044/get_jobs_by_countries",
@@ -95,7 +94,7 @@ function LoadBasicData() {
         cache: false,
         success: function (json) {
             var jobCountriesNameFreq = [];
-            
+
             function SelectCountries(array) {
                 var countries = ['Andorra', 'Austria', 'Belgium', 'Bulgaria', 'Cyprus', 'Czech Republic', 'Switzerland', 'Denmark', 'Germany', 'Spain',
                     'Estonia', 'Finland', 'France', 'United Kingdom', 'Greece', 'Hungary', 'Croatia', 'Ireland', 'Italy', 'Lithuania', 'Luxembourg',
@@ -104,23 +103,23 @@ function LoadBasicData() {
                 return selected;
             }
             var Countries = SelectCountries(json.jp_result);
-            
+
             var numberOfCountries = Countries.length;
             var upperBoundLocation = 40;
             var sLimit = numberOfCountries < upperBoundLocation ? numberOfCountries : upperBoundLocation;
             for (var CountN = 0; CountN < sLimit; CountN++) {
                 var jobCount = Countries[CountN];
                 jobCountriesNameFreq.push({
-                    name:  jobCount.country, 
+                    name:  jobCount.country,
                     value: jobCount.count
                 });
             }
-            
+
             jobCountriesNameFreq.sort(function (a, b) { return a.value < b.value ? 1 : a.value > b.value ? -1 : 0 });
             // create the histogram
             var dataset = {
-                title:    "Job Posts By Countries", 
-                subtitle: "EU Countries", 
+                title:    "Job Posts By Countries",
+                subtitle: "EU Countries",
                 data:     jobCountriesNameFreq
             };
             countriesHistogram.setDataset(dataset);
@@ -135,25 +134,25 @@ function LoadBasicData() {
         success: function (json) {
             var jpSkills = json.get_number_of_jobs_by_skill;
             var jobSkillNameFreq = [];
-            
+
             var numberOfSkills = jpSkills.length;
             for (var SklN = 0; SklN < numberOfSkills; SklN++) {
                 var JFPair = jpSkills[SklN];
                 jobSkillNameFreq.push({
-                    name:  JFPair[0], 
+                    name:  JFPair[0],
                     value: JFPair[1]
                 });
             }
 
             // create the histogram
             var dataset = {
-                title:    "Job Posts By Skills", 
-                subtitle: "Top 50", 
+                title:    "Job Posts By Skills",
+                subtitle: "Top 50",
                 data:     jobSkillNameFreq.slice(0, 50)
             };
             skillHistogram.setDataset(dataset);
-            
-            
+
+
             // prepare the default pie chart data
             var piechartData;
             if (jobSkillNameFreq.length > 10) {
@@ -173,17 +172,17 @@ function LoadBasicData() {
 
             // update piechart options
             datePiechart.setDataset({
-                title:     "Top 10 Skills", 
-                nameLabel: "name", 
-                nameValue: "value", 
+                title:     "Top 10 Skills",
+                nameLabel: "name",
+                nameValue: "value",
                 data:      piechartData
             });
-            
+
             dateLineplot.setMouseOutPointCallback(function (d) {
                 datePiechart.setDataset({
-                    title:     "Top 10 Skills", 
-                    nameLabel: "name", 
-                    nameValue: "value", 
+                    title:     "Top 10 Skills",
+                    nameLabel: "name",
+                    nameValue: "value",
                     data:      piechartData
                 });
             })
