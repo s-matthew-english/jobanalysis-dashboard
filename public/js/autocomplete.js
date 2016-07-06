@@ -1,24 +1,23 @@
 ﻿/**
- * Functionality for the autocomplete search.
- *
+ * Autocomplete searchword fetch.
  * Uses typeahead.js: https://twitter.github.io/typeahead.js/
  * and Bootstrap Tags Input: http://bootstrap-tagsinput.github.io/bootstrap-tagsinput/examples/
  */
 function LoadAutocomplete() {
     /**
-     * Get all skills from the database and create a bootstrap
+     * Fetches all skills from the database and create a bootstrap
      * tags input autocomplete.
      */
     $.ajax({
-        type: "GET",
-        url: "http://pankretas.ijs.si:8040/get_all_skills",
-        dataType: 'jsonp',
-        cache: false,
+        type:     "GET",
+        url:      "http://pankretas.ijs.si:8040/get_all_skills",
+        dataType: "jsonp",
+        cache:    false,
         success: function (json) {
             var skillset = json.skills;
             // skills typeahead and tags
             var skills = new Bloodhound({
-                datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+                datumTokenizer: Bloodhound.tokenizers.obj.whitespace("name"),
                 queryTokenizer: Bloodhound.tokenizers.whitespace,
                 local: $.map(skillset, function (skill) {
                   return {
@@ -30,32 +29,32 @@ function LoadAutocomplete() {
             $("#skill-search").tagsinput({
                 itemValue: "name",
                 typeaheadjs: {
-                    name: "skills",
-                    displayKey: 'name',
-                    source: skills.ttAdapter()
+                    name:       "skills",
+                    displayKey: "name",
+                    source:     skills.ttAdapter()
                 }
             });
         }
     });
 
     /**
-     * Get all locations from the database and create a bootstrap
+     * Fetches all locations from the database and create a bootstrap
      * tags input autocomplete.
      */
     $.ajax({
-        type: "GET",
-        url: "http://pankretas.ijs.si:8040/get_all_locations",
-        dataType: 'jsonp',
-        cache: false,
+        type:     "GET",
+        url:      "http://pankretas.ijs.si:8040/get_all_locations",
+        dataType: "jsonp",
+        cache:    false,
         success: function (json) {
             //TODO: change the database so that it doesn't contain this location
-            var locationset = json.locations.filter(function (loc) {
-              return loc.value != "LocationName";
+            var locationset = json.locations.filter(function (location) {
+              return location.value != "LocationName";
             });
 
             // locations typeahead and tags
             var locations = new Bloodhound({
-                datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+                datumTokenizer: Bloodhound.tokenizers.obj.whitespace("name"),
                 queryTokenizer: Bloodhound.tokenizers.whitespace,
                 local: $.map(locationset, function (location) {
                   return {
@@ -67,11 +66,12 @@ function LoadAutocomplete() {
             $("#location-search").tagsinput({
                 itemValue: "name",
                 typeaheadjs: {
-                    name: "locations",
-                    displayKey: 'name',
-                    source: locations.ttAdapter()
+                    name:       "locations",
+                    displayKey: "name",
+                    source:     locations.ttAdapter()
                 }
             });
         }
     });
+
 }
