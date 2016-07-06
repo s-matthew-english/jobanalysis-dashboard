@@ -1,11 +1,12 @@
 ﻿/**
- * Import server/express modules
- * and setup the app specifications
+ * Import server/express modules and
+ * setup the app specifications
  */
 var express = require('express'),
     favicon = require('express-favicon'),
     path    = require('path'),
     pug     = require("pug");
+
 var app = express();
 
 app.set('view engine', 'jade');
@@ -13,13 +14,15 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(favicon(path.join(__dirname, 'public', 'pics', 'favicon.ico')));
 
 /**
- * Set the HTTP GET request
+ * Set the HTTP GET requests
  */
 
 app.get('/', function (req, res) {
     var htmlPath = path.join(__dirname, 'public', 'html');
     res.sendFile(htmlPath + '/index.html');
 });
+
+//TODO move fileCompiler out of the get requests
 
 app.get('/policymakers', function (req, res) {
     // compile file
@@ -35,8 +38,7 @@ app.get('/jobseekers', function (req, res) {
     res.send(html);
 });
 
-
-app.listen('2409', function (req, res) {
-    console.log('Dashboard listen at 2409');
+// run the server
+app.listen(process.env.npm_package_config_port, function (req, res) {
+    console.log('Dashboard listen at', process.env.npm_package_config_port);
 });
-
