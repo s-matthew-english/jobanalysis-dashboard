@@ -20,21 +20,27 @@ var dateLineplot = new Lineplot({
 
 // Creates the skill Histogram
 var skillHistogram = new Histogram({
-    container: "#analytics-chart-skills-by-frequency",
-    name:      "skill",
-    margin:    { top: 80, left: 40, bottom: 100, right: 20 }
+    container:     "#analytics-chart-skills-by-frequency",
+    identifier:    "skill",
+    chartTitle:    "Job Posts by Skills",
+    chartSubtitle: "Top 50",
+    margin:     { top: 80, left: 40, bottom: 100, right: 20 }
 });
 
 // Creates the location Histogram
 var locationHistogram = new Histogram({
-    container: "#analytics-chart-location-by-frequency",
-    name:      "location",
-    margin:    { top: 80, left: 40, bottom: 100, right: 20 }
+    container:     "#analytics-chart-location-by-frequency",
+    identifier:    "location",
+    chartTitle:    "Job Posts by Skills",
+    chartSubtitle: "Top 40",
+    margin:        { top: 80, left: 40, bottom: 100, right: 20 }
 });
 
 // Creates the countries Histogram
 var countriesHistogram = new Histogram({
-    container: "#analytics-chart-countries-by-frequency",
-    name:      "countries",
-    margin:    { top: 80, left: 40, bottom: 100, right: 20 }
+    container:     "#analytics-chart-countries-by-frequency",
+    identifier:    "countries",
+    chartTitle:    "Job Posts by Skills",
+    chartSubtitle: "EU Countries",
+    margin:        { top: 80, left: 40, bottom: 100, right: 20 }
 });
