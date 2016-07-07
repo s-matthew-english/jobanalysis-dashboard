@@ -38,7 +38,7 @@ function searchSuccess(json) {
     var jobsAllInfo = [];
     for (var JobN = 0; JobN < jobResults.length; JobN++) {
         var job = jobResults[JobN];
-        // TODO: do something with the job posts with invalid coordiantes
+        // TODO: do something with the job posts with invalid coordinates
         if (!job.long || !job.lat || job.locationName == "Northern Europe") {
             continue;
         }
