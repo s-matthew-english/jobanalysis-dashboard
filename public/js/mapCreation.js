@@ -1,8 +1,8 @@
 ﻿
 // Creates the Europe map and and draws the map
 var europe = new EuropeMap({
-    mapContainer: "#map-container",
+    container: "#map-container",
     timelineContainer: "#timeline-container",
-    infoContainer: "#info-container"
+    clusterInfoContainer: "#info-container"
 });
 europe.DrawMap();

@@ -223,9 +223,9 @@ function Lineplot(_options) {
                  .y(function (d) { return y(d[nameY]); });
 
         focus.append("path")
-           .attr("class", "line")
-           .attr("clip-path", "url(#lineplot-clip)")
-           .attr("d", line(dataset.data));
+             .attr("class", "line")
+             .attr("clip-path", "url(#lineplot-clip)")
+             .attr("d", line(dataset.data));
 
         focus.append("g")
              .attr("class", "x axis")
@@ -290,7 +290,7 @@ function Lineplot(_options) {
                   .on("brush", brushed);
 
         area = d3.svg.area()
-                 .interpolate("monotone")
+                 .interpolate("linear")
                  .x(function (d) {
                      return x2(d[nameX]);
                  })

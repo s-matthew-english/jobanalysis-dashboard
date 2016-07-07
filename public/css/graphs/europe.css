@@ -2,44 +2,35 @@
  * Map
  */
 
-.svg-map {
+.map-europe {
     z-index: 1;
 }
 
-.svg-map .graticule {
+.map-europe .graticule {
     fill: none;
     stroke: #777;
     stroke-width: .5px;
     stroke-opacity: .5;
 }
 
-.svg-map .country {
+.map-europe .country {
     fill: #BDD09F;
     stroke: white;
     stroke-width: 0.5px;
 }
 
-    /*.svg-map .country:hover {
-        fill: #98B071;
-    }*/
-
-    .svg-map .country.notvisible {
+    .map-europe .country.notvisible {
         stroke: #777;
         stroke-width: 0.5px;
         stroke-dasharray: 2, 4;
         pointer-events: none;
     }
 
-    /*.svg-map .country.active,
-    .svg-map .country.active:hover {
-        fill: #668D3C;
-    }*/
-
-.svg-map .notvisible {
+.map-europe .notvisible {
     fill: none;
 }
 
-.svg-map .country-label {
+.map-europe .country-label {
     fill: #493829;
     fill-opacity: .5;
     font-size: 10px;
@@ -47,25 +38,25 @@
     text-anchor: middle;
 }
 
-.svg-map .city {
+.map-europe .city {
     fill: white;
     stroke: black;
     stroke-width: .5px;
     display: none;
 }
 
-.svg-map .city-label {
+.map-europe .city-label {
     font-size: 3px;
     display: none;
 }
 
-.svg-map path {
+.map-europe path {
     fill: none;
 }
 
-.svg-map text,
-.svg-map .city,
-.svg-map .graticule {
+.map-europe text,
+.map-europe .city,
+.map-europe .graticule {
     pointer-events: none;
 }
 
@@ -73,12 +64,12 @@
 * Clusters
 */
 
-.svg-map .jobCluster {
+.map-europe .jobCluster {
     fill: #730100;
     fill-opacity: .75;
 }
 
-    .svg-map .jobCluster:hover {
+    .map-europe .jobCluster:hover {
         fill: #290000;
     }
 
@@ -128,19 +119,6 @@
     background-color: rgba(255, 255, 255, 0.9);
     pointer-events: none;
 }
-
-#zoom-container-map {
-    position: absolute;
-    top: 20px;
-}
-    #zoom-container-map span.glyphicon-zoom-in {
-        font-size: 30px;
-        color: darkgray;
-
-    }
-    #zoom-container-map span.glyphicon-zoom-in.active {
-        color: #000000;
-    }
 
 .tooltip {
     font-size: 10px;

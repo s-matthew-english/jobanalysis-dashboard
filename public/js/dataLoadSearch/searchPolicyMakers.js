@@ -38,6 +38,7 @@ function searchSuccess(json) {
     var jobsAllInfo = [];
     for (var JobN = 0; JobN < jobResults.length; JobN++) {
         var job = jobResults[JobN];
+        // TODO: do something with the job posts with invalid coordiantes
         if (!job.long || !job.lat || job.locationName == "Northern Europe") {
             continue;
         }
@@ -66,6 +67,10 @@ function searchSuccess(json) {
         }
         return -1;
     }
+
+    var numberOfJobs = jobsAllInfo.length;
+    // update the statistics for job posts
+    $('#infoStatJobPosts').html("<b>" + numberOfJobs + "</b>");
 
     //-------------------------------------------------------
     // Draws the job clusters on the map
@@ -130,9 +135,7 @@ function searchSuccess(json) {
         });
     }
 
-    var numberOfJobs = jobsAllInfo.length;
-    // update the statistics for job posts
-    $('#infoStatJobPosts').html("<b>" + numberOfJobs + "</b>");
+
 
     // create the histogram
     var dataset = {
@@ -235,7 +238,7 @@ function searchSuccess(json) {
         data:      piechartData
     });
 
-    dateLineplot.setMouseOutPointCallback(function (d) {
+    dateLineplot.setMouseOutPointCallback(function () {
         datePiechart.setOptions({ chartSubtitle: "" });
         datePiechart.setDataset({
             nameLabel: "name",
