@@ -14,24 +14,24 @@ function EuropeMap(_options) {
     /**
      * The options used at map initialization.
      * @typedef {Object} EuropeMap~Options
-     * @property {string} [container=null]      - The identifier for the map container.
-     * @property {string} [timelineContainer=null] - The identifier for the timeline container.
-     * @property {Object} [gridSize]               - Clustering minimum and maximum grid size in the map.
-     * @property {number} [gridSize.min=8]         - Minimum grid size.
-     * @property {number} [gridSize.max=40]        - Maximum grid size.
-     * @property {Object} [margin]                 - Margin on the map content.
-     * @property {number} [margin.left=20]         - Left margin.
-     * @property {number} [margin.top=20]          - Top margin.
-     * @property {number} [margin.bottom=20]       - Bottom margin.
-     * @property {number} [margin.right=20]        - Right margin.
+     * @property {string} [container=null]            - The identifier for the map container.
+     * @property {string} [timelineContainer=null]    - The identifier for the timeline container.
+     * @property {string} [clusterInfoContainer=null] - The identifier for the cluster info container.
+     * @property {Object} [gridSize]                  - Clustering minimum and maximum grid size in the map.
+     * @property {number} [gridSize.min=8]            - Minimum grid size.
+     * @property {number} [gridSize.max=40]           - Maximum grid size.
+     * @property {Object} [margin]                    - Margin on the map content.
+     * @property {number} [margin.left=20]            - Left margin.
+     * @property {number} [margin.top=20]             - Top margin.
+     * @property {number} [margin.bottom=20]          - Bottom margin.
+     * @property {number} [margin.right=20]          - Right margin.
      */
     var options = $.extend({
-        container:      null,
-        timelineContainer: null,
-        clusterInfoContainer:     null,
-        tooltipType: "Policy Makers",
-        gridSize: { min: 8, max: 40 },
-        margin: { top: 20, left: 20, bottom: 20, right: 20 }
+        container:            null,
+        timelineContainer:    null,
+        clusterInfoContainer: null,
+        gridSize:             { min: 8, max: 40 },
+        margin:               { top: 20, left: 20, bottom: 20, right: 20 }
     }, _options);
 
     // class container
@@ -473,7 +473,7 @@ function EuropeMap(_options) {
     //-------------------------------------------------
     // Timeline functionality
     //-------------------------------------------------
-    function createTimeline() {
+    function createTimeline(brushStartEnd) {
 
         if (options.timelineContainer) {
             // empty the container
@@ -545,7 +545,8 @@ function EuropeMap(_options) {
                   .attr("height", totalHeight - 25);
 
             // set the default brush width
-            brush.extent(wholeTimeline);
+            if (brushStartEnd) brush.extent(brushStartEnd);
+            else brush.extent(wholeTimeline);
             timeline.select('.brush').call(brush);
         }
 
@@ -574,13 +575,172 @@ function EuropeMap(_options) {
     function redrawResize () {
         $(".graph-tooltip").remove();
         $("#map-load-container").css("width", $(".map").width());
-        self.DrawMap();
-        if (allJobPoints.length !== 0) {
-            createTimeline(brush.extent());
-            setTimeout(function () {
+        // empty the container
+        $(options.container + " svg").remove();
+
+        var totalWidth  = $(options.container).width(),
+            totalHeight = $(options.container).height(),
+            width       = totalWidth - options.margin.left - options.margin.right,
+            height      = totalHeight - options.margin.top - options.margin.bottom;
+
+        // the alpha-3 ISO codes of the Non-EU European countries
+        var nonEUCountry = ['ALB', 'AND', 'BLR', 'BIH', 'GEO', 'ISL', 'UNK', 'LIE', 'MKD',
+                            'MDA', 'MNE', 'NOR', 'SMR', 'SRB', 'CHE', 'UKR', 'VAT'];
+
+        // set the projection function from spherical coords to euclidean
+        projection = d3.geo.vanDerGrinten()
+                       .center([5, 55])
+                       .scale(600)
+                       .translate([width / 2, height / 2]);
+
+        var path = d3.geo.path()
+                     .pointRadius(0.5)
+                     .projection(projection);
+
+        // graticules at 10 degrees
+        var graticule = d3.geo.graticule()
+                          .step([10, 10]);
+
+        zoom = d3.behavior.zoom()
+                 .scaleExtent([1, 5])
+                 .on("zoom", onZoom);
+
+        gridScale = d3.scale.linear()
+                      .domain(zoom.scaleExtent())
+                      .range([options.gridSize.max, options.gridSize.min]);
+
+        tooltipDiv = d3.select("body").append("div")
+                       .attr("class", "graph-tooltip")
+                       .style("display", "none");
+
+        //-------------------------------------------------
+        // Map functionality
+        //-------------------------------------------------
+
+        var svg = d3.select(options.container).append("svg")
+                    .attr("class", "map-europe")
+                    .attr("width", totalWidth)
+                    .attr("height", totalHeight)
+                    .call(zoom);
+
+        map = svg.append("g")
+                 .attr("transform", "translate(" + options.margin.left + ", " + options.margin.top + ")");
+
+        // load the europe data
+        d3.json("data/map/europe.json", function (error, europe) {
+             if (error) { throw error; }
+
+            //-----------------------------------
+            // Adding countries and it's labels
+            //-----------------------------------
+
+            // get the countries from the json file
+            var countries = topojson.feature(europe, europe.objects.countries),
+                cities    = topojson.feature(europe, europe.objects.cities);
+
+            // set the country features
+            map.selectAll(".country")
+               .data(countries.features)
+               .enter().append("path")
+               .attr("class", function (d) {
+                  var hidden = nonEUCountry.indexOf(d.id) !== -1 ? "notvisible" : "";
+                  return "country " + hidden;
+               })
+               .attr("id", function (d) { return d.id; })
+               .attr("d", path);
+
+            // set the country label
+            map.selectAll(".country-label")
+               .data(countries.features)
+               .enter().append("text")
+               .attr("class", function (d) { return "country-label " + d.id; })
+               .attr("transform", function (d) {
+                   var addX = d.id == "FRA" ?  65 : 0;
+                   var addY = d.id == "FRA" ? -60 : 0;
+                   return "translate(" + (path.centroid(d)[0] + addX) + ", " + (path.centroid(d)[1] + addY) + ")";
+               })
+               .attr("dy", ".35em")
+               .text(function (d) {
+                   if (nonEUCountry.indexOf(d.id) === -1) {
+                       return d.properties.name;
+                   } else {
+                       return "";
+                   }
+               });
+
+            // graticule lines
+            map.selectAll('.graticule')
+               .data([graticule()])
+               .enter().append('path')
+               .attr('class', 'graticule')
+               .attr('d', path);
+
+            // set the city location as points
+            map.append("path")
+               .datum(cities)
+               .attr("class", "city")
+               .attr("d", path);
+
+            // set the city label/names
+            map.selectAll(".city-label")
+               .data(cities.features)
+               .enter().append("text")
+               .attr("class", "city-label")
+               .attr("transform", function (d) {
+                   return "translate(" + projection(d.geometry.coordinates) + ")";
+               })
+               .attr("dy", ".35em")
+               .text(function (d) {
+                   return d.properties.name;
+               })
+               .attr("x", function (d) {
+                   return d.geometry.coordinates[0] > -1 ? 3 : -3;
+               })
+               .style("text-anchor", function (d) {
+                   return d.geometry.coordinates[0] > -1 ? "start" : "end";
+               });
+
+            if (allJobPoints.length != 0) {
+                createTimeline(brush.extent());
                 createJobClusters();
-            }, 1000);
+            }
+        });
+
+        //-----------------------------------
+        // Zoom functionality
+        //-----------------------------------
+
+        // the zoom behaviour (panning and boundary limits)
+        function onZoom() {
+            scale = d3.event.scale;
+            trans = d3.event.translate;
+            var h = height / 4;
+            trans[0] = Math.min(
+                width / height * (scale - 1) + 90 * scale,
+                Math.max(width * (1 - scale) - 90 * scale, trans[0])
+            );
+            trans[1] = Math.min(
+                h * (scale - 1) + 3 * h / 4 * scale,
+                Math.max(height * (1 - scale) - 3 * h / 4 * scale, trans[1])
+            );
+            map.attr("transform", "translate(" + trans + ")scale(" + scale + ")");
+            zoom.translate(trans);
+
+            // show city labels and location
+            if (scale < 2.5) {
+                $(".city").hide();
+                $(".city-label").hide();
+                $(".country-label").show();
+            } else {
+                $(".city").show();
+                $(".city-label").show();
+                $(".country-label").hide();
+            }
+            if (timequeryJobPoints.length !== 0) {
+                createJobClusters();
+            }
         }
+
     }
 
 
@@ -745,6 +905,6 @@ function EuropeMap(_options) {
         clearTimeout(resizeTimer);
         resizeTimer = setTimeout(function () {
             redrawResize();
-        }, 1000);
+        }, 100);
     });
 }
