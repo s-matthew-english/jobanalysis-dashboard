@@ -256,8 +256,6 @@ function Histogram(_options) {
                            .data(dataset.data);
 
         var barWidth = calcBarWidth();
-        console.log(barWidth)
-
 
         chart.transition().duration(1000)
              .attr("x", function (d) {

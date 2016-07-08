@@ -78,6 +78,7 @@ function Lineplot(_options) {
         x2Axis    = null,
         nameX     = null,
         nameY     = null,
+        tip       = null,
         line      = null,
         area      = null,
         focus     = null,
@@ -99,13 +100,12 @@ function Lineplot(_options) {
      * only sets the dataset.
      */
     this.setDataset = function (_dataset, redrawFlag) {
-        redrawFlag = typeof (redrawFlag) === 'undefined' ? true : redrawFlag;
-
         if (typeof (_dataset) == 'undefined') throw "No dataset specified";
+        redrawFlag = typeof (redrawFlag) === 'undefined' ? true : redrawFlag;
         dataset = _dataset;
         if (redrawFlag) {
             // TODO: write a self.redraw() function
-            if (initialized) self.draw();
+            if (initialized) self.redraw();
             else self.draw();
         }
     }
@@ -239,14 +239,14 @@ function Lineplot(_options) {
         gyAxis.selectAll("g").filter(function (d) { return d; })
                              .classed("minor", true);
 
-        var tip = d3.tip()
-                    .attr("class", "lineplot " + graphName + " d3-tip")
-                    .offset([-10, 0])
-                    .html(function (d) {
-                        var htmlText = "<div style='text-align:center;'>" + d[nameX].toDateString() + "</div>";
-                        htmlText += "<strong># of jobs:</strong> <span style='color:red'>" + d[nameY] + "</span>";
-                        return htmlText;
-                    });
+        tip = d3.tip()
+                .attr("class", "lineplot " + graphName + " d3-tip")
+                .offset([-10, 0])
+                .html(function (d) {
+                    var htmlText = "<div style='text-align:center;'>" + d[nameX].toDateString() + "</div>";
+                    htmlText += "<strong># of jobs:</strong> <span style='color:red'>" + d[nameY] + "</span>";
+                    return htmlText;
+                });
         svg.call(tip);
 
         focus.selectAll(".point")
@@ -254,9 +254,9 @@ function Lineplot(_options) {
                  .enter().append("circle")
                  .attr("class", "point")
                  .attr("clip-path", "url(#lineplot-clip)")
-                 .attr("r", 3)
                  .attr("cx", function (d) { return x(d[nameX]); })
                  .attr("cy", function (d) { return y(d[nameY]); })
+                 .attr("r", 3)
                  .on("mouseover", function (d) {
                      if (mouseOverPointCallback) {
                          mouseOverPointCallback(d);
@@ -319,6 +319,106 @@ function Lineplot(_options) {
                .attr("height", 50);
 
         initialized = true;
+    }
+
+    this.redraw = function () {
+        var totalHeight = $(options.container).height(),
+            totalWidth  = $(options.container).width(),
+            height      = totalHeight - options.margin.top - options.margin.bottom,
+            width       = totalWidth - options.margin.left - options.margin.right;
+
+        nameX = dataset.nameX ? dataset.nameX : "name";
+        nameY = dataset.nameY ? dataset.nameY : "value";
+
+        x.domain(d3.extent(dataset.data.map(function (d) { return d[nameX]; })));
+        y.domain([0, d3.max(dataset.data.map(function (d) { return d[nameY]; }))]);
+
+        x2.domain(x.domain());
+        y2.domain(y.domain());
+
+        xAxis.scale(x).orient("bottom"),
+        yAxis.scale(y)
+             .ticks(10)
+             .tickSize(-width)
+             .outerTickSize(0)
+             .tickFormat(d3.format("s"))
+             .orient("left");
+
+        x2Axis.scale(x2).orient("bottom");
+
+        line.x(function (d) { return x(d[nameX]); })
+            .y(function (d) { return y(d[nameY]); });
+
+        focus.selectAll(".x.axis").call(xAxis);
+
+        var gyAxis = focus.selectAll(".y.axis").call(yAxis);
+
+        gyAxis.selectAll("g").filter(function (d) { return d; })
+                             .classed("minor", true);
+
+        focus.selectAll(".line")
+             .attr("d", line(dataset.data));
+
+         var points = focus.selectAll(".point")
+                           .data(dataset.data);
+
+         points.attr("cx", function (d) { return x(d[nameX]); })
+               .attr("cy", function (d) { return y(d[nameY]); });
+
+         points.exit().remove();
+
+         points.enter().append("circle")
+               .attr("class", "point")
+               .attr("clip-path", "url(#lineplot-clip)")
+               .attr("cx", function (d) { return x(d[nameX]); })
+               .attr("cy", function (d) { return y(d[nameY]); })
+               .attr("r", 3)
+               .on("mouseover", function (d) {
+                   if (mouseOverPointCallback) {
+                       mouseOverPointCallback(d);
+                   }
+                   if (tip) {
+                       tip.show(d);
+                   }
+               })
+               .on("mouseout", function (d) {
+                   if (mouseOutPointCallback) {
+                       mouseOutPointCallback(d);
+                   }
+                   if (tip) {
+                       tip.hide(d);
+                   }
+               });
+
+         var brushMin = dataset.data.length > 100 ? dataset.data.length - 100 : 0;
+         var brushMax = dataset.data.length - 1;
+
+         brush.x(x2)
+              .extent([
+                   dataset.data[brushMin][nameX],
+                   dataset.data[brushMax][nameX]
+               ]);
+
+         area.x(function (d) {
+                 return x2(d[nameX]);
+              })
+              .y0(50)
+              .y1(function (d) {
+                  return y2(d[nameY]);
+              });
+
+         context.selectAll(".area")
+                .datum(dataset.data)
+                .attr("clip-path", "url(#lineplot-clip)")
+                .attr("d", area);
+
+         context.selectAll(".x.axis")
+                .call(x2Axis);
+
+         brush(d3.select(".x.brush"));
+
+         context.select(".x.brush")
+                .call(brush.event);
     }
 
     //---------------------------------------------------------
@@ -392,10 +492,9 @@ function Lineplot(_options) {
 
         focus.select(".line").attr("d", line(dataset.data));
         focus.select(".x.axis").call(xAxis);
-
         focus.selectAll(".point")
-                     .attr("cx", function (d) { return x(d[nameX]); })
-                     .attr("cy", function (d) { return y(d[nameY]); });
+             .attr("cx", function (d) { return x(d[nameX]); })
+             .attr("cy", function (d) { return y(d[nameY]); });
     }
 
     // resize on window resize
