@@ -46,16 +46,16 @@ html(lang="en" xmlns="http://www.w3.org/1999/xhtm")
                     ul.nav.navbar-nav
                         if locals.activeTab == "PolicyMakers"
                             li.active
-                                a(href="/policymakers") Policy Makers
+                                a(href="/policymakers") Job Statistics
                             li
-                                a(href="/jobseekers") Job Seekers
+                                a(href="/jobseekers") Job Search
                             //- li
                             //-     a(href="#") Data Science Experts
                         else if locals.activeTab == "JobSeekers"
                             li
-                                a(href="/policymakers") Policy Makers
+                                a(href="/policymakers") Job Statistics
                             li.active
-                                a(href="/jobseekers") Job Seekers
+                                a(href="/jobseekers") Job Search
                             //- li
                             //-     a(href="#") Data Science Experts
 
@@ -63,9 +63,9 @@ html(lang="en" xmlns="http://www.w3.org/1999/xhtm")
         .row.main-title
             .col-lg-12
                 if locals.activeTab == "PolicyMakers"
-                    h2.center POLICY MAKERS VIEW
+                    h2.center JOB STATISTICS
                 else if locals.activeTab == "JobSeekers"
-                    h2.center JOB SEEKERS VIEW
+                    h2.center JOB SEARCH
         .row.search-options
             .col-lg-12
                 //- Search options
@@ -80,9 +80,9 @@ html(lang="en" xmlns="http://www.w3.org/1999/xhtm")
                             button.btn.btn-default.pull-right(type="button", onclick="searchOptions('#{locals.activeTab}')") Search
 
                         span#span-skill-search-buttons
-                            button.btn.btn-default.pull-right(type="button", onclick="toggleAdvOptions()")
+                            button.btn.btn-default.pull-right(type="button", onclick="toggleAdvancedOptions()")
                                 span.glyphicon.glyphicon-cog(aria-hidden="true")
-                                span#showOptions.glyphicon.glyphicon-chevron-right(aria-hidden="true", data-value="right")
+                                span#showAdvancedOptions.glyphicon.glyphicon-chevron-right(aria-hidden="true", data-value="right")
 
                     //- advance search container
                     .form-horizontal.additional-options(style="display:none;")

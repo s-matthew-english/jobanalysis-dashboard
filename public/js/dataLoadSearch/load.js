@@ -1,7 +1,7 @@
 ﻿/********************************************************
- * This file contains the functions, that are called 
+ * This file contains the functions, that are called
  * before or after the document is ready.
- */ 
+ */
 
 
 //-------------------------------------------------------
@@ -14,7 +14,7 @@ $(window).bind('dom-manipulation', function () {
     $("#map-load-container").css("width", $(".map").width());
     // set the autocomplete functions
     LoadAutocomplete();
-    loadBasicStats();
+    loadBasicStatistics();
     setTimeout(LoadInitialData, 1000);
 });
 

@@ -743,8 +743,6 @@ function EuropeMap(_options) {
 
     }
 
-
-
     var getJobClusterInfo = function(cluster) {
         var text = "";
         // get the data from the job cluster

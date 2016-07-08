@@ -40,7 +40,7 @@ function LoadBasicData() {
 
             // create the histogram
             var dataset = {
-                nameX: "time", 
+                nameX: "time",
                 nameY: "jobCount",
                 data:  jobDateNameFreq
             };
@@ -188,14 +188,14 @@ function LoadBasicData() {
             })
 
             // set the info-container
-            setInfoContainer(jobSkillNameFreq);
+            setInfoContainer(jobSkillNameFreq.slice(0, 50));
         }
     });
 }
 function setInfoContainer(jobSkillNameFreq) {
     var text = "";
     // set the description
-    text += "<h4>All Skills:</h4><div style='text-align:justify;'>";
+    text += "<h4>Top 50 Skills:</h4><div style='text-align:justify;'>";
     for (var SkillN = 0; SkillN < jobSkillNameFreq.length; SkillN++) {
         var skillFreq = jobSkillNameFreq[SkillN];
         text += "<a onclick=\"querySkill(\'" + skillFreq.name + "\')\">" + skillFreq.name + "</a>" + " (" + skillFreq.value + ")"
