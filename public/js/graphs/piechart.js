@@ -185,8 +185,7 @@ function Piechart(_options) {
         legend = content.append("svg")
                         .attr("class", "legend")
                         .attr("width", width)
-                        .attr("height", height)
-                        .attr("transform", "translate(" + options.margin.left + "," + options.margin.top + ")");
+                        .attr("height", height);
 
         legend.selectAll(".legend-rect")
               .data(dataset.data)
