@@ -31,7 +31,7 @@ var skillHistogram = new Histogram({
 var locationHistogram = new Histogram({
     container:     "#analytics-chart-location-by-frequency",
     identifier:    "location",
-    chartTitle:    "Job Posts by Skills",
+    chartTitle:    "Job Posts by Locations",
     chartSubtitle: "Top 40",
     margin:        { top: 80, left: 40, bottom: 100, right: 20 }
 });
@@ -40,7 +40,7 @@ var locationHistogram = new Histogram({
 var countriesHistogram = new Histogram({
     container:     "#analytics-chart-countries-by-frequency",
     identifier:    "countries",
-    chartTitle:    "Job Posts by Skills",
+    chartTitle:    "Job Posts by Countries",
     chartSubtitle: "EU Countries",
     margin:        { top: 80, left: 40, bottom: 100, right: 20 }
 });
