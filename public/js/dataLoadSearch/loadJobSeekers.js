@@ -1,6 +1,6 @@
 ﻿/**********************************************
  * Loads the tables for the Job Seekers page
- */ 
+ */
 
 function LoadInitialData() {
     var url = window.location.href.split("?");
@@ -23,23 +23,23 @@ function LoadBasicData() {
         dataType: 'jsonp',
         cache: false,
         success: function (json) {
-            
+
             var sLimit = json.first.length;
             var dataSet = [];
             for (var JobN = 0; JobN < sLimit; JobN++) {
                 var jobPost = json.first[JobN].jp;
                 var location = json.first[JobN].location.records[0];
-                
+
                 var jobPostInfo = [];
                 var jobTitle = jobPost.jobTitle;
                 // remove start <strong> tag
                 jobTitle = jobTitle.replace(/<strong>/g, '');
                 jobTitle = jobTitle.replace(/&lt;strong&gt;/g, '');
-                
+
                 // remove end <strong> tag
                 jobTitle = jobTitle.replace(/<\/strong>/g, '');
                 jobTitle = jobTitle.replace(/&lt;\/strong&gt;/g, '');
-                
+
                 jobPostInfo[0] = jobTitle;
                 var datePosted = jobPost.datePosted.substr(0, 10);
                 jobPostInfo[1] = datePosted;
@@ -47,7 +47,7 @@ function LoadBasicData() {
                 jobPostInfo[3] = jobPost.skillsTxt == null ? "" : jobPost.skillsTxt;
                 jobPostInfo[4] = location.locName ? location.locName : "";
                 jobPostInfo[5] = location.parentCountryName ? location.parentCountryName : "";
-                
+
                 dataSet.push(jobPostInfo);
             }
             function sortByDate(job1, job2) {
@@ -70,8 +70,9 @@ function LoadBasicData() {
             jobDataTable.destroy();
             $('#top-jobs').DataTable({
                 data: dataSet,
+                lengthChange: false,
                 columns: [
-                    { title: "Job Title" },                 
+                    { title: "Job Title" },
                     { title: "Posting Date" },
                     { title: "Hiring Organization" },
                     { title: "Skills" },
@@ -84,8 +85,8 @@ function LoadBasicData() {
             });
         }
     });
-    
-    //load suggested materials    
+
+    //load suggested materials
     $.ajax({
         type: "GET",
         url: "http://pankretas.ijs.si:8042/search_lectures_by_keyword?q=data%20science",
@@ -95,7 +96,7 @@ function LoadBasicData() {
             fillSuggestedTable(json);
         }
     });
-    
+
     $.ajax({
         type: "GET",
         url: "http://pankretas.ijs.si:8040/get_number_of_jobs_by_skill",
@@ -105,7 +106,7 @@ function LoadBasicData() {
             var jpSkills = json.get_number_of_jobs_by_skill;
             var jobSkillName = [];
             var jobSkillFreq = [];
-            
+
             var numberOfSkills = jpSkills;
             var upperBoundSkills = 50;
             var sLimit = numberOfSkills < sLimit ? numberOfSkills : upperBoundSkills;
@@ -118,33 +119,34 @@ function LoadBasicData() {
             setInfoContainer(jobSkillName, jobSkillFreq);
         }
     });
-    
-    
+
+
     function fillSuggestedTable(json) {
         var un_json = JSON.parse(unescape(json.lec_result));
         var sLimit = 100;
         if (un_json.length < sLimit)
             sLimit = un_json.length;
-        
+
         var dataSet = [];
         for (var s = 0; s < sLimit; s++) {
             var lecture = un_json[s];
-            
+
             var lecinfo = [];
             lecinfo[0] = lecture.lectureTitle;
             lecinfo[1] = lecture.lectureDesc;
             lecinfo[2] = "<a href=\"http://videolectures.net/" + lecture.url + "\">" + lecture.url + "</a>";
             var datePosted = lecture.recorded.substr(0, 10);
             lecinfo[3] = datePosted;
-            
+
             dataSet[s] = lecinfo;
         }
-        
+
         var suggestedMaterialsTable = $('#suggested-materials').DataTable();
         suggestedMaterialsTable.destroy();
-        
+
         var oTable = $('#suggested-materials').DataTable({
             data: dataSet,
+            lengthChange: false,
             columns: [
                 { title: "Lecture Title" },
                 { title: "Lecture Description" },

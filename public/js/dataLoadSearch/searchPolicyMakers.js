@@ -2,20 +2,20 @@
  * searchSuccess for the Policy Makers.
  * @param {Array.<object>} jobPosts - The data returned by the ajax calls.
  */
-function searchSuccess(jobPosts) {
+function searchSuccess(jobPostsRaw) {
     // Array element structure
     //{ location: [number, number], timestamp: number, title: string, skillset: [string, ...], id: string }
-    var jobPosts = jobPosts.jp_result;
+    var jobPosts = jobPostsRaw.jp_result;
 
     // if ajax returns no jobs
     // Activate a "no data" trigger
-    if (jobPosts.length == 0) {
+    if (jobPosts.length === 0) {
         $("#error-trigger").trigger("click");
         $("#map-load-container").removeClass("loading");
         return;
     }
 
-    // prepare the data for the it's manipulations
+    // prepare the data for it's manipulation
     var allJobsInformation = [];
     for (var JobN = 0; JobN < jobPosts.length; JobN++) {
         var job = jobPosts[JobN];
@@ -128,14 +128,14 @@ function searchSuccess(jobPosts) {
         });
     }
 
-    // create the histogram
+    // create the lineplot
     var dataset = {
         nameX: "date",
         nameY: "value",
         data:  jobDateArray
     };
     dateLineplot.setDataset(dataset);
-
+    // add the on mouseover function
     dateLineplot.setMouseOverPointCallback(function (d) {
         var data;
         if (d.skillset.length > 10) {
@@ -216,13 +216,13 @@ function searchSuccess(jobPosts) {
     } else {
         piechartData = jobSkillArray;
     }
-
+    // set the piechart dataset
     datePiechart.setDataset({
         nameLabel: "name",
         nameValue: "value",
         data:      piechartData
     });
-
+    // add the on mouseout function
     dateLineplot.setMouseOutPointCallback(function () {
         datePiechart.setOptions({ chartSubtitle: "" });
         datePiechart.setDataset({
@@ -330,20 +330,22 @@ function searchSuccess(jobPosts) {
 
 // clean the input bars
 function cleanInputBars() {
+    $("#topic-search").tagsinput("removeAll");
     $("#skill-search").tagsinput("removeAll");
-    $("#location-search").tagsinput("removeAll");
+    $("#city-search").tagsinput("removeAll");
+    $("#country-search").tagsinput("removeAll");
 }
 
 // Search/query the selected skill
 function querySkill(skillName) {
     cleanInputBars();
-    $("#skill-search").tagsinput("add", { name: skillName });
+    $("#topic-search").tagsinput("add", { name: skillName, type: "skill" });
     searchOptions(dashboardType.JobStatistics);
 }
 
 // Search/query the selected location
 function queryLocation(locationName) {
     cleanInputBars();
-    $("#location-search").tagsinput("add", { name: locationName });
+    $("#topic-search").tagsinput("add", { name: locationName, type: "city" });
     searchOptions(dashboardType.JobStatistics);
 }

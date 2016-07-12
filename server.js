@@ -39,6 +39,7 @@ app.get('/jobseekers', function (req, res) {
 });
 
 // run the server
-app.listen(process.env.npm_package_config_port, function (req, res) {
-    console.log('Dashboard listen at', process.env.npm_package_config_port);
+const PORT = process.env.npm_package_config_port;
+app.listen(PORT, function (req, res) {
+    console.log('Dashboard listen at', PORT);
 });

@@ -3,13 +3,13 @@ html(lang="en" xmlns="http://www.w3.org/1999/xhtm")
 
   head
     meta(charset="utf-8")
-    title Edsa Dashboard
+    title Job Analysis
     //- Google Analytics
     script(src="js/googleAnalytics.js")
 
     link(rel="stylesheet", href="components/bootstrap/dist/css/bootstrap.min.css")
     link(rel="stylesheet", href="components/bootstrap-tagsinput/dist/bootstrap-tagsinput.css")
-    link(rel="stylesheet", href="components/datatables/media/css/jquery.dataTables.css")
+    link(rel="stylesheet", type="text/css", href="components/datatables.net-bs/css/dataTables.bootstrap.min.css")
 
     //- Custom styles
     link(rel="stylesheet", href="css/main.css")
@@ -20,6 +20,23 @@ html(lang="en" xmlns="http://www.w3.org/1999/xhtm")
 
     link(rel="stylesheet", href="css/graphs/europe.css")
     link(rel="stylesheet", href="css/graphs/histogram.css")
+
+    //- Scripts
+    script(src="components/jquery/dist/jquery.min.js")
+    script(src="components/bootstrap/dist/js/bootstrap.min.js")
+    script(src="components/typeahead.js/dist/typeahead.bundle.min.js")
+    script(src="components/bootstrap-tagsinput/dist/bootstrap-tagsinput.min.js")
+    script(src="components/datatables.net/js/jquery.dataTables.min.js")
+    script(type="text/javascript", src="components/datatables.net-bs/js/dataTables.bootstrap.min.js")
+    
+ 
+
+    
+    script(src="components/d3/d3.min.js")
+    script(src="js/ext/d3-quadtree.v1.min.js")
+    script(src="js/ext/d3-tip.js")
+    script(src="js/ext/d3.geo.projection.v0.min.js")
+    script(src="js/ext/topojson.min.js")
 
   body
 
@@ -74,7 +91,7 @@ html(lang="en" xmlns="http://www.w3.org/1999/xhtm")
                         h4 SEARCH JOB TRENDS
                     .skill-search-container
                         span#span-skill-search
-                            input#skill-search.form-control(type="text", placeholder="Type a skill")
+                            input#topic-search.form-control(type="text", placeholder="Type a Topic")
 
                         span#span-skill-search-buttons
                             button.btn.btn-default.pull-right(type="button", onclick="searchOptions('#{locals.activeTab}')") Search
@@ -86,12 +103,24 @@ html(lang="en" xmlns="http://www.w3.org/1999/xhtm")
 
                     //- advance search container
                     .form-horizontal.additional-options(style="display:none;")
-                        //- row containing the location and time interval options
+                        //- row containing the skill
                         .form-group
                             .col-xs-2.col-sm-2.col-lg-1
-                                label.control-label Location:
+                                label.control-label Skill:
                             .col-xs-10.col-sm-10.col-lg-11
-                                input#location-search.form-control(type="text", placeholder="Type a city name")
+                                input#skill-search.form-control(type="text", placeholder="Type a skill")
+                        //- row containing the location
+                        .form-group
+                            .col-xs-2.col-sm-2.col-lg-1
+                                label.control-label City:
+                            .col-xs-10.col-sm-10.col-lg-11
+                                input#city-search.form-control(type="text", placeholder="Type a city name")
+                        //- row containing the countries
+                        .form-group
+                            .col-xs-2.col-sm-2.col-lg-1
+                                label.control-label Country:
+                            .col-xs-10.col-sm-10.col-lg-11
+                                input#country-search.form-control(type="text", placeholder="Type a country name")
 
         //- Page body
         .row.main-body

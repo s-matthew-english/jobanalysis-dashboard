@@ -10,20 +10,52 @@ var dashboardType = {
  */
 function searchOptions(dashType) {
     // get skill and location query
-    var skillsArray     = $("#skill-search").tagsinput("items");
-    var locationArray   = $("#location-search").tagsinput("items");
+    var topicArray   = $("#topic-search").tagsinput("items");
+    var skillsArray  = $("#skill-search").tagsinput("items");
+    var cityArray    = $("#city-search").tagsinput("items");
+    var countryArray = $("#country-search").tagsinput("items");
     var parentCountries = ['Andorra', 'Austria', 'Belgium', 'Bulgaria', 'Cyprus', 'Czech Republic', 'Switzerland', 'Denmark', 'Germany', 'Spain',
         'Estonia', 'Finland', 'France', 'United Kingdom', 'Greece', 'Hungary', 'Croatia', 'Ireland', 'Italy', 'Lithuania', 'Luxembourg',
-        'Latvia', 'Malta', 'Netherlands', 'Poland', 'Portugal', 'Romania', 'San Marino', 'Ukraine', 'Slovakia', 'Slovenia', 'Czechia'];;
+        'Latvia', 'Malta', 'Netherlands', 'Poland', 'Portugal', 'Romania', 'San Marino', 'Ukraine', 'Slovakia', 'Slovenia', 'Czechia'];
     //
     // var findQuery = 'QUERY';
 
-    if (skillsArray.length == 0 && locationArray.length == 0) {
+    if (topicArray.length == 0 && skillsArray.length == 0 &&
+        cityArray.length == 0 && countryArray.length == 0) {
         return;
     }
 
     // prepare the query string
     var queryString = '';
+
+    var countSkills    = 0;
+    var countLocations = 0;
+    if (topicArray.length > 0) {
+        var lastTopicIdx = topicArray.length - 1;
+        for (var TopicN = 0; TopicN < lastTopicIdx; TopicN++) {
+            var topic = topicArray[TopicN];
+            if (topic.type == "skill") {
+                queryString += 'q=' + topic.name + '&';
+                countSkills++;
+            } else {
+                queryString += 'l=' + topic.name + '&';
+                countLocations++;
+            }
+        }
+
+        if (topicArray[lastTopicIdx].type == "skill") {
+            queryString += 'q=' + topicArray[lastTopicIdx].name;
+            countSkills++;
+        } else {
+            queryString += 'l=' + topicArray[lastTopicIdx].name;
+            countLocations++;
+        }
+
+        // if we query the locations
+        if (skillsArray.length > 0 || cityArray.length > 0 || countryArray.length > 0) {
+            queryString += '&';
+        }
+    }
 
     // prepare query for skills
     if (skillsArray.length > 0) {
@@ -31,29 +63,50 @@ function searchOptions(dashType) {
         var lastSkillIdx = skillsArray.length - 1;
         for (var SkillIdx = 0; SkillIdx < lastSkillIdx ; SkillIdx++) {
             queryString += 'q=' + skillsArray[SkillIdx].name + '&';
+            countSkills++;
             // findQuery += skillsArray[SkillIdx] + ',';
         }
         queryString += 'q=' + skillsArray[lastSkillIdx].name;
+        countSkills++;
         // findQuery += skillsArray[lastSkillIdx] + ']';
 
         // if we query the locations
-        if (locationArray.length > 0) {
+        if (cityArray.length > 0 || countryArray.length > 0) {
             queryString += '&';
         }
     }
-    // prepare query for locations
-    if (locationArray.length > 0) {
+    // prepare query for cities
+    if (cityArray.length > 0) {
         // findQuery += ' [locations:';
-        var lastLocIdx = locationArray.length - 1;
+        var lastLocIdx = cityArray.length - 1;
         for (var LocIdx = 0; LocIdx < lastLocIdx ; LocIdx++) {
-            queryString += 'l=' + locationArray[LocIdx].name + '&';
-            // findQuery += locationArray[LocIdx] + ',';
+            queryString += 'l=' + cityArray[LocIdx].name + '&';
+            countLocations++;
+            // findQuery += cityArray[LocIdx] + ',';
         }
-        queryString += 'l=' + locationArray[lastLocIdx].name;
-        // findQuery += locationArray[lastLocIdx] + ']';
+        queryString += 'l=' + cityArray[lastLocIdx].name;
+        countLocations++;
+        // findQuery += cityArray[lastLocIdx] + ']';
+        // if we query the locations
+        if (countryArray.length > 0) {
+            queryString += '&';
+        }
+    }
+    // prepare query for countries
+    if (countryArray.length > 0) {
+        // findQuery += ' [locations:';
+        var lastLocIdx = countryArray.length - 1;
+        for (var LocIdx = 0; LocIdx < lastLocIdx ; LocIdx++) {
+            queryString += 'l=' + countryArray[LocIdx].name + '&';
+            countLocations++;
+            // findQuery += countryArray[LocIdx] + ',';
+        }
+        queryString += 'l=' + countryArray[lastLocIdx].name;
+        countLocations++;
+        // findQuery += countryArray[lastLocIdx] + ']';
     }
     //
-    // if ((skillsArray.length > 0) || (locationArray.length > 0)) {
+    // if ((skillsArray.length > 0) || (cityArray.length > 0) || (countryArray.length > 0)) {
     //     document.getElementById("query-container").innerHTML = '<h4 class= \"boundbox\">' + findQuery + '</h3>';
     // }
 
@@ -61,7 +114,7 @@ function searchOptions(dashType) {
     // TODO: cover the whole website when loading
     $("#map-load-container").addClass("loading");
 
-    if (skillsArray.length > 0) {
+    if (countSkills > 0) {
         $.ajax({
             type: "GET",
             url: "http://pankretas.ijs.si:8040/search_jobs_by_skill_and_location?" + queryString,
@@ -94,10 +147,10 @@ function searchOptions(dashType) {
         }
     }
 
-    else if ((locationArray.length > 0) && (parentCountries.indexOf(locationArray[0].name) > -1)) {
+    else if ((countSkills > 0) && (parentCountries.indexOf(cityArray[0].name) > -1)) {
        $.ajax({
            type: "GET",
-           url: "http://pankretas.ijs.si:8040/search_jobs_by_parent_country?" + "q=" + locationArray[0],
+           url: "http://pankretas.ijs.si:8040/search_jobs_by_parent_country?" + "q=" + cityArray[0],
            dataType: 'jsonp',
            cache: false,
            success: function (json) {
@@ -108,7 +161,7 @@ function searchOptions(dashType) {
 
     }
 
-    else if (locationArray.length > 0) {
+    else if (countLocations > 0) {
         $.ajax({
             type: "GET",
             url: "http://pankretas.ijs.si:8040/search_jobs_by_location_name?" + queryString,
@@ -189,6 +242,7 @@ function FillLecturesTable(json) {
 
     $('#suggested-materials').DataTable({
         data: videoSet,
+        lengthChange: false,
         columns: [
             { title: "Lecture Title" },
             { title: "Lecture Description" },

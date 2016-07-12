@@ -1,143 +1,119 @@
-﻿/*******************************************************
- * Search functions for the Policy Makers.
- */ 
-
-
-
 /**
- * Query the selected skill. Used in the info-container.
- */ 
-function querySkill(skillName) {
-    $("#skill-search").tagsinput("removeAll");
-    $("#location-search").tagsinput("removeAll");
-    
-    $("#skill-search").tagsinput("add", { name: skillName });
-    searchOptions("JobSeekers");
-}
+ * searchSuccess for the Job Seekers.
+ * @param {Array.<object>} jobPosts - The data returned by the ajax calls.
+ */
+function searchSuccess(jobPostsRaw) {
+    // array element structure
+    //{ location: [number, number], timestamp: number, title: string, skillset: [string, ...], id: string  }
+    var jobPosts = jobPostsRaw.jp_result;
 
-function queryLocation(locationName) {
-    $("#skill-search").tagsinput("removeAll");
-    $("#location-search").tagsinput("removeAll");
-    
-    $("#location-search").tagsinput("add", { name: locationName });
-    searchOptions("JobSeekers");
-}
-
-/**
- * search success Function for Policy makers
- */ 
-function searchSuccess(json) {
-    //{ location: [ number, number ], timestamp: number, title: string, skillset: [string, string, string], id: string  }   
-    var jobResults = json.jp_result;
-    if (jobResults.length == 0) {
-        console.log(jobResults)
-        console.log("No data found!");
+    // if ajax returns no jobs
+    // Activate a "no data" trigger
+    if (jobPosts.length === 0) {
         $("#error-trigger").trigger("click");
         $("#map-load-container").removeClass("loading");
         return;
     }
-    
 
-    var jobsAllInfo = [];
-    for (var JobN = 0; JobN < jobResults.length; JobN++) {
-        var job = jobResults[JobN];
+    // prepare the data for it's manipulation
+    var allJobsInformation = [];
+    for (var JobN = 0; JobN < jobPosts.length; JobN++) {
+        var job = jobPosts[JobN];
+        // TODO: do something with the job posts with invalid coordinates
         if (!job.long || !job.lat || job.locationName == "Northern Europe") {
             continue;
         }
         var timestamp = Date.parse(job.datePosted);
         var location = [job.long, job.lat];
-        jobsAllInfo.push({
-            locationCoordinates: location,
-            location_city: job.locationName,
-            location_country: job.parentName, 
-            timestamp: timestamp, 
-            skillset: job.skills, 
-            id: job.jobPostingUri
+        allJobsInformation.push({
+            id:                   job.jobPostingUri,
+            timestamp:            timestamp,
+            locationCoordinates:  location,
+            location_city:        job.locationName,
+            location_country:     job.parentName,
+            skillset:             job.skills
         });
     }
-    
-    
+
+
     //-------------------------------------------------------
     // Draws the job clusters on the map
     //-------------------------------------------------------
-    europe.DrawPoints(jobsAllInfo);
-    // remove the .loader
-    $("#map-load-container").removeClass("loading");
-    
+    europe.DrawPoints(allJobsInformation);
     //-------------------------------------------------------
     // Calculates the number-of-jobs per date histogram
     //-------------------------------------------------------
-    
-    var numberOfJobs = jobsAllInfo.length;
+
+    var numberOfJobs = allJobsInformation.length;
     // update the statistics for job posts
     $('#infoStatJobPosts').html("<b>" + numberOfJobs + "</b>");
-    
+
     //-------------------------------------------------------
     // Calculates the skill frequency histogram
     //-------------------------------------------------------
-    
-    // get the skill frequency
-    var skillsFreq = {};
-    for (var JobN = 0; JobN < jobResults.length; JobN++) {
-        var jobSkills = jobResults[JobN].skills;
-        for (var SklN = 0; SklN < jobSkills.length; SklN++) {
-            var skill = jobSkills[SklN];
-            if (skillsFreq.hasOwnProperty(skill)) {
-                skillsFreq[skill] += 1;
+
+    // get the skill occurrences
+    var skillOccurrences = {};
+    for (var JobN = 0; JobN < allJobsInformation.length; JobN++) {
+        var jobSkillset = allJobsInformation[JobN].skillset;
+        for (var SkillN = 0; SkillN < jobSkillset.length; SkillN++) {
+            var skill = jobSkillset[SkillN];
+            if (skillOccurrences.hasOwnProperty(skill)) {
+                skillOccurrences[skill] += 1;
             } else {
-                skillsFreq[skill] = 1;
+                skillOccurrences[skill] = 1;
             }
         }
     }
+    // get number of skills
+    var numberOfSkills = Object.keys(skillOccurrences).length;
 
-    // create an array of skill-name, frequency pairs
-    var numberOfSkills = Object.keys(skillsFreq).length;
-    
     // update the statistics for job posts
     $('#infoStatSkills').html("<b>" + numberOfSkills + "</b>");
-    
-    //-------------------------------------------------------
-    // Calculates the location frequency histogram
-    //-------------------------------------------------------
-    
-    // get the location frequency
-    var locationFreq = {};
-    for (var j = 0; j < jobResults.length; j++) {
-        var jobLocation = jobResults[j].locationName;
-        if (locationFreq.hasOwnProperty(jobLocation)) {
-            locationFreq[jobLocation] += 1;
-        } else {
-            locationFreq[jobLocation] = 1;
-        }
-    }
-    var numberOfLocations = Object.keys(locationFreq).length;
-    // update the location statistics
-    $('#infoStatLocations').html("<b>" + numberOfLocations + "</b>");
-  
-    
+
     //-------------------------------------------------------
     // Calculates the location frequency histogram
     //-------------------------------------------------------
 
-    //reload jobs tables
+    // get the location occurrences
+    var locationOccurrences = {};
+    for (var j = 0; j < allJobsInformation.length; j++) {
+        var jobLocation = allJobsInformation[j].location_city;
+        if (locationOccurrences.hasOwnProperty(jobLocation)) {
+            locationOccurrences[jobLocation] += 1;
+        } else {
+            locationOccurrences[jobLocation] = 1;
+        }
+    }
+    // get number of locations
+    var numberOfLocations = Object.keys(locationOccurrences).length;
+    // update the location statistics
+    $('#infoStatLocations').html("<b>" + numberOfLocations + "</b>");
+
+
+    //-------------------------------------------------------
+    // Calculates the location frequency histogram
+    //-------------------------------------------------------
+
+    // reload jobs tables
     var jobDataTable = $('#top-jobs').DataTable();
     jobDataTable.destroy();
-    
+
     //-------------------------------------------------------
     // Fill top jobs table
     //-------------------------------------------------------
 
-    var jobTableUpperbound = 100;
-    var sLimit = numberOfJobs < jobTableUpperbound ? numberOfJobs : jobTableUpperbound;
+    var jobsUpperbound = 100;
+    var upperLimit = numberOfJobs < jobsUpperbound ? numberOfJobs : jobsUpperbound;
     var dataSet = [];
-    for (var JobN = 0; JobN < sLimit; JobN++) {
-        var jobPost = jobResults[JobN];
-        
+    for (var JobN = 0; JobN < upperLimit; JobN++) {
+        var jobPost = jobPosts[JobN];
+
         var jobTitle = jobPost.jobTitle;
         // remove start <strong> tag
         jobTitle = jobTitle.replace(/<strong>/g, '');
         jobTitle = jobTitle.replace(/&lt;strong&gt;/g, '');
-        
+
         // remove end <strong> tag
         jobTitle = jobTitle.replace(/<\/strong>/g, '');
         jobTitle = jobTitle.replace(/&lt;\/strong&gt;/g, '');
@@ -151,14 +127,15 @@ function searchSuccess(json) {
         jobPostInfo[3] = jobPost.skills ? jobPost.skills : "";
         jobPostInfo[4] = jobPost.locationName ? jobPost.locationName : "";
         jobPostInfo[5] = jobPost.parentName ? jobPost.parentName : "";
-        
+
         dataSet.push(jobPostInfo);
     }
-    
+
     $('#top-jobs').DataTable({
         data: dataSet,
+        lengthChange: false,
         columns: [
-            { title: "Job Title" },                
+            { title: "Job Title" },
             { title: "Posting Date" },
             { title: "Hiring Organization" },
             { title: "Skills" },
@@ -169,4 +146,33 @@ function searchSuccess(json) {
         order: [[1, "desc"]],
         autoWidth: false
     });
+
+    // remove the loader animation
+    $("#map-load-container").removeClass("loading");
+}
+
+// ---------------------------------------------
+// Helper functions
+// ---------------------------------------------
+
+// clean the input bars
+function cleanInputBars() {
+    $("#topic-search").tagsinput("removeAll");
+    $("#skill-search").tagsinput("removeAll");
+    $("#city-search").tagsinput("removeAll");
+    $("#country-search").tagsinput("removeAll");
+}
+
+// Search/query the selected skill
+function querySkill(skillName) {
+    cleanInputBars();
+    $("#topic-search").tagsinput("add", { name: skillName, type: "skill" });
+    searchOptions(dashboardType.JobSearch);
+}
+
+// Search/query the selected location
+function queryLocation(locationName) {
+    cleanInputBars();
+    $("#topic-search").tagsinput("add", { name: locationName, type: "city" });
+    searchOptions(dashboardType.JobSearch);
 }
