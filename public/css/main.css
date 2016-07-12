@@ -1,9 +1,10 @@
 ﻿/**********************
- * Main style 
+ * Main style
  */
 
 html,
 body {
+    position: relative;
     height: 100%;
     background: #f2f2f2;
 }
@@ -50,7 +51,7 @@ body {
 
     .navbar a:hover {
         background-color: #d2d8e0 !important;
-        
+
     }
     .navbar .active a,
     .navbar a.active {
@@ -80,7 +81,7 @@ body {
     .footer .container-fluid {
         padding-right:  15px;
         padding-left:   15px;
-        padding-top:    30px; 
+        padding-top:    30px;
         padding-bottom: 20px;
     }
 

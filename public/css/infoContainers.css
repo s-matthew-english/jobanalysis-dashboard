@@ -34,7 +34,7 @@
 }
 
 #map-container,
-#map-load-container {
+#load-container {
     width: 100%;
     height: 600px;
     padding: 10px;
@@ -42,8 +42,9 @@
     border-radius: 3px;
 }
 
-#map-load-container {
+#load-container {
     position: absolute;
+    padding: 0px;
     opacity: .0;
     z-index: -1;
     -webkit-transition: all 0.2s ease-out;
@@ -52,8 +53,8 @@
     -ms-transition: all 0.2s ease-out;
     transition: all 0.2s ease-out;
 }
-    #map-load-container.loading {
-        z-index: 1;
+    #load-container.loading {
+        z-index: 100;
         opacity: .75;
     }
 
@@ -71,7 +72,7 @@
 }
 
 /********************************
- * Statistics table (basic)
+ * Job Statistics Containers
  */
 
 #analytics-basic-statistics {
@@ -87,6 +88,17 @@
     background-color: #FFFFFF;
 }
 
+/********************************
+ * Tables and Job Search containers
+ */
+
+ .job-recommendation,
+ .material-recommendation {
+     background-color: #FFFFFF;
+     border-radius: 5px;
+     margin: 0px;
+ }
+
 table {
     border-collapse: collapse;
     width: 100%;
@@ -98,9 +110,37 @@ th, td {
     word-wrap: break-word;
 }
 
-tr:nth-child(even){background-color: #FFFFFF}
+tr:nth-child(even){
+    background-color: #FFFFFF
+}
 
 th {
     background-color: #730100;
     color: white;
+}
+.pagination>.active>a,
+.pagination>.active>a:focus,
+.pagination>.active>a:hover,
+.pagination>.active>span,
+.pagination>.active>span:focus,
+.pagination>.active>span:hover {
+    background-color: #730100;
+    border-color:     #730100;
+    outline-color:    #730100 !important;
+
+}
+
+.pagination>li>a,
+.pagination>li>span {
+    color: #730100;
+}
+
+.dataTables_wrapper tbody tr.odd:hover {
+    background-color: #DDDCDC;
+}
+.dataTables_wrapper tbody tr.even:hover {
+    background-color: #E7E7E7;
+}
+.dataTables_wrapper tbody tr.odd {
+    background-color: #f2f2f2;
 }

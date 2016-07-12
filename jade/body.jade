@@ -29,9 +29,6 @@ html(lang="en" xmlns="http://www.w3.org/1999/xhtm")
     script(src="components/datatables.net/js/jquery.dataTables.min.js")
     script(type="text/javascript", src="components/datatables.net-bs/js/dataTables.bootstrap.min.js")
     
- 
-
-    
     script(src="components/d3/d3.min.js")
     script(src="js/ext/d3-quadtree.v1.min.js")
     script(src="js/ext/d3-tip.js")
@@ -123,51 +120,53 @@ html(lang="en" xmlns="http://www.w3.org/1999/xhtm")
                                 input#country-search.form-control(type="text", placeholder="Type a country name")
 
         //- Page body
-        .row.main-body
-            //- statistics container
-            .col-lg-4
-                #analytics-basic-statistics
-                    .box-body
-                        table
-                            tr
-                                th Statistics
-                                th Value
-                            tr
-                                td Job Posts
-                                td
-                                    #infoStatJobPosts
-                            tr
-                                td Locations
-                                td
-                                   #infoStatLocations
-                            tr
-                                td Skills
-                                td
-                                    #infoStatSkills
-                #query-container
-                #info-container
+        div.body-content
+            .row.main-body
+            
+                #load-container
+                    .load-inner
+                        label ●
+                        label ●
+                        label ●
+                        label ●
+                        label ●      
+                //- statistics container
+                .col-lg-4
+                    #analytics-basic-statistics
+                        .box-body
+                            table
+                                tr
+                                    th Statistics
+                                    th Value
+                                tr
+                                    td Job Posts
+                                    td
+                                        #infoStatJobPosts
+                                tr
+                                    td Locations
+                                    td
+                                       #infoStatLocations
+                                tr
+                                    td Skills
+                                    td
+                                        #infoStatSkills
+                    #query-container
+                    #info-container
 
-            //- Map container
-            .col-lg-8
-                .map
-                    #map-load-container
-                        .map-load-inner
-                            label ●
-                            label ●
-                            label ●
-                            label ●
-                            label ●
-                    #map-container
-                        #zoom-container-map
-                            //-span.glyphicon.glyphicon-zoom-in(aria-hidden="true")
-                    #timeline-container
-        .row.empty
-
-        if locals.activeTab == "PolicyMakers"
-            include ./includes/policymakers/policyMakers.jade
-        else if locals.activeTab == "JobSeekers"
-            include ./includes/jobseekers/jobSeekers.jade
-
+                //- Map container
+                .col-lg-8
+                    .map
+                        
+                        #map-container
+                            #zoom-container-map
+                        #timeline-container
+            .row.empty
+                    
+            if locals.activeTab == "PolicyMakers"
+                include ./includes/policymakers/policyMakers.jade
+            else if locals.activeTab == "JobSeekers"
+                include ./includes/jobseekers/jobSeekers.jade
+            
     //- Modal Button and content
     button#error-trigger.btn.btn-primary.hidden(type="button", data-toggle="modal", data-target="#error-modal")
 

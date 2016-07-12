@@ -148,7 +148,7 @@ function searchSuccess(jobPostsRaw) {
     });
 
     // remove the loader animation
-    $("#map-load-container").removeClass("loading");
+    $("#load-container").removeClass("loading");
 }
 
 // ---------------------------------------------

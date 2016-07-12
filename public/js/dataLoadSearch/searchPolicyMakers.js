@@ -321,7 +321,7 @@ function searchSuccess(jobPostsRaw) {
     countriesHistogram.setDataset(dataset);
 
     // remove the loader animation
-    $("#map-load-container").removeClass("loading");
+    $("#load-container").removeClass("loading");
 }
 
 // ---------------------------------------------
