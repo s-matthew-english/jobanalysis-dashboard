@@ -20,7 +20,7 @@ function LoadAutocomplete() {
                 return {
                   name: skill.value,
                   type: "skill"
-                }
+              };
             });
             // skills typeahead and tags
             var skills = new Bloodhound({
@@ -135,11 +135,6 @@ function LoadAutocomplete() {
                     });
                 }
             });
-
         }
     });
-
-
-
-
 }

@@ -2,7 +2,7 @@
  * searchSuccess for the Policy Makers.
  * @param {Array.<object>} jobPosts - The data returned by the ajax calls.
  */
-function searchSuccess(jobPostsRaw) {
+function searchSuccess(jobPostsRaw, searchQuery) {
     // Array element structure
     //{ location: [number, number], timestamp: number, title: string, skillset: [string, ...], id: string }
     var jobPosts = jobPostsRaw.jp_result;
@@ -139,7 +139,7 @@ function searchSuccess(jobPostsRaw) {
     dateLineplot.setMouseOverPointCallback(function (d) {
         var data;
         if (d.skillset.length > 10) {
-            var data = d.skillset.slice(0, 9);
+            data = d.skillset.slice(0, 9);
             // get the number of other skills
             var otherData = d.skillset.slice(10, d.skillset.length);
             if (otherData.length !== 0) {
@@ -160,7 +160,7 @@ function searchSuccess(jobPostsRaw) {
             nameValue: "value",
             data:      data
         });
-    })
+    });
 
     //-------------------------------------------------------
     // Calculates the skill histogram
@@ -193,7 +193,7 @@ function searchSuccess(jobPostsRaw) {
     $('#infoStatSkills').html("<b>" + numberOfSkills + "</b>");
 
     // create the histogram
-    var dataset = {
+    dataset = {
         title:    "Job Posts By Skills",
         subtitle: "Top 50",
         data:     jobSkillArray.slice(0, 50)
@@ -203,7 +203,7 @@ function searchSuccess(jobPostsRaw) {
     // prepare the default pie chart data
     var piechartData;
     if (jobSkillArray.length > 10) {
-        var piechartData = jobSkillArray.slice(0, 9);
+        piechartData = jobSkillArray.slice(0, 9);
         // get the number of other skills
         var otherData = jobSkillArray.slice(10, jobSkillArray.length);
         if (otherData.length) {
@@ -230,7 +230,7 @@ function searchSuccess(jobPostsRaw) {
             nameValue: "value",
             data:      piechartData
         });
-    })
+    });
 
     //-------------------------------------------------------
     // Calculates the location histogram
@@ -279,7 +279,7 @@ function searchSuccess(jobPostsRaw) {
     $('#infoStatLocations').html("<b>" + numberOfLocations + "</b>");
 
     // create the histogram
-    var dataset = {
+    dataset = {
         title:    "Job Posts By Locations",
         subtitle: "Top 40",
         data:     jobLocationArray.slice(0, 40)
@@ -291,7 +291,7 @@ function searchSuccess(jobPostsRaw) {
     //-------------------------------------------------------
 
     var nonemptyCountries = allJobsInformation.filter(function (job) {
-        return job.location_country != "";
+        return job.location_country !== "";
     });
 
     var jobCountryArray = [];
@@ -313,7 +313,7 @@ function searchSuccess(jobPostsRaw) {
     });
 
     // create the histogram
-    var dataset = {
+    dataset = {
         title:    "Job Posts By Countries",
         subtitle: "EU Countries",
         data:     jobCountryArray.slice(0, 30)
@@ -322,6 +322,7 @@ function searchSuccess(jobPostsRaw) {
 
     // remove the loader animation
     $("#load-container").removeClass("loading");
+    $("#querylist").val(searchQuery);
 }
 
 // ---------------------------------------------

@@ -16,14 +16,24 @@
     margin-right: 5px;
 }
 
-#info-container {
+#info-container,
+#cluster-info-container {
     overflow: auto;
     width: auto;
     height: auto;
-    max-height: 485px;
-    padding: 0 5px;
+
+    padding: 10px;
     margin-bottom: 10px;
     background-color: #FFFFFF;
+}
+
+#info-container {
+    max-height: 360px;
+}
+
+#cluster-info-container {
+    max-height: 200px;
+    height: 200px;
 }
 
 .map {
@@ -67,7 +77,7 @@
 #query-container {
     width: 100%;
     color: #FFFFFF !important;
-    padding-top:    10px;
+    padding-top:    5px;
     padding-bottom: 10px;
 }
 
@@ -77,6 +87,7 @@
 
 #analytics-basic-statistics {
     position: relative;
+    padding-bottom: 10px;
 }
 
 #analytics-chart-jobs-by-dates,

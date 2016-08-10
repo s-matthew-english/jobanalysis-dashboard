@@ -2,7 +2,7 @@
 var dashboardType = {
     JobStatistics: "PolicyMakers",
     JobSearch:     "JobSeekers"
-}
+};
 
 /**
  * The common search options function.
@@ -17,14 +17,14 @@ function searchOptions(dashType) {
     var parentCountries = ['Andorra', 'Austria', 'Belgium', 'Bulgaria', 'Cyprus', 'Czech Republic', 'Switzerland', 'Denmark', 'Germany', 'Spain',
         'Estonia', 'Finland', 'France', 'United Kingdom', 'Greece', 'Hungary', 'Croatia', 'Ireland', 'Italy', 'Lithuania', 'Luxembourg',
         'Latvia', 'Malta', 'Netherlands', 'Poland', 'Portugal', 'Romania', 'San Marino', 'Ukraine', 'Slovakia', 'Slovenia', 'Czechia'];
-    //
-    // var findQuery = 'QUERY';
 
-    if (topicArray.length == 0 && skillsArray.length == 0 &&
-        cityArray.length == 0 && countryArray.length == 0) {
+    if (topicArray.length === 0 && skillsArray.length === 0 &&
+        cityArray.length === 0 && countryArray.length === 0) {
         return;
     }
 
+    // string of the search query
+    var SearchQuery = '';
     // prepare the query string
     var queryString = '';
 
@@ -41,74 +41,74 @@ function searchOptions(dashType) {
                 queryString += 'l=' + topic.name + '&';
                 countLocations++;
             }
+            SearchQuery += topic.name + ', ';
         }
 
         if (topicArray[lastTopicIdx].type == "skill") {
             queryString += 'q=' + topicArray[lastTopicIdx].name;
+            SearchQuery += topicArray[lastTopicIdx].name;
+
             countSkills++;
         } else {
             queryString += 'l=' + topicArray[lastTopicIdx].name;
+            SearchQuery += topicArray[lastTopicIdx].name;
             countLocations++;
         }
 
         // if we query the locations
         if (skillsArray.length > 0 || cityArray.length > 0 || countryArray.length > 0) {
             queryString += '&';
+            SearchQuery += ', ';
         }
     }
 
     // prepare query for skills
     if (skillsArray.length > 0) {
-        // findQuery += ' [skills:';
         var lastSkillIdx = skillsArray.length - 1;
         for (var SkillIdx = 0; SkillIdx < lastSkillIdx ; SkillIdx++) {
             queryString += 'q=' + skillsArray[SkillIdx].name + '&';
+            SearchQuery += skillsArray[SkillIdx].name + ', ';
             countSkills++;
-            // findQuery += skillsArray[SkillIdx] + ',';
         }
         queryString += 'q=' + skillsArray[lastSkillIdx].name;
+        SearchQuery += skillsArray[lastSkillIdx].name;
         countSkills++;
-        // findQuery += skillsArray[lastSkillIdx] + ']';
 
         // if we query the locations
         if (cityArray.length > 0 || countryArray.length > 0) {
             queryString += '&';
+            SearchQuery += ', ';
         }
     }
     // prepare query for cities
     if (cityArray.length > 0) {
-        // findQuery += ' [locations:';
         var lastLocIdx = cityArray.length - 1;
         for (var LocIdx = 0; LocIdx < lastLocIdx ; LocIdx++) {
             queryString += 'l=' + cityArray[LocIdx].name + '&';
+            SearchQuery += cityArray[lastLocIdx].name + ', ';
             countLocations++;
-            // findQuery += cityArray[LocIdx] + ',';
         }
         queryString += 'l=' + cityArray[lastLocIdx].name;
+        SearchQuery += cityArray[lastLocIdx].name;
         countLocations++;
-        // findQuery += cityArray[lastLocIdx] + ']';
         // if we query the locations
         if (countryArray.length > 0) {
             queryString += '&';
+            SearchQuery += ', ';
         }
     }
     // prepare query for countries
     if (countryArray.length > 0) {
-        // findQuery += ' [locations:';
-        var lastLocIdx = countryArray.length - 1;
-        for (var LocIdx = 0; LocIdx < lastLocIdx ; LocIdx++) {
-            queryString += 'l=' + countryArray[LocIdx].name + '&';
+        var lastCountryIdx = countryArray.length - 1;
+        for (var CountryIdx = 0; CountryIdx < lastCountryIdx ; CountryIdx++) {
+            queryString += 'l=' + countryArray[CountryIdx].name + '&';
+            SearchQuery += countryArray[lastLCountryIdxocIdx].name + ', ';
             countLocations++;
-            // findQuery += countryArray[LocIdx] + ',';
         }
-        queryString += 'l=' + countryArray[lastLocIdx].name;
+        queryString += 'l=' + countryArray[lastCountryIdx].name;
+        SearchQuery += countryArray[lastCountryIdx].name;
         countLocations++;
-        // findQuery += countryArray[lastLocIdx] + ']';
     }
-    //
-    // if ((skillsArray.length > 0) || (cityArray.length > 0) || (countryArray.length > 0)) {
-    //     document.getElementById("query-container").innerHTML = '<h4 class= \"boundbox\">' + findQuery + '</h3>';
-    // }
 
     // start the page-loader
     // TODO: cover the whole website when loading
@@ -124,7 +124,7 @@ function searchOptions(dashType) {
             cache: false,
             success: function (json) {
                 // found in searchPolicyMakers and searchJobSeekers
-                searchSuccess(json);
+                searchSuccess(json, SearchQuery);
             }
         });
 
@@ -156,7 +156,7 @@ function searchOptions(dashType) {
            cache: false,
            success: function (json) {
                // found in searchPolicyMakers and searchJobSeekers
-               searchSuccess(json);
+               searchSuccess(json, SearchQuery);
            }
        });
 
@@ -171,7 +171,7 @@ function searchOptions(dashType) {
             cache: false,
             success: function (json) {
                 // found in searchPolicyMakers and searchJobSeekers
-                searchSuccess(json);
+                searchSuccess(json, SearchQuery);
             }
         });
     }

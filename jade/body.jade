@@ -60,16 +60,16 @@ html(lang="en" xmlns="http://www.w3.org/1999/xhtm")
                     ul.nav.navbar-nav
                         if locals.activeTab == "PolicyMakers"
                             li.active
-                                a(href="/policymakers") Job Statistics
+                                a(href="/policymakers") Policy Makers
                             li
-                                a(href="/jobseekers") Job Search
+                                a(href="/jobseekers") Job Seekers
                             //- li
                             //-     a(href="#") Data Science Experts
                         else if locals.activeTab == "JobSeekers"
                             li
-                                a(href="/policymakers") Job Statistics
+                                a(href="/policymakers") Policy Makers
                             li.active
-                                a(href="/jobseekers") Job Search
+                                a(href="/jobseekers") Job Seekers
                             //- li
                             //-     a(href="#") Data Science Experts
 
@@ -131,7 +131,8 @@ html(lang="en" xmlns="http://www.w3.org/1999/xhtm")
                         label ●
                         label ●      
                 //- statistics container
-                .col-lg-4
+                .col-md-4.col-lg-4
+                    #info-container
                     #analytics-basic-statistics
                         .box-body
                             table
@@ -150,15 +151,20 @@ html(lang="en" xmlns="http://www.w3.org/1999/xhtm")
                                     td Skills
                                     td
                                         #infoStatSkills
+                                        
+                    #cluster-info-container
+                        h4 Cluster data
+                        p Click on a query cluster to get its information.
                     #query-container
-                    #info-container
+                        button.btn.btn-default.pull-right(type="button", onclick="getPNGfromSVG()") Save Map in PNG
 
                 //- Map container
-                .col-lg-8
+                .col-md-8.col-lg-8
+                    .form-group
+                        label(for="querylist") Search Query
+                        input#querylist.form-control(type="text", placeholder="Search Query" readonly)
                     .map
-                        
                         #map-container
-                            #zoom-container-map
                         #timeline-container
             .row.empty
                     

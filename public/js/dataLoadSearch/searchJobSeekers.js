@@ -2,7 +2,7 @@
  * searchSuccess for the Job Seekers.
  * @param {Array.<object>} jobPosts - The data returned by the ajax calls.
  */
-function searchSuccess(jobPostsRaw) {
+function searchSuccess(jobPostsRaw, searchQuery) {
     // array element structure
     //{ location: [number, number], timestamp: number, title: string, skillset: [string, ...], id: string  }
     var jobPosts = jobPostsRaw.jp_result;
@@ -149,6 +149,7 @@ function searchSuccess(jobPostsRaw) {
 
     // remove the loader animation
     $("#load-container").removeClass("loading");
+    $("#querylist").val(searchQuery);
 }
 
 // ---------------------------------------------

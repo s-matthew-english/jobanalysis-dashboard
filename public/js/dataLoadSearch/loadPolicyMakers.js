@@ -115,7 +115,7 @@ function LoadBasicData() {
                 });
             }
 
-            jobCountriesNameFreq.sort(function (a, b) { return a.value < b.value ? 1 : a.value > b.value ? -1 : 0 });
+            jobCountriesNameFreq.sort(function (a, b) { return a.value < b.value ? 1 : a.value > b.value ? -1 : 0; });
             // create the histogram
             var dataset = {
                 title:    "Job Posts By Countries",
@@ -156,7 +156,7 @@ function LoadBasicData() {
             // prepare the default pie chart data
             var piechartData;
             if (jobSkillNameFreq.length > 10) {
-                var piechartData = jobSkillNameFreq.slice(0, 9);
+                piechartData = jobSkillNameFreq.slice(0, 9);
                 // get the number of other skills
                 var otherData = jobSkillNameFreq.slice(10, jobSkillNameFreq.length);
                 if (otherData.length) {
@@ -185,7 +185,7 @@ function LoadBasicData() {
                     nameValue: "value",
                     data:      piechartData
                 });
-            })
+            });
 
             // set the info-container
             setInfoContainer(jobSkillNameFreq.slice(0, 50));
@@ -195,13 +195,13 @@ function LoadBasicData() {
 function setInfoContainer(jobSkillNameFreq) {
     var text = "";
     // set the description
-    text += "<h4>Top 50 Skills:</h4><div style='text-align:justify;'>";
+    text += "<h4>Top 50 Skills:</h4>";
     for (var SkillN = 0; SkillN < jobSkillNameFreq.length; SkillN++) {
         var skillFreq = jobSkillNameFreq[SkillN];
-        text += "<a onclick=\"querySkill(\'" + skillFreq.name + "\')\">" + skillFreq.name + "</a>" + " (" + skillFreq.value + ")"
-        if (SkillN != jobSkillNameFreq.length - 1) { text += ", " };
+        text += "<a onclick=\"querySkill(\'" + skillFreq.name + "\')\">" + skillFreq.name + "</a>" + "(" + skillFreq.value + ")";
+        if (SkillN != jobSkillNameFreq.length - 1) { text += ", "; }
     }
-    text += "</div></br>";
+    text += "</br>";
     $("#info-container").html(text);
 }
 

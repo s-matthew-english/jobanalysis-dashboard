@@ -2,35 +2,35 @@
  * Map
  */
 
-.map-europe {
+#map-europe {
     z-index: 1;
 }
 
-.map-europe .graticule {
+#map-europe .graticule {
     fill: none;
     stroke: #777;
     stroke-width: .5px;
     stroke-opacity: .5;
 }
 
-.map-europe .country {
+#map-europe .country {
     fill: #BDD09F;
     stroke: white;
     stroke-width: 0.5px;
 }
 
-    .map-europe .country.notvisible {
+    #map-europe .country.notvisible {
         stroke: #777;
         stroke-width: 0.5px;
         stroke-dasharray: 2, 4;
         pointer-events: none;
     }
 
-.map-europe .notvisible {
+#map-europe .notvisible {
     fill: none;
 }
 
-.map-europe .country-label {
+#map-europe .country-label {
     fill: #493829;
     fill-opacity: .5;
     font-size: 10px;
@@ -38,25 +38,25 @@
     text-anchor: middle;
 }
 
-.map-europe .city {
+#map-europe .city {
     fill: white;
     stroke: black;
     stroke-width: .5px;
     display: none;
 }
 
-.map-europe .city-label {
+#map-europe .city-label {
     font-size: 3px;
     display: none;
 }
 
-.map-europe path {
+#map-europe path {
     fill: none;
 }
 
-.map-europe text,
-.map-europe .city,
-.map-europe .graticule {
+#map-europe text,
+#map-europe .city,
+#map-europe .graticule {
     pointer-events: none;
 }
 
@@ -64,12 +64,12 @@
 * Clusters
 */
 
-.map-europe .jobCluster {
+#map-europe .jobCluster {
     fill: #730100;
     fill-opacity: .75;
 }
 
-    .map-europe .jobCluster:hover {
+    #map-europe .jobCluster:hover {
         fill: #290000;
     }
 

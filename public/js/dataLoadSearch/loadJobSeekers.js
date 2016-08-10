@@ -41,10 +41,9 @@ function LoadBasicData() {
                 jobTitle = jobTitle.replace(/&lt;\/strong&gt;/g, '');
 
                 jobPostInfo[0] = jobTitle;
-                var datePosted = jobPost.datePosted.substr(0, 10);
-                jobPostInfo[1] = datePosted;
+                jobPostInfo[1] = jobPost.datePosted.substr(0, 10);;
                 jobPostInfo[2] = jobPost.hiringOrganization;
-                jobPostInfo[3] = jobPost.skillsTxt == null ? "" : jobPost.skillsTxt;
+                jobPostInfo[3] = jobPost.skillsTxt === null ? "" : jobPost.skillsTxt;
                 jobPostInfo[4] = location.locName ? location.locName : "";
                 jobPostInfo[5] = location.parentCountryName ? location.parentCountryName : "";
 
@@ -61,9 +60,9 @@ function LoadBasicData() {
             }
             dataSet.sort(sortByDate);
 
-            for (var JobN = 0; JobN < dataSet.length; JobN++) {
-                var datePosted   = dataSet[JobN][1].substr(0, 10);
-                dataSet[JobN][1] = datePosted;
+            for (var JobDescN = 0; JobDescN < dataSet.length; JobDescN++) {
+                var datePosted   = dataSet[JobDescN][1].substr(0, 10);
+                dataSet[JobDescN][1] = datePosted;
             }
 
             var jobDataTable = $('#top-jobs').DataTable();
@@ -156,18 +155,18 @@ function LoadBasicData() {
             pageLength: 2,
             autoWidth: false
         });
-    };
+    }
 }
 
 function setInfoContainer(jobSkillName, jobSkillFreq) {
     var text = "";
     // set the description
-    text += "<h4>Top 50 skills:</h4><div style='text-align:justify;'>";
+    text += "<h4>Top 50 skills:</h4>";
     for (var SkillN = 0; SkillN < jobSkillName.length; SkillN++) {
-        text += "<a onclick=\"querySkill(\'" + jobSkillName[SkillN] + "\')\">" + jobSkillName[SkillN] + "</a>" + " (" + jobSkillFreq[SkillN] + ")"
-        if (SkillN != jobSkillName.length - 1) { text += ", " };
+        text += "<a onclick=\"querySkill(\'" + jobSkillName[SkillN] + "\')\">" + jobSkillName[SkillN] + "</a>" + "(" + jobSkillFreq[SkillN] + ")";
+        if (SkillN != jobSkillName.length - 1) { text += ", "; }
     }
-    text += "</div></br>";
+    text += "</br>";
     $("#info-container").html(text);
 }
 

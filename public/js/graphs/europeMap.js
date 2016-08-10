@@ -62,6 +62,10 @@ function EuropeMap(_options) {
     // Zoom properties: used to save the current zoom state
     var scale = 0;
     var trans = [0, 0];
+    var zoomLevel = 0;
+
+    var changeFlag = false;
+    var showFlag = false;
 
     /**
      * Alpha-3 to Alpha-2 ISO code (only EU countries)
@@ -223,7 +227,7 @@ function EuropeMap(_options) {
         //-------------------------------------------------
 
         var svg = d3.select(options.container).append("svg")
-                    .attr("class", "map-europe")
+                    .attr("id", "map-europe")
                     .attr("width", totalWidth)
                     .attr("height", totalHeight)
                     .call(zoom);
@@ -260,8 +264,8 @@ function EuropeMap(_options) {
                .enter().append("text")
                .attr("class", function (d) { return "country-label " + d.id; })
                .attr("transform", function (d) {
-                   var addX = d.id == "FRA" ?  65 : 0;
-                   var addY = d.id == "FRA" ? -60 : 0;
+                   var addX = d.id == "FRA" ?  55 : 0;
+                   var addY = d.id == "FRA" ? -45 : 0;
                    return "translate(" + (path.centroid(d)[0] + addX) + ", " + (path.centroid(d)[1] + addY) + ")";
                })
                .attr("dy", ".35em")
@@ -326,19 +330,16 @@ function EuropeMap(_options) {
             map.attr("transform", "translate(" + trans + ")scale(" + scale + ")");
             zoom.translate(trans);
 
-            // show city labels and location
-            if (scale < 2.5) {
-                $(".city").hide();
-                $(".city-label").hide();
-                $(".country-label").show();
-            } else {
-                $(".city").show();
-                $(".city-label").show();
-                $(".country-label").hide();
+            if (Math.floor(scale) !== zoomLevel) {
+                zoomLevel = Math.floor(scale);
+                if (timequeryJobPoints.length !== 0) {
+                    createJobClusters();
+                }
+                changeFlag = scale > 2.5 === true && showFlag === false || scale > 2.5 === false && showFlag === true;
+                showFlag   = scale > 2.5;
+                toggleCityLabel(changeFlag, showFlag);
             }
-            if (timequeryJobPoints.length !== 0) {
-                createJobClusters();
-            }
+
         }
     };
 
@@ -392,7 +393,8 @@ function EuropeMap(_options) {
                                 validData.push(p);
                             }
                         }
-                    } while (node = node.next);
+                        node = node.next;
+                    } while (node);
                 }
                 return x1 >= x3 || y1 >= y3 || x2 < x0 || y2 < y0;
             });
@@ -572,7 +574,7 @@ function EuropeMap(_options) {
     // Helper functions
     //-------------------------------------------------
 
-    function redrawResize () {
+    function resizeRedraw () {
         $(".graph-tooltip").remove();
         $("#map-load-container").css("width", $(".map").width());
         // empty the container
@@ -586,6 +588,10 @@ function EuropeMap(_options) {
         // the alpha-3 ISO codes of the Non-EU European countries
         var nonEUCountry = ['ALB', 'AND', 'BLR', 'BIH', 'GEO', 'ISL', 'UNK', 'LIE', 'MKD',
                             'MDA', 'MNE', 'NOR', 'SMR', 'SRB', 'CHE', 'UKR', 'VAT'];
+
+        scale = 0;
+        trans = [0, 0];
+        zoomLevel = 0;
 
         // set the projection function from spherical coords to euclidean
         projection = d3.geo.vanDerGrinten()
@@ -618,7 +624,7 @@ function EuropeMap(_options) {
         //-------------------------------------------------
 
         var svg = d3.select(options.container).append("svg")
-                    .attr("class", "map-europe")
+                    .attr("id", "map-europe")
                     .attr("width", totalWidth)
                     .attr("height", totalHeight)
                     .call(zoom);
@@ -655,8 +661,8 @@ function EuropeMap(_options) {
                .enter().append("text")
                .attr("class", function (d) { return "country-label " + d.id; })
                .attr("transform", function (d) {
-                   var addX = d.id == "FRA" ?  65 : 0;
-                   var addY = d.id == "FRA" ? -60 : 0;
+                   var addX = d.id == "FRA" ?  55 : 0;
+                   var addY = d.id == "FRA" ? -45 : 0;
                    return "translate(" + (path.centroid(d)[0] + addX) + ", " + (path.centroid(d)[1] + addY) + ")";
                })
                .attr("dy", ".35em")
@@ -700,7 +706,7 @@ function EuropeMap(_options) {
                    return d.geometry.coordinates[0] > -1 ? "start" : "end";
                });
 
-            if (allJobPoints.length != 0) {
+            if (allJobPoints.length !== 0) {
                 createTimeline(brush.extent());
                 createJobClusters();
             }
@@ -726,21 +732,17 @@ function EuropeMap(_options) {
             map.attr("transform", "translate(" + trans + ")scale(" + scale + ")");
             zoom.translate(trans);
 
-            // show city labels and location
-            if (scale < 2.5) {
-                $(".city").hide();
-                $(".city-label").hide();
-                $(".country-label").show();
-            } else {
-                $(".city").show();
-                $(".city-label").show();
-                $(".country-label").hide();
+            if (Math.floor(scale) !== zoomLevel) {
+                zoomLevel = Math.floor(scale);
+                if (timequeryJobPoints.length !== 0) {
+                    createJobClusters();
+                }
+                changeFlag = scale > 2.5 === true && showFlag === false || scale > 2.5 === false && showFlag === true;
+                showFlag   = scale > 2.5;
+                toggleCityLabel(changeFlag, showFlag);
             }
-            if (timequeryJobPoints.length !== 0) {
-                createJobClusters();
-            }
-        }
 
+        }
     }
 
     var getJobClusterInfo = function(cluster) {
@@ -760,23 +762,23 @@ function EuropeMap(_options) {
         var country  = getLocation(Jobs, "location_country")[0];
 
         // set the description
-        text += "<h4>Cluster data</h4><div style='text-align:justify;'><dl>";
+        text += "<h4>Cluster data</h4><dl>";
         text += "<dt>Number of Jobs</dt> <dd>" + NumOfJobs + "</dd>";
         text += "<dt>Number of Skills</dt> <dd>" + skillset.length + "</dd>";
         text += "<dt>Country</dt> <dd>" + country.name + "</dd>";
         text += "<dt>Locations</dt> <dd>";
         for (var LocationN = 0; LocationN < cities.length; LocationN++) {
-            text += "<a onclick=\"queryLocation(\'" + cities[LocationN].name + "\')\">" +cities[LocationN].name + "</a>" + " (" + cities[LocationN].count + ")";
+            text += "<a onclick=\"queryLocation(\'" + cities[LocationN].name + "\')\">" +cities[LocationN].name + "</a>" + "(" + cities[LocationN].count + ")";
             if   (LocationN != cities.length - 1) text += ", ";
             else text += "</dd>";
         }
         text += "<dt>Skill set</dt><dd>";
         for (var SkillN = 0; SkillN < skillset.length; SkillN++) {
-            text += "<a onclick=\"querySkill(\'"+ skillset[SkillN].name +"\')\">"+ skillset[SkillN].name + "</a>"+ " (" + skillset[SkillN].count + ")";
+            text += "<a onclick=\"querySkill(\'"+ skillset[SkillN].name +"\')\">"+ skillset[SkillN].name + "</a>"+ "(" + skillset[SkillN].count + ")";
             if (SkillN != skillset.length - 1) text += ", ";
         }
 
-        text += "</dd></dl></div></br>";
+        text += "</dd></dl>";
         return text;
     };
 
@@ -840,7 +842,7 @@ function EuropeMap(_options) {
             // go through all skills needed for the job
             for (var SkillN = 0; SkillN < jobSkillset.length; SkillN++) {
                 var skillName = jobSkillset[SkillN];
-                if (knownSkills[skillName] == null) {
+                if (!knownSkills[skillName]) {
                     skillset.push({ name: skillName, count: 1 });
                     knownSkills[skillName] = idx++;
                 } else {
@@ -859,9 +861,11 @@ function EuropeMap(_options) {
         var locationset    = [];
         var knownLocations = {};
         var idx = 0;
+        // go through all jobs
         for (var JobN = 0; JobN < Jobs.length; JobN++) {
             var location = Jobs[JobN][queryField];
-            if (knownLocations[location] == null) {
+            // get the location count
+            if (typeof knownLocations[location] === 'undefined') {
                 locationset.push({ name: location, count: 1 });
                 knownLocations[location] = idx++;
             } else {
@@ -874,19 +878,24 @@ function EuropeMap(_options) {
         return locationset;
     }
 
+    function toggleCityLabel (changeFlag, showFlag) {
+        if (changeFlag) {
+            // show city labels and location
+            if (!showFlag) {
+                $("#map-europe .city").hide();
+                $("#map-europe .city-label").hide();
+                $("#map-europe .country-label").show();
+            } else {
+                $("#map-europe .city").show();
+                $("#map-europe .city-label").show();
+                $("#map-europe .country-label").hide();
+            }
+        }
+    }
+
     //-------------------------------------------------
     // Get functions
     //-------------------------------------------------
-
-    /**
-     * Gets the active countries.
-     * @returns {Array.<String>} The array containing the full country names.
-     */
-    this.getActiveCountries = function () {
-        var activeCountries = container.selectAll(".country.active")[0];
-        var countryIds = activeCountries.map(function (obj) { return Alpha3ToFull[obj.id]; });
-        return countryIds;
-    };
 
     this.getPointsData = function () {
         return allJobPoints;
@@ -899,10 +908,14 @@ function EuropeMap(_options) {
 
     // resize on window resize
     var resizeTimer;
+    var windowWidth = $(window).width();
     $(window).resize(function () {
-        clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(function () {
-            redrawResize();
-        }, 100);
+        if ($(this).width() !== windowWidth) {
+            windowWidth = $(this).width();
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(function () {
+                resizeRedraw();
+            }, 200);
+        }
     });
 }

@@ -3,6 +3,6 @@
 var europe = new EuropeMap({
     container: "#map-container",
     timelineContainer: "#timeline-container",
-    clusterInfoContainer: "#info-container"
+    clusterInfoContainer: "#cluster-info-container"
 });
 europe.DrawMap();

@@ -84,7 +84,7 @@ function Histogram(_options) {
             if (initialized) self.redraw();
             else self.draw();
         }
-    }
+    };
 
     /**
      * Redraws the histogram.
@@ -92,7 +92,7 @@ function Histogram(_options) {
     this.draw = function () {
         // reset the container
         $(options.container + " svg").remove();
-        $(".histogram" + (identifier != "" ? "." + identifier : "") + ".d3-tip").remove();
+        $(".histogram" + (identifier !== "" ? "." + identifier : "") + ".d3-tip").remove();
 
         // get the container height and width
         var totalHeight = $(options.container).height(),
@@ -215,13 +215,13 @@ function Histogram(_options) {
              .on('mouseout', tip.hide)
              .transition().duration(1000)
              .attr("y", function (d) { return y(d[nameY]); })
-             .attr("height", function (d) { return height - y(d[nameY]); })
+             .attr("height", function (d) { return height - y(d[nameY]); });
 
         chart.exit().remove();
 
         // the graph is initialized
         initialized = true;
-    }
+    };
 
     this.redraw = function () {
         var totalHeight = $(options.container).height(),
@@ -281,8 +281,8 @@ function Histogram(_options) {
              .on('mouseout', tip.hide)
              .transition().duration(1000)
              .attr("y", function (d) { return y(d[nameY]); })
-             .attr("height", function (d) { return height - y(d[nameY]); })
-    }
+             .attr("height", function (d) { return height - y(d[nameY]); });
+    };
 
     function resizeRedraw() {
         var totalHeight = $(options.container).height(),
@@ -358,10 +358,14 @@ function Histogram(_options) {
 
     // resize on window resize
     var resizeTimer;
+    var windowWidth = $(window).width();
     $(window).resize(function () {
-        clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(function () {
-            resizeRedraw();
-        }, 200);
+        if ($(this).width() !== windowWidth) {
+            windowWidth = $(this).width();
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(function () {
+                resizeRedraw();
+            }, 200);
+        }
     });
 }

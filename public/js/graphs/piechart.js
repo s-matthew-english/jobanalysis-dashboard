@@ -84,7 +84,7 @@ function Piechart(_options) {
     this.setOptions = function (_options) {
         if (typeof (_options) == 'undefined') throw "No options specified";
         options = $.extend(options, _options);
-    }
+    };
 
     /**
      * Sets the dataset used for the visualization.
@@ -102,13 +102,13 @@ function Piechart(_options) {
             if (initialized) self.redraw();
             else self.draw();
         }
-    }
+    };
 
     /**
      * Draws the graph.
      */
     this.draw = function () {
-        if (dataset == null) throw "Must initialize dataset";
+        if (!dataset) throw "Must initialize dataset";
 
         $(options.container + " svg").remove();
 
@@ -208,7 +208,7 @@ function Piechart(_options) {
               .text(function (d) { return d[label]; });
 
         initialized = true;
-    }
+    };
 
     /**
      * Redraws the graph.
@@ -227,7 +227,7 @@ function Piechart(_options) {
            .style("text-anchor", "start")
            .text(options.chartTitle);
 
-        if (options.chartSubtitle != "") {
+        if (options.chartSubtitle !== "") {
             svg.select(".subtitle").remove();
             svg.append("text")
                .attr("class", "subtitle")
@@ -242,7 +242,7 @@ function Piechart(_options) {
             svg.select(".subtitle").remove();
         }
 
-        var piechart = d3.select(".pie-slices")
+        var piechart = d3.select(".pie-slices");
 
         var pieslices = piechart.selectAll(".pie-slice")
                                 .data(pie(dataset.data));
@@ -287,7 +287,7 @@ function Piechart(_options) {
               .style("font-family", "sans-serif")
               .style("text-anchor", "start")
               .text(function (d) { return d[label]; });
-    }
+    };
 
     //---------------------------------------------------------
     // Helper functions
@@ -323,15 +323,19 @@ function Piechart(_options) {
     function arcTween(animation) {
         var interpolate = d3.interpolate(this._current, animation);
         this._current = interpolate(0);
-        return function (t) { return arc(interpolate(t)); }
+        return function (t) { return arc(interpolate(t)); };
     }
 
     // resize on window resize
     var resizeTimer;
+    var windowWidth = $(window).width();
     $(window).resize(function () {
-        clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(function () {
-            resizeRedraw();
-        }, 200);
+        if ($(this).width() !== windowWidth) {
+            windowWidth = $(this).width();
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(function () {
+                resizeRedraw();
+            }, 200);
+        }
     });
 }

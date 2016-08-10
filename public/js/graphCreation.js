@@ -8,7 +8,7 @@ var datePiechart = new Piechart({
     identifier: "daily-skill",
     chartTitle: "Top 10 Skills",
     margin:    { top: 100, left: 20, bottom: 20, right: 20 },
-})
+});
 
 // Creates the Lineplot chart
 var dateLineplot = new Lineplot({

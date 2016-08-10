@@ -47,7 +47,7 @@ function Lineplot(_options) {
     }, _options);
 
     // class container
-    const self = this;
+    var self = this;
 
     /**
      * A JSON object containing the dataset info.
@@ -91,7 +91,7 @@ function Lineplot(_options) {
     this.setOptions = function (_options) {
         if (typeof (_options) == 'undefined') throw "No options specified";
         options = $.extend(options, _options);
-    }
+    };
 
     /**
      * Sets the dataset used for the visualization.
@@ -108,7 +108,7 @@ function Lineplot(_options) {
             if (initialized) self.redraw();
             else self.draw();
         }
-    }
+    };
 
     /**
      * Sets the on mouseover point callback function.
@@ -120,7 +120,7 @@ function Lineplot(_options) {
     this.setMouseOverPointCallback = function (func) {
         if (typeof (func) === 'undefined') throw "No function specified";
         mouseOverPointCallback = func;
-    }
+    };
 
     /**
      * Sets the on mouseout point callback function.
@@ -132,13 +132,13 @@ function Lineplot(_options) {
     this.setMouseOutPointCallback = function (func) {
         if (typeof (func) === 'undefined') throw "No function specified";
         mouseOutPointCallback = func;
-    }
+    };
 
     /**
      * Draws the graph.
      */
     this.draw = function () {
-        if (dataset == null) throw "Must initialize dataset";
+        if (!dataset) throw "Must initialize dataset";
 
         $(options.container + " svg").remove();
         $(options.container + " .lineplot .d3-tip").remove();
@@ -319,7 +319,7 @@ function Lineplot(_options) {
                .attr("height", 50);
 
         initialized = true;
-    }
+    };
 
     this.redraw = function () {
         var totalHeight = $(options.container).height(),
@@ -419,7 +419,7 @@ function Lineplot(_options) {
 
          context.select(".x.brush")
                 .call(brush.event);
-    }
+    };
 
     //---------------------------------------------------------
     // Helper functions
@@ -499,10 +499,14 @@ function Lineplot(_options) {
 
     // resize on window resize
     var resizeTimer;
+    var windowWidth = $(window).width();
     $(window).resize(function () {
-        clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(function () {
-            resizeRedraw();
-        }, 200);
+        if ($(this).width() !== windowWidth) {
+            windowWidth = $(this).width();
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(function () {
+                resizeRedraw();
+            }, 200);
+        }
     });
 }
