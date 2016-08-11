@@ -28,12 +28,12 @@
 }
 
 #info-container {
-    max-height: 360px;
+    max-height: 200px;
 }
 
 #cluster-info-container {
-    max-height: 200px;
-    height: 200px;
+    max-height: 410px;
+    height: 410px;
 }
 
 .map {
@@ -43,8 +43,7 @@
     border-radius: 3px;
 }
 
-#map-container,
-#load-container {
+#map-container {
     width: 100%;
     height: 600px;
     padding: 10px;
@@ -54,6 +53,7 @@
 
 #load-container {
     position: absolute;
+    background: white;
     padding: 0px;
     opacity: .0;
     z-index: -1;

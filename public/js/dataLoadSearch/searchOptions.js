@@ -112,8 +112,7 @@ function searchOptions(dashType) {
 
     // start the page-loader
     // TODO: cover the whole website when loading
-    $("#load-container").css("height", $(".body-content").height())
-                        .addClass("loading");
+    $("#load-container").addClass("loading");
 
     if (countSkills > 0) {
         $.ajax({

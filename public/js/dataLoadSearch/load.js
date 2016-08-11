@@ -20,4 +20,11 @@ $(window).bind('dom-manipulation', function () {
 
 $(document).ready(function () {
     $(window).trigger('dom-manipulation');
+    $("#load-container").css("height", $(".body-content").height())
+                        .css("width",  $(".analytics-container").width());
+});
+
+$(window).resize(function () {
+    $("#load-container").css("height", $(".body-content").height())
+                        .css("width",  $(".analytics-container").width());
 });
