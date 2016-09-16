@@ -14,7 +14,7 @@ var datePiechart = new Piechart({
 var dateLineplot = new Lineplot({
     container:  "#analytics-chart-jobs-by-dates",
     identifier: "date",
-    chartTitle: "Job Posts by Dates",
+    chartTitle: "Job Postings by Dates",
     margin:     { top: 50, left: 40, bottom: 100, right: 20 }
 });
 
@@ -22,7 +22,7 @@ var dateLineplot = new Lineplot({
 var skillHistogram = new Histogram({
     container:     "#analytics-chart-skills-by-frequency",
     identifier:    "skill",
-    chartTitle:    "Job Posts by Skills",
+    chartTitle:    "Job Postings by Skills",
     chartSubtitle: "Top 50",
     margin:     { top: 80, left: 40, bottom: 100, right: 20 }
 });
@@ -31,7 +31,7 @@ var skillHistogram = new Histogram({
 var locationHistogram = new Histogram({
     container:     "#analytics-chart-location-by-frequency",
     identifier:    "location",
-    chartTitle:    "Job Posts by Locations",
+    chartTitle:    "Job Postings by Locations",
     chartSubtitle: "Top 40",
     margin:        { top: 80, left: 40, bottom: 100, right: 20 }
 });
@@ -40,7 +40,7 @@ var locationHistogram = new Histogram({
 var countriesHistogram = new Histogram({
     container:     "#analytics-chart-countries-by-frequency",
     identifier:    "countries",
-    chartTitle:    "Job Posts by Countries",
+    chartTitle:    "Job Postings by Countries",
     chartSubtitle: "EU Countries",
     margin:        { top: 80, left: 40, bottom: 100, right: 20 }
 });

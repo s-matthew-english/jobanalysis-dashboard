@@ -10,6 +10,7 @@ html(lang="en" xmlns="http://www.w3.org/1999/xhtm")
     link(rel="stylesheet", href="components/bootstrap/dist/css/bootstrap.min.css")
     link(rel="stylesheet", href="components/bootstrap-tagsinput/dist/bootstrap-tagsinput.css")
     link(rel="stylesheet", type="text/css", href="components/datatables.net-bs/css/dataTables.bootstrap.min.css")
+    link(rel="stylesheet", href="css/animate.css")
 
     //- Custom styles
     link(rel="stylesheet", href="css/main.css")
@@ -24,8 +25,9 @@ html(lang="en" xmlns="http://www.w3.org/1999/xhtm")
     //- Scripts
     script(src="components/jquery/dist/jquery.min.js")
     script(src="components/bootstrap/dist/js/bootstrap.min.js")
-    script(src="components/typeahead.js/dist/typeahead.bundle.min.js")
+    script(src="components/remarkable-bootstrap-notify/bootstrap-notify.js")
     script(src="components/bootstrap-tagsinput/dist/bootstrap-tagsinput.min.js")
+    script(src="components/typeahead.js/dist/typeahead.bundle.min.js")
     script(src="components/datatables.net/js/jquery.dataTables.min.js")
     script(type="text/javascript", src="components/datatables.net-bs/js/dataTables.bootstrap.min.js")
     
@@ -35,8 +37,7 @@ html(lang="en" xmlns="http://www.w3.org/1999/xhtm")
     script(src="js/ext/d3.geo.projection.v0.min.js")
     script(src="js/ext/topojson.min.js")
 
-  body
-
+    body
     //- Body container
     .container-fluid.body-container
         //- Navbar
@@ -60,64 +61,68 @@ html(lang="en" xmlns="http://www.w3.org/1999/xhtm")
                     ul.nav.navbar-nav
                         if locals.activeTab == "PolicyMakers"
                             li.active
-                                a(href="/policymakers") Policy Makers
+                                a(href="/policymakers") POLICY MAKERS
                             li
-                                a(href="/jobseekers") Job Seekers
+                                a(href="/jobseekers") JOB SEEKERS
                             //- li
                             //-     a(href="#") Data Science Experts
                         else if locals.activeTab == "JobSeekers"
                             li
-                                a(href="/policymakers") Policy Makers
+                                a(href="/policymakers") POLICY MAKERS
                             li.active
-                                a(href="/jobseekers") Job Seekers
+                                a(href="/jobseekers") JOB SEEKERS
                             //- li
                             //-     a(href="#") Data Science Experts
 
         //- Page Title and description
-        .row.main-title
-            .col-lg-12
-                if locals.activeTab == "PolicyMakers"
-                    h2.center JOB STATISTICS
-                else if locals.activeTab == "JobSeekers"
-                    h2.center JOB SEARCH
         .row.search-options
+        
             .col-lg-12
                 //- Search options
                 .options
-                    p
-                        h4 SEARCH JOB TRENDS
+                    h4 SEARCH JOB TRENDS
                     .skill-search-container
                         span#span-skill-search
-                            input#topic-search.form-control(type="text", placeholder="Type a Topic")
+                            input#trend-search.form-control(type="text", placeholder="Type a skill or location")
 
                         span#span-skill-search-buttons
                             button.btn.btn-default.pull-right(type="button", onclick="searchOptions('#{locals.activeTab}')") Search
 
                         span#span-skill-search-buttons
-                            button.btn.btn-default.pull-right(type="button", onclick="toggleAdvancedOptions()")
+                            button.btn.btn-default.pull-right(type="button", data-toggle="tooltip", title="Advanced search options", onclick="toggleAdvancedOptions()")
                                 span.glyphicon.glyphicon-cog(aria-hidden="true")
                                 span#showAdvancedOptions.glyphicon.glyphicon-chevron-right(aria-hidden="true", data-value="right")
 
                     //- advance search container
                     .form-horizontal.additional-options(style="display:none;")
+                        //- row containing the keywords
+                        //- .form-group
+                        //-     label.col-xs-2.col-sm-2.col-lg-2.control-label Search keywords:
+                        //-     .col-xs-10.col-sm-10.col-lg-9
+                        //-         input#keyword-search.form-control(type="text")
                         //- row containing the skill
                         .form-group
-                            .col-xs-2.col-sm-2.col-lg-1
-                                label.control-label Skill:
-                            .col-xs-10.col-sm-10.col-lg-11
+                            label.col-xs-2.col-sm-2.col-lg-2.control-label Requested Skills:
+                            .col-xs-10.col-sm-10.col-lg-9
                                 input#skill-search.form-control(type="text", placeholder="Type a skill")
                         //- row containing the location
                         .form-group
-                            .col-xs-2.col-sm-2.col-lg-1
-                                label.control-label City:
-                            .col-xs-10.col-sm-10.col-lg-11
-                                input#city-search.form-control(type="text", placeholder="Type a city name")
+                            label.col-xs-2.col-sm-2.col-lg-2.control-label Search Locations:
+                            .col-xs-10.col-sm-10.col-lg-9
+                                input#location-search.form-control(type="text", placeholder="City or country names")
                         //- row containing the countries
-                        .form-group
-                            .col-xs-2.col-sm-2.col-lg-1
-                                label.control-label Country:
-                            .col-xs-10.col-sm-10.col-lg-11
-                                input#country-search.form-control(type="text", placeholder="Type a country name")
+                        //- .form-group
+                        //-     label.col-xs-2.col-sm-2.col-lg-2.control-label Countries:
+                        //-     .col-xs-10.col-sm-10.col-lg-9
+                        //-         input#country-search.form-control(type="text", placeholder="Type a country name")
+                        
+                        //- row containing the time of interest
+                        //- .form-group
+                        //-     label.col-xs-2.col-sm-2.col-lg-2.control-label Time of Interest:
+                        //-     .col-xs-3.col-sm-3.col-lg-2
+                        //-         input#country-search.form-control(type="text")
+                        //-     .col-xs-3.col-sm-3.col-lg-2
+                        //-         input#country-search.form-control(type="text")
 
         //- Page body
         div.body-content
@@ -189,10 +194,9 @@ html(lang="en" xmlns="http://www.w3.org/1999/xhtm")
                     button.btn.btn-default(type="button", data-dismiss="modal") Close
 
     //- Page Footer - EDSA information
-    footer.footer(role="contentinfo")
+    //- footer.footer(role="contentinfo")
 
-
-     if locals.activeTab == "PolicyMakers"
-            include ./includes/policymakers/policyMakersScripts.jade
-     else if locals.activeTab == "JobSeekers"
-            include ./includes/jobseekers/jobSeekersScripts.jade
+    if locals.activeTab == "PolicyMakers"
+          include ./includes/policymakers/policyMakersScripts.jade
+    else if locals.activeTab == "JobSeekers"
+      include ./includes/jobseekers/jobSeekersScripts.jade

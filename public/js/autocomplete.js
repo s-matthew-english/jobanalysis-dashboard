@@ -4,137 +4,94 @@
  * and Bootstrap Tags Input: http://bootstrap-tagsinput.github.io/bootstrap-tagsinput/examples/
  */
 function LoadAutocomplete() {
-    var topicset = [];
     /**
      * Fetches all skills from the database and create a bootstrap
      * tags input autocomplete.
      */
-    $.ajax({
-        type:     "GET",
-        url:      "http://pankretas.ijs.si:8040/get_all_skills",
-        dataType: "jsonp",
-        cache:    false,
-        success: function (json) {
-            var skillset = json.skills;
-            var skillmapping = $.map(skillset, function (skill) {
-                return {
-                  name: skill.value,
-                  type: "skill"
-              };
-            });
-            // skills typeahead and tags
-            var skills = new Bloodhound({
+
+     $.ajax({
+         type:     "GET",
+         url:      "/data/init/top-lists",
+         success: function (json) {
+             var trendset = [];
+
+             var skillset = json.skills.data;
+             var skillmapping = $.map(skillset, function (skill) {
+                 return {
+                   name: skill.name,
+                   type: "skill"
+               };
+             });
+             // skills typeahead and tags
+             var skillsAutocomplete = new Bloodhound({
+                 datumTokenizer: Bloodhound.tokenizers.obj.whitespace("name"),
+                 queryTokenizer: Bloodhound.tokenizers.whitespace,
+                 local: skillmapping
+             }); skillsAutocomplete.initialize();
+
+             $("#skill-search").tagsinput({
+                 itemValue: "name",
+                 typeaheadjs: {
+                     name:       "skillset",
+                     displayKey: "name",
+                     source:     skillsAutocomplete.ttAdapter()
+                 }
+             });
+             // add the skillsets to trends
+             trendset = trendset.concat(skillmapping);
+
+             var cities = json.locations.data;
+             var citymapping = $.map(cities, function (location) {
+                 return {
+                     name: location.name,
+                     type: "city"
+                 };
+             });
+             var countries = json.countries.data;
+             var countrymapping = $.map(countries, function (location) {
+                 return {
+                     name: location.name,
+                     type: "country"
+                 };
+             });
+
+             var locationsmapping = citymapping.concat(countrymapping);
+
+             // locations typeahead and tags
+             var locationAutocomplete = new Bloodhound({
+                 datumTokenizer: Bloodhound.tokenizers.obj.whitespace("name"),
+                 queryTokenizer: Bloodhound.tokenizers.whitespace,
+                 local: locationsmapping
+             }); locationAutocomplete.initialize();
+
+             $("#location-search").tagsinput({
+                 itemValue: "name",
+                 typeaheadjs: {
+                     name:       "locations",
+                     displayKey: "name",
+                     source:     locationAutocomplete.ttAdapter()
+                 }
+             });
+             // add the locationsmapping to trends
+             trendset = trendset.concat(locationsmapping);
+
+            // create trend typeahead and tags
+            var trendAutocomplete = new Bloodhound({
                 datumTokenizer: Bloodhound.tokenizers.obj.whitespace("name"),
                 queryTokenizer: Bloodhound.tokenizers.whitespace,
-                local: skillmapping
-            }); skills.initialize();
+                local: trendset
+            }); trendAutocomplete.initialize();
 
-            $("#skill-search").tagsinput({
-                itemValue: "name",
+            $("#trend-search").tagsinput({
                 typeaheadjs: {
-                    name:       "skills",
+                    name:       "trend",
                     displayKey: "name",
-                    source:     skills.ttAdapter()
-                }
+                    source:     trendAutocomplete.ttAdapter()
+                },
+                itemValue: "name",
+                trimValue: true,
+
             });
-            // add the skillsets to topics
-            topicset = topicset.concat(skillmapping);
-
-            /**
-             * Fetches all locations from the database and create a bootstrap
-             * tags input autocomplete.
-             */
-            $.ajax({
-                type:     "GET",
-                url:      "http://pankretas.ijs.si:8040/get_all_locations",
-                dataType: "jsonp",
-                cache:    false,
-                success: function (json) {
-                    //TODO: change the database so that it doesn't contain locationName
-                    var cityset = json.locations.filter(function (location) {
-                        var countries = ['Andorra', 'Austria', 'Belgium', 'Bulgaria', 'Cyprus', 'Czech Republic', 'Switzerland', 'Denmark', 'Germany', 'Spain',
-                            'Estonia', 'Finland', 'France', 'United Kingdom', 'Greece', 'Hungary', 'Croatia', 'Ireland', 'Italy', 'Lithuania', 'Luxembourg',
-                            'Latvia', 'Malta', 'Netherlands', 'Poland', 'Portugal', 'Romania', 'San Marino', 'Ukraine', 'Slovakia', 'Slovenia', 'Czechia', 'LocationName'];
-                      return countries.indexOf(location.value) == -1;
-                    });
-
-                    var citymapping = $.map(cityset, function (location) {
-                        return {
-                            name: location.value,
-                            type: "city"
-                        };
-                    });
-                    // locations typeahead and tags
-                    var cities = new Bloodhound({
-                        datumTokenizer: Bloodhound.tokenizers.obj.whitespace("name"),
-                        queryTokenizer: Bloodhound.tokenizers.whitespace,
-                        local:citymapping
-                    }); cities.initialize();
-
-                    $("#city-search").tagsinput({
-                        itemValue: "name",
-                        typeaheadjs: {
-                            name:       "locations",
-                            displayKey: "name",
-                            source:     cities.ttAdapter()
-                        }
-                    });
-                    // add the locationset to topics
-                    topicset = topicset.concat(citymapping);
-
-                    //TODO: change the database so that it doesn't contain locationName
-                    var countryset = json.locations.filter(function (location) {
-                        var countries = ['Andorra', 'Austria', 'Belgium', 'Bulgaria', 'Cyprus', 'Czech Republic', 'Switzerland', 'Denmark', 'Germany', 'Spain',
-                            'Estonia', 'Finland', 'France', 'United Kingdom', 'Greece', 'Hungary', 'Croatia', 'Ireland', 'Italy', 'Lithuania', 'Luxembourg',
-                            'Latvia', 'Malta', 'Netherlands', 'Poland', 'Portugal', 'Romania', 'San Marino', 'Ukraine', 'Slovakia', 'Slovenia', 'Czechia'];
-                      return countries.indexOf(location.value) != -1;
-                    });
-
-                    var countrymapping = $.map(countryset, function (location) {
-                        return {
-                          name: location.value,
-                          type: "country"
-                        };
-                    });
-
-
-                    // locations typeahead and tags
-                    var countries = new Bloodhound({
-                        datumTokenizer: Bloodhound.tokenizers.obj.whitespace("name"),
-                        queryTokenizer: Bloodhound.tokenizers.whitespace,
-                        local: countrymapping
-                    }); countries.initialize();
-
-                    $("#country-search").tagsinput({
-                        itemValue: "name",
-                        typeaheadjs: {
-                            name:       "locations",
-                            displayKey: "name",
-                            source:     countries.ttAdapter()
-                        }
-                    });
-                    // add the locationset to topics
-                    topicset = topicset.concat(countrymapping);
-
-
-                    // create topic typeahead and tags
-                    // locations typeahead and tags
-                    var topics = new Bloodhound({
-                        datumTokenizer: Bloodhound.tokenizers.obj.whitespace("name"),
-                        queryTokenizer: Bloodhound.tokenizers.whitespace,
-                        local: topicset
-                    }); topics.initialize();
-
-                    $("#topic-search").tagsinput({
-                        itemValue: "name",
-                        typeaheadjs: {
-                            name:       "topics",
-                            displayKey: "name",
-                            source:     topics.ttAdapter()
-                        }
-                    });
-                }
-            });
-        }
-    });
+         }
+     });
 }

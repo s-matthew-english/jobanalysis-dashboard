@@ -1,15 +1,19 @@
 /**
- * Graph Visualization Package
+ * Histogram
+ * This file is part of the Graph Visualization Package
+ * developed at JSI. The visualizations are created using
+ * d3 visualization library (https://d3js.org/).
+ + The code is written in ECMAScript 5.
  * Written by Erik Novak <erik.novak@ijs.si>, 2016
  */
 
 /**
- * Creates the lineplot chart object.
- * @param {Histogram~Options} _options - The options used for the visualization.
+ * Creates the histogram object.
+ * @param {Options} _options - The options used for the visualization.
  * @example
- * // define the options used for the chart construction
+ * // define the options
  * var options = {
- *     container:     "#lineplot-container",
+ *     container:     "#histogram-container",
  *     identifier:    "identifier",
  *     chartTitle:    "Title",
  *     chartSubtitle: "SubTitle",
@@ -20,13 +24,13 @@
  *         right:  20
  *     }
  * };
- * // create the lineplot chart object
- * var customLineplot = new Lineplot(options);
+ * // create the histogram chart object
+ * var hist = new Histogram(options);
  */
 function Histogram(_options) {
     /**
      * Options used for the visualization.
-     * @typedef {object} Histogram~Options
+     * @typedef {object} Options
      * @property {string} [container=null]   - The container identifier (normaly an html class or id).
      * @property {string} [identifier=null]  - The identifier used for css styling.
      * @property {string} [chartTitle=""]    - The chart title.

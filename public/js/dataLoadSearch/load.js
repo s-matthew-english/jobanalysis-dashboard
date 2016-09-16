@@ -22,6 +22,7 @@ $(document).ready(function () {
     $(window).trigger('dom-manipulation');
     $("#load-container").css("height", $(".body-content").height())
                         .css("width",  $(".analytics-container").width());
+    $('[data-toggle="tooltip"]').tooltip({ trigger: "hover" });
 });
 
 $(window).resize(function () {

@@ -369,7 +369,7 @@ function EuropeMap(_options) {
 
         // get the coordinates data of the points
         var pointsRaw = timequeryJobPoints.map(function (d, i) {
-            var point = projection(d.locationCoordinates);
+            var point = projection(d.location_coord);
             return { x: point[0], y: point[1], id: d.id };
         });
 

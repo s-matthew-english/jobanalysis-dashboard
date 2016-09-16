@@ -5,35 +5,17 @@
 function searchSuccess(jobPostsRaw, searchQuery) {
     // Array element structure
     //{ location: [number, number], timestamp: number, title: string, skillset: [string, ...], id: string }
-    var jobPosts = jobPostsRaw.jp_result;
 
     // if ajax returns no jobs
     // Activate a "no data" trigger
-    if (jobPosts.length === 0) {
+    if (jobPostsRaw.error) {
         $("#error-trigger").trigger("click");
         $("#map-load-container").removeClass("loading");
         return;
     }
-
+    var jobPosts = jobPostsRaw;
     // prepare the data for it's manipulation
-    var allJobsInformation = [];
-    for (var JobN = 0; JobN < jobPosts.length; JobN++) {
-        var job = jobPosts[JobN];
-        // TODO: do something with the job posts with invalid coordinates
-        if (!job.long || !job.lat || job.locationName == "Northern Europe") {
-            continue;
-        }
-        var timestamp = Date.parse(job.datePosted);
-        var location = [job.long, job.lat];
-        allJobsInformation.push({
-            id:                  job.jobPostingUri,
-            timestamp:           timestamp,
-            locationCoordinates: location,
-            location_city:       job.locationName,
-            location_country:    job.parentName,
-            skillset:            job.skills
-        });
-    }
+    var allJobsInformation = jobPosts.data;
 
     /**
      * Returns the index of the object in an array which matches the criteria.
@@ -80,8 +62,7 @@ function searchSuccess(jobPostsRaw, searchQuery) {
     var jobDateArray = [];
     for (var JobN = 0; JobN < allJobsInformation.length; JobN++) {
         var job = allJobsInformation[JobN];
-
-        var jobDateFull  = new Date(jobPosts[JobN].datePosted);
+        var jobDateFull  = new Date(job.timestamp);
         var jobDateShort = new Date(jobDateFull.getFullYear(), jobDateFull.getMonth(), jobDateFull.getDate());
 
         var idx = arrayObjectDateIndexOf(jobDateArray, jobDateShort, "date");
@@ -137,21 +118,7 @@ function searchSuccess(jobPostsRaw, searchQuery) {
     dateLineplot.setDataset(dataset);
     // add the on mouseover function
     dateLineplot.setMouseOverPointCallback(function (d) {
-        var data;
-        if (d.skillset.length > 10) {
-            data = d.skillset.slice(0, 9);
-            // get the number of other skills
-            var otherData = d.skillset.slice(10, d.skillset.length);
-            if (otherData.length !== 0) {
-                var count = 0;
-                for (var DataN = 0; DataN < otherData.length; DataN++) {
-                    count += otherData[DataN].value;
-                }
-                data.push({ name: "Other", value: count });
-            }
-        } else {
-            data = d.skillset;
-        }
+        data = d.skillset.slice(0, 10);
 
         var date = d.date.toDateString();
         datePiechart.setOptions({ chartSubtitle: date });
@@ -201,21 +168,8 @@ function searchSuccess(jobPostsRaw, searchQuery) {
     skillHistogram.setDataset(dataset);
 
     // prepare the default pie chart data
-    var piechartData;
-    if (jobSkillArray.length > 10) {
-        piechartData = jobSkillArray.slice(0, 9);
-        // get the number of other skills
-        var otherData = jobSkillArray.slice(10, jobSkillArray.length);
-        if (otherData.length) {
-            var count = 0;
-            for (var DataN = 0; DataN < otherData.length; DataN++) {
-                count += otherData[DataN].value;
-            }
-            piechartData.push({ name: "Other", value: count });
-        }
-    } else {
-        piechartData = jobSkillArray;
-    }
+    piechartData = jobSkillArray.slice(0, 10);
+
     // set the piechart dataset
     datePiechart.setDataset({
         nameLabel: "name",
@@ -331,7 +285,7 @@ function searchSuccess(jobPostsRaw, searchQuery) {
 
 // clean the input bars
 function cleanInputBars() {
-    $("#topic-search").tagsinput("removeAll");
+    $("#trend-search").tagsinput("removeAll");
     $("#skill-search").tagsinput("removeAll");
     $("#city-search").tagsinput("removeAll");
     $("#country-search").tagsinput("removeAll");
@@ -340,13 +294,13 @@ function cleanInputBars() {
 // Search/query the selected skill
 function querySkill(skillName) {
     cleanInputBars();
-    $("#topic-search").tagsinput("add", { name: skillName, type: "skill" });
+    $("#trend-search").tagsinput("add", { name: skillName, type: "skill" });
     searchOptions(dashboardType.JobStatistics);
 }
 
 // Search/query the selected location
 function queryLocation(locationName) {
     cleanInputBars();
-    $("#topic-search").tagsinput("add", { name: locationName, type: "city" });
+    $("#trend-search").tagsinput("add", { name: locationName, type: "city" });
     searchOptions(dashboardType.JobStatistics);
 }

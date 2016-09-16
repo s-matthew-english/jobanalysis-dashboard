@@ -2,7 +2,7 @@
  * Options
  */
 
-.options {
+.search-options {
     padding-top:    10px;
     padding-bottom: 10px;
 }
@@ -53,11 +53,14 @@
 #span-skill-search {
     display: table-cell;
     position: relative;
-    top: -13px;
+    top: -15px;
     width: 100%;
 }
 
-#skill-search,
+/*#span-skill-search .bootstrap-tagsinput {
+    border: 2px solid #730100;
+}*/
+
 .bootstrap-tagsinput {
     width: 100%;
 }
@@ -71,9 +74,17 @@
     margin-left: 5px;
 }
 
+label.control-label {
+    font-weight: 100;
+}
+
 /***********************
  * Autocomplete
  */
+
+.bootstrap-tagsinput .twitter-typeahead {
+    display: inline;
+}
 
 .tt-menu {
     position: absolute;
@@ -109,12 +120,12 @@
 
 .tt-dataset .tt-suggestion:hover,
 .tt-cursor {
-    font-weight: 600;
     background-color: #F2F6F8;
 }
 
 .tag {
-    font-size: 12px;
+    font-size: 14px;
+    font-weight: 400;
     border-radius: 5px;
     background-color: #506c6f;
 }

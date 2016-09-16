@@ -5,41 +5,24 @@
 function searchSuccess(jobPostsRaw, searchQuery) {
     // array element structure
     //{ location: [number, number], timestamp: number, title: string, skillset: [string, ...], id: string  }
-    var jobPosts = jobPostsRaw.jp_result;
 
     // if ajax returns no jobs
     // Activate a "no data" trigger
-    if (jobPosts.length === 0) {
+    if (jobPostsRaw.error) {
         $("#error-trigger").trigger("click");
         $("#map-load-container").removeClass("loading");
         return;
     }
 
+    var jobPosts = jobPostsRaw;
     // prepare the data for it's manipulation
-    var allJobsInformation = [];
-    for (var JobN = 0; JobN < jobPosts.length; JobN++) {
-        var job = jobPosts[JobN];
-        // TODO: do something with the job posts with invalid coordinates
-        if (!job.long || !job.lat || job.locationName == "Northern Europe") {
-            continue;
-        }
-        var timestamp = Date.parse(job.datePosted);
-        var location = [job.long, job.lat];
-        allJobsInformation.push({
-            id:                   job.jobPostingUri,
-            timestamp:            timestamp,
-            locationCoordinates:  location,
-            location_city:        job.locationName,
-            location_country:     job.parentName,
-            skillset:             job.skills
-        });
-    }
-
+    var allJobsInformation = jobPosts.data;
 
     //-------------------------------------------------------
     // Draws the job clusters on the map
     //-------------------------------------------------------
     europe.DrawPoints(allJobsInformation);
+
     //-------------------------------------------------------
     // Calculates the number-of-jobs per date histogram
     //-------------------------------------------------------
@@ -107,26 +90,21 @@ function searchSuccess(jobPostsRaw, searchQuery) {
     var upperLimit = numberOfJobs < jobsUpperbound ? numberOfJobs : jobsUpperbound;
     var dataSet = [];
     for (var JobN = 0; JobN < upperLimit; JobN++) {
-        var jobPost = jobPosts[JobN];
+        var jobPost = allJobsInformation[JobN];
 
         var jobTitle = jobPost.jobTitle;
-        // remove start <strong> tag
-        jobTitle = jobTitle.replace(/<strong>/g, '');
-        jobTitle = jobTitle.replace(/&lt;strong&gt;/g, '');
-
-        // remove end <strong> tag
-        jobTitle = jobTitle.replace(/<\/strong>/g, '');
-        jobTitle = jobTitle.replace(/&lt;\/strong&gt;/g, '');
+        // remove start and end <strong> tag
+        jobTitle = jobTitle.replace(/<\/?strong>/g, '');
+        jobTitle = jobTitle.replace(/&lt;\/?strong&gt;/g, '');
 
         var jobPostInfo = [];
 
         jobPostInfo[0] = jobTitle;
-        var datePosted = jobPost.datePosted.substr(0, 10);
-        jobPostInfo[1] = datePosted;
-        jobPostInfo[2] = jobPost.hiringOrganization;
-        jobPostInfo[3] = jobPost.skills ? jobPost.skills : "";
-        jobPostInfo[4] = jobPost.locationName ? jobPost.locationName : "";
-        jobPostInfo[5] = jobPost.parentName ? jobPost.parentName : "";
+        jobPostInfo[1] = jobPost.date;
+        jobPostInfo[2] = jobPost.organization;
+        jobPostInfo[3] = jobPost.skillset ? jobPost.skillset : "";
+        jobPostInfo[4] = jobPost.location_city ? jobPost.location_city : "";
+        jobPostInfo[5] = jobPost.location_country ? jobPost.location_country : "";
 
         dataSet.push(jobPostInfo);
     }

@@ -5,7 +5,7 @@
 function LoadInitialData() {
     var url = window.location.href.split("?");
     if (url.length <= 1) {
-        LoadBasicData();
+        LoadBasicData(50);
     } else {
         var data = skillUrlToArray(url[1]);
         var input = $("#skill-search");
@@ -16,7 +16,16 @@ function LoadInitialData() {
     }
 }
 
-function LoadBasicData() {
+function LoadBasicData(length) {
+
+    $.ajax({
+        type: "GET",
+        url: "/data/init/top-lists/" + length,
+        success: function (values) {
+            // set the info-container
+            setInfoContainer(values.skills.data);
+        }
+    });
     $.ajax({
         type: "GET",
         url: "http://pankretas.ijs.si:8044/firstJP",
@@ -33,15 +42,11 @@ function LoadBasicData() {
                 var jobPostInfo = [];
                 var jobTitle = jobPost.jobTitle;
                 // remove start <strong> tag
-                jobTitle = jobTitle.replace(/<strong>/g, '');
-                jobTitle = jobTitle.replace(/&lt;strong&gt;/g, '');
-
-                // remove end <strong> tag
-                jobTitle = jobTitle.replace(/<\/strong>/g, '');
-                jobTitle = jobTitle.replace(/&lt;\/strong&gt;/g, '');
+                jobTitle = jobTitle.replace(/<\/?strong>/g, '');
+                jobTitle = jobTitle.replace(/&lt;\/?strong&gt;/g, '');
 
                 jobPostInfo[0] = jobTitle;
-                jobPostInfo[1] = jobPost.datePosted.substr(0, 10);;
+                jobPostInfo[1] = jobPost.datePosted.substr(0, 10);
                 jobPostInfo[2] = jobPost.hiringOrganization;
                 jobPostInfo[3] = jobPost.skillsTxt === null ? "" : jobPost.skillsTxt;
                 jobPostInfo[4] = location.locName ? location.locName : "";
@@ -96,30 +101,6 @@ function LoadBasicData() {
         }
     });
 
-    $.ajax({
-        type: "GET",
-        url: "http://pankretas.ijs.si:8040/get_number_of_jobs_by_skill",
-        dataType: 'jsonp',
-        cache: false,
-        success: function (json) {
-            var jpSkills = json.get_number_of_jobs_by_skill;
-            var jobSkillName = [];
-            var jobSkillFreq = [];
-
-            var numberOfSkills = jpSkills;
-            var upperBoundSkills = 50;
-            var sLimit = numberOfSkills < sLimit ? numberOfSkills : upperBoundSkills;
-            for (var SklN = 0; SklN < sLimit; SklN++) {
-                var jpSkill = jpSkills[SklN];
-                jobSkillName.push(jpSkill[0]);
-                jobSkillFreq.push(jpSkill[1]);
-            }
-            // set the info-container
-            setInfoContainer(jobSkillName, jobSkillFreq);
-        }
-    });
-
-
     function fillSuggestedTable(json) {
         var un_json = JSON.parse(unescape(json.lec_result));
         var sLimit = 100;
@@ -158,13 +139,13 @@ function LoadBasicData() {
     }
 }
 
-function setInfoContainer(jobSkillName, jobSkillFreq) {
+function setInfoContainer(skillset) {
     var text = "";
     // set the description
     text += "<h4>Top 50 skills:</h4>";
-    for (var SkillN = 0; SkillN < jobSkillName.length; SkillN++) {
-        text += "<a onclick=\"querySkill(\'" + jobSkillName[SkillN] + "\')\">" + jobSkillName[SkillN] + "</a>" + "(" + jobSkillFreq[SkillN] + ")";
-        if (SkillN != jobSkillName.length - 1) { text += ", "; }
+    for (var SkillN = 0; SkillN < skillset.length; SkillN++) {
+        text += "<a onclick=\"querySkill(\'" + skillset[SkillN].name + "\')\">" + skillset[SkillN].name + "</a>" + "(" + skillset[SkillN].value + ")";
+        if (SkillN != skillset.length - 1) { text += ", "; }
     }
     text += "</br>";
     $("#info-container").html(text);

@@ -20,9 +20,6 @@ coverage
 # node-waf configuration
 .lock-wscript
 
-# Compiled binary addons (http://nodejs.org/api/addons.html)
-build/Release
-
 # Dependency directory
 node_modules
 public/components
@@ -33,5 +30,5 @@ public/components
 # Optional REPL history
 .node_repl_history
 
-# solution folder
-solution
+# atom specific files
+.jshintrc

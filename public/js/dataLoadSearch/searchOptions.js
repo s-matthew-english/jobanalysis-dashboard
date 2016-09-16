@@ -10,16 +10,47 @@ var dashboardType = {
  */
 function searchOptions(dashType) {
     // get skill and location query
-    var topicArray   = $("#topic-search").tagsinput("items");
-    var skillsArray  = $("#skill-search").tagsinput("items");
-    var cityArray    = $("#city-search").tagsinput("items");
-    var countryArray = $("#country-search").tagsinput("items");
-    var parentCountries = ['Andorra', 'Austria', 'Belgium', 'Bulgaria', 'Cyprus', 'Czech Republic', 'Switzerland', 'Denmark', 'Germany', 'Spain',
-        'Estonia', 'Finland', 'France', 'United Kingdom', 'Greece', 'Hungary', 'Croatia', 'Ireland', 'Italy', 'Lithuania', 'Luxembourg',
-        'Latvia', 'Malta', 'Netherlands', 'Poland', 'Portugal', 'Romania', 'San Marino', 'Ukraine', 'Slovakia', 'Slovenia', 'Czechia'];
+    var topicArray    = $("#trend-search").tagsinput("items");
+    var skillsArray   = $("#skill-search").tagsinput("items");
+    var locationArray = $("#location-search").tagsinput("items");
 
     if (topicArray.length === 0 && skillsArray.length === 0 &&
-        cityArray.length === 0 && countryArray.length === 0) {
+        locationArray.length === 0) {
+
+        // notify user what he must do
+        $.notify({
+        	// options
+        	icon: 'glyphicon glyphicon-warning-sign',
+        	message: 'No search tags recognized in input. Please use the input bar and the dropdown menu to select the search tag.',
+        	target: '_blank'
+        },{
+        	// settings
+        	element: 'body',
+        	position: "absolute",
+        	type: "danger",
+        	allow_dismiss: true,
+        	newest_on_top: false,
+        	showProgressbar: false,
+        	placement: {
+        		from: "bottom",
+        		align: "right"
+        	},
+        	offset: 20,
+        	spacing: 10,
+        	z_index: 1031,
+        	delay: 5000,
+        	timer: 1000,
+        	url_target: '_blank',
+        	animate: {
+        		enter: 'animated fadeInDown',
+        		exit: 'animated fadeOutUp'
+        	},
+        	icon_type: 'class'
+        });
+
+        // remove the text in the input
+        $("#span-skill-search .tt-input").val("");
+
         return;
     }
 
@@ -28,18 +59,17 @@ function searchOptions(dashType) {
     // prepare the query string
     var queryString = '';
 
-    var countSkills    = 0;
-    var countLocations = 0;
+    var countQuery    = 0;
     if (topicArray.length > 0) {
         var lastTopicIdx = topicArray.length - 1;
         for (var TopicN = 0; TopicN < lastTopicIdx; TopicN++) {
             var topic = topicArray[TopicN];
             if (topic.type == "skill") {
                 queryString += 'q=' + topic.name + '&';
-                countSkills++;
+                countQuery++;
             } else {
                 queryString += 'l=' + topic.name + '&';
-                countLocations++;
+                countQuery++;
             }
             SearchQuery += topic.name + ', ';
         }
@@ -47,16 +77,15 @@ function searchOptions(dashType) {
         if (topicArray[lastTopicIdx].type == "skill") {
             queryString += 'q=' + topicArray[lastTopicIdx].name;
             SearchQuery += topicArray[lastTopicIdx].name;
-
-            countSkills++;
+            countQuery++;
         } else {
             queryString += 'l=' + topicArray[lastTopicIdx].name;
             SearchQuery += topicArray[lastTopicIdx].name;
-            countLocations++;
+            countQuery++;
         }
 
         // if we query the locations
-        if (skillsArray.length > 0 || cityArray.length > 0 || countryArray.length > 0) {
+        if (skillsArray.length > 0 || locationArray.length > 0) {
             queryString += '&';
             SearchQuery += ', ';
         }
@@ -68,59 +97,45 @@ function searchOptions(dashType) {
         for (var SkillIdx = 0; SkillIdx < lastSkillIdx ; SkillIdx++) {
             queryString += 'q=' + skillsArray[SkillIdx].name + '&';
             SearchQuery += skillsArray[SkillIdx].name + ', ';
-            countSkills++;
+            countQuery++;
         }
         queryString += 'q=' + skillsArray[lastSkillIdx].name;
         SearchQuery += skillsArray[lastSkillIdx].name;
-        countSkills++;
+        countQuery++;
 
         // if we query the locations
-        if (cityArray.length > 0 || countryArray.length > 0) {
+        if (locationArray.length > 0) {
             queryString += '&';
             SearchQuery += ', ';
         }
     }
     // prepare query for cities
-    if (cityArray.length > 0) {
-        var lastLocIdx = cityArray.length - 1;
+    if (locationArray.length > 0) {
+        var lastLocIdx = locationArray.length - 1;
         for (var LocIdx = 0; LocIdx < lastLocIdx ; LocIdx++) {
-            queryString += 'l=' + cityArray[LocIdx].name + '&';
-            SearchQuery += cityArray[lastLocIdx].name + ', ';
-            countLocations++;
+            queryString += 'l=' + locationArray[LocIdx].name + '&';
+            SearchQuery += locationArray[lastLocIdx].name + ', ';
+            countQuery++;
         }
-        queryString += 'l=' + cityArray[lastLocIdx].name;
-        SearchQuery += cityArray[lastLocIdx].name;
-        countLocations++;
+        queryString += 'l=' + locationArray[lastLocIdx].name;
+        SearchQuery += locationArray[lastLocIdx].name;
+        countQuery++;
         // if we query the locations
         if (countryArray.length > 0) {
             queryString += '&';
             SearchQuery += ', ';
         }
     }
-    // prepare query for countries
-    if (countryArray.length > 0) {
-        var lastCountryIdx = countryArray.length - 1;
-        for (var CountryIdx = 0; CountryIdx < lastCountryIdx ; CountryIdx++) {
-            queryString += 'l=' + countryArray[CountryIdx].name + '&';
-            SearchQuery += countryArray[lastLCountryIdxocIdx].name + ', ';
-            countLocations++;
-        }
-        queryString += 'l=' + countryArray[lastCountryIdx].name;
-        SearchQuery += countryArray[lastCountryIdx].name;
-        countLocations++;
-    }
 
     // start the page-loader
     // TODO: cover the whole website when loading
     $("#load-container").addClass("loading");
 
-    if (countSkills > 0) {
+    if (countQuery > 0) {
         $.ajax({
             type: "GET",
-            url: "http://pankretas.ijs.si:8040/search_jobs_by_skill_and_location?" + queryString,
-            data: queryString,
-            dataType: 'jsonp',
-            cache: false,
+            url: "/data/jobposts?" + queryString,
+            dataType: 'json',
             success: function (json) {
                 // found in searchPolicyMakers and searchJobSeekers
                 searchSuccess(json, SearchQuery);
@@ -146,34 +161,6 @@ function searchOptions(dashType) {
             });
         }
     }
-
-    else if ((countSkills > 0) && (parentCountries.indexOf(cityArray[0].name) > -1)) {
-       $.ajax({
-           type: "GET",
-           url: "http://pankretas.ijs.si:8040/search_jobs_by_parent_country?" + "q=" + cityArray[0],
-           dataType: 'jsonp',
-           cache: false,
-           success: function (json) {
-               // found in searchPolicyMakers and searchJobSeekers
-               searchSuccess(json, SearchQuery);
-           }
-       });
-
-    }
-
-    else if (countLocations > 0) {
-        $.ajax({
-            type: "GET",
-            url: "http://pankretas.ijs.si:8040/search_jobs_by_location_name?" + queryString,
-            data: queryString,
-            dataType: 'jsonp',
-            cache: false,
-            success: function (json) {
-                // found in searchPolicyMakers and searchJobSeekers
-                searchSuccess(json, SearchQuery);
-            }
-        });
-    }
 }
 
 // loads the basic statistics data
@@ -181,35 +168,15 @@ function loadBasicStatistics() {
     // load number of jobs
     $.ajax({
         type: "GET",
-        url: "http://pankretas.ijs.si:8040/get_number_of_jobs",
-        dataType: 'jsonp',
+        url: "/data/init/statistics",
         cache: false,
         success: function (json) {
-            $('#infoStatJobPosts').html("<b>" + json.number_of_jobs + "</b>");
-        }
-    });
-    // load number of locations
-    $.ajax({
-        type: "GET",
-        url: "http://pankretas.ijs.si:8040/get_number_of_locations",
-        dataType: 'jsonp',
-        cache: false,
-        success: function (json) {
-            $('#infoStatLocations').html("<b>" + json.number_of_locations + "</b>");
-        }
-    });
-    // load number of skills
-    $.ajax({
-        type: "GET",
-        url: "http://pankretas.ijs.si:8040/get_number_of_skills",
-        dataType: 'jsonp',
-        cache: false,
-        success: function (json) {
-            $('#infoStatSkills').html("<b>" + json.number_of_skills + "</b>");
+            $('#infoStatJobPosts').html("<b>" + json.numOfJobs + "</b>");
+            $('#infoStatLocations').html("<b>" + json.numOfLocations + "</b>");
+            $('#infoStatSkills').html("<b>" + json.numOfSkills + "</b>");
         }
     });
 }
-
 
 // ---------------------------------------------
 // Helper functions

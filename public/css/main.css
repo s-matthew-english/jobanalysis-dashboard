@@ -14,7 +14,7 @@ body {
     height: auto !important;
 
     padding-top: 50px;
-    padding-bottom: 150px;
+    padding-bottom: 20px;
 }
 
 .navigation {
@@ -94,11 +94,6 @@ body {
  * Page style
  */
 
-.main-title {
-    background-color: #730100;
-    color: #FFFFFF;
-}
-
 .search-options {
     background-color: #E6E6E6;
 }
@@ -111,6 +106,12 @@ body {
  * Utility and helpers
  */
 
+.form-control,
+.bootstrap-tagsinput {
+    border-radius: 0px;
+    line-height: 26px !important;
+}
+
 .btn-default,
 .btn-default:hover,
 .btn-default:active,
@@ -118,6 +119,8 @@ body {
     color:            #FFFFFF !important;
     outline-color:    #981616 !important;
     background-color: #730100 !important;
+    line-height: 26px;
+    border-radius: 0px;
 }
 
 .center {
